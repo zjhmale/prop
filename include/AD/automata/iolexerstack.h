@@ -51,14 +51,14 @@ public:
    //  Constructor and destructor
    ///////////////////////////////////////////////////////////////////////////
             IOLexerStack();    
-            IOLexerStack(istream&);    
+            IOLexerStack(std::istream&);
    virtual ~IOLexerStack();
    
    ///////////////////////////////////////////////////////////////////////////
    //  Mutators
    ///////////////////////////////////////////////////////////////////////////
-   virtual void     push_stream (istream&);
-   virtual istream& pop_stream  ();
+   virtual void     push_stream (std::istream&);
+   virtual std::istream& pop_stream  ();
 };
 
 #endif

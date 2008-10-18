@@ -20,14 +20,7 @@
 #include <AD/generic/generic.h>    // generic definitions from the library
 #include <AD/memory/mempool.h>     // memory pool
 #include <AD/memory/strpool.h>     // string pool
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Forward declaration for the input/output streams.
-//
-///////////////////////////////////////////////////////////////////////////////
-class istream;
-class ostream;
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -75,11 +68,11 @@ public:
 //  The input/output/logging streams and the output file name(if applicable).
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern istream * input_stream;          // The current input stream
-extern ostream * output_stream;         // The current output stream
-extern ostream * log_stream;            // The current logging stream
-extern ostream&  open_logfile();        // Open the logfile
-extern ostream*  open_output_file(const char []); // open a file for output
+extern std::istream * input_stream;          // The current input stream
+extern std::ostream * output_stream;         // The current output stream
+extern std::ostream * log_stream;            // The current logging stream
+extern std::ostream&  open_logfile();        // Open the logfile
+extern std::ostream*  open_output_file(const char []); // open a file for output
 extern void encode_string(char *, const char *); // Encode a string.
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,10 +81,10 @@ extern void encode_string(char *, const char *); // Encode a string.
 //
 ///////////////////////////////////////////////////////////////////////////////
 extern int  errors;                        // number of errors found
-ostream& pr_msg   (const char *, va_list); // generic print message routine
-ostream& error    (const char *, ...);     // error message
-ostream& msg      (const char *, ...);     // generic message
-ostream& debug_msg(const char *, ...);     // debugging message
+std::ostream& pr_msg   (const char *, va_list); // generic print message routine
+std::ostream& error    (const char *, ...);     // error message
+std::ostream& msg      (const char *, ...);     // generic message
+std::ostream& debug_msg(const char *, ...);     // debugging message
 void     bug      (const char *, ...);     // abort and generate a bug report
 
 ///////////////////////////////////////////////////////////////////////////////

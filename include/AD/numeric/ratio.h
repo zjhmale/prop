@@ -29,7 +29,7 @@
 //  Class |Ratio| represents rationals. 
 /////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/numeric/bigint.h>  // Unlimited precision integers
 
 class Ratio {
@@ -126,8 +126,8 @@ public:
    ////////////////////////////////////////////////////////////////
    // I/O
    ////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const Ratio&);
-   friend istream& operator >> (istream&, Ratio&); 
+   friend std::ostream& operator << (std::ostream&, const Ratio&);
+   friend std::istream& operator >> (std::istream&, Ratio&);
 };
 
 #endif

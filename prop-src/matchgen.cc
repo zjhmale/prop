@@ -14,8 +14,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <limits.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/contain/bitset.h>
 #include <AD/automata/lexergen.h>
 #include <AD/strings/charesc.h>
@@ -59,9 +59,9 @@ int MatchCompiler::current_rule_line() const
 const char * MatchCompiler::current_rule_text() const
 {  if (current_rule == 0) bug("MatchCompiler::current_rule_text()\n");
    char buffer[4096];
-   ostrstream stream(buffer,sizeof(buffer));
-   ostream& s = stream;
-   s << current_rule << ends;
+   std::ostrstream stream(buffer,sizeof(buffer));
+   std::ostream& s = stream;
+   s << current_rule << std::ends;
    buffer[sizeof(buffer)-1] = '\0';
    return make_quoted_string(buffer);
 }
@@ -989,9 +989,9 @@ void MatchCompiler::instrument_trace(MatchRules rules)
 {
 #line 667 "matchgen.pcc"
  char buffer[4096];
-   ostrstream stream(buffer, sizeof(buffer));
-   ostream& s = stream;
-   s << r << ends;
+   std::ostrstream stream(buffer, sizeof(buffer));
+   std::ostream& s = stream;
+   s << r << std::ends;
    r->_5 =
      
 #line 672 "matchgen.pcc"
@@ -1431,9 +1431,9 @@ void MatchCompiler::gen_fun_def (FunDefs fundefs)
 #line 998 "matchgen.pcc"
  f->_2 = type_match_rules(f->_4);
    char buf[1024];
-   ostrstream b(buf,sizeof(buf));
-   ostream& s = b;
-   s << f->_1 << ends;
+   std::ostrstream b(buf,sizeof(buf));
+   std::ostream& s = b;
+   s << f->_1 << std::ends;
    Ty ret_ty = f->_3 == NOty ? void_ty : f->_3;
    pr ("%^%t %b;\n", 
        ret_ty, buf, f->_2, "1", TYformal);
@@ -1461,9 +1461,9 @@ void MatchCompiler::gen_fun_def (FunDefs fundefs)
    check_refutable(m, f->_4, MATCHnone);
    Ty ret_ty = f->_3 == NOty ? void_ty : f->_3;
    char buf[1024];
-   ostrstream b(buf,sizeof(buf));
-   ostream& s = b;
-   s << f->_1 << ends;
+   std::ostrstream b(buf,sizeof(buf));
+   std::ostream& s = b;
+   s << f->_1 << std::ends;
    pr ("%^%t %b\n{\n%+", 
        ret_ty, buf, f->_2, "1", TYformal);
    gen(m);

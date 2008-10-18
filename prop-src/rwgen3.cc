@@ -11,7 +11,7 @@
 //  used to parse a tree grammar with associated reduction cost functions.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/bitset.h>
 #include "funmap.h"
 #include "ir.h"

@@ -119,8 +119,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Emit the tables as C++ code
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& gen_code     (ostream&, const char name[]) const;
-   virtual ostream& print_report (ostream&) const;
+   virtual std::ostream& gen_code     (std::ostream&, const char name[]) const;
+   virtual std::ostream& print_report (std::ostream&) const;
 
    //////////////////////////////////////////////////////////////////////////
    //  Note: if there are $n$ start conditions then state number 

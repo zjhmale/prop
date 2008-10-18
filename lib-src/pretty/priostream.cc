@@ -22,15 +22,14 @@
 // 1994-1997
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/pretty/piostream.h>
 
 PrettyIOStream::PrettyIOStream() {} 
-PrettyIOStream::PrettyIOStream(istream& s) : PrettyIStream(s) {}
-PrettyIOStream::PrettyIOStream(ostream& s) : PrettyOStream(s) {}
-PrettyIOStream::PrettyIOStream(iostream& s) 
+PrettyIOStream::PrettyIOStream(std::istream& s) : PrettyIStream(s) {}
+PrettyIOStream::PrettyIOStream(std::ostream& s) : PrettyOStream(s) {}
+PrettyIOStream::PrettyIOStream(std::iostream& s)
    : PrettyIStream(s), PrettyOStream(s) {}
-PrettyIOStream::PrettyIOStream(istream& s1,ostream& s2) 
+PrettyIOStream::PrettyIOStream(std::istream& s1,std::ostream& s2)
    : PrettyIStream(s1), PrettyOStream(s2) {}
 PrettyIOStream::~PrettyIOStream() {}
-

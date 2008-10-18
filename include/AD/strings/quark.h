@@ -39,9 +39,7 @@
 
 #include <string.h>
 #include <AD/generic/generic.h>   // Generic definitions 
-
-class istream;
-class ostream;
+#include <iostream>
 
 class Quark {
 
@@ -132,8 +130,8 @@ public:
    //////////////////////////////////////////////////////////////////////
    // I/O
    //////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const Quark&);
-   friend istream& operator >> (istream&, Quark&);
+   friend std::ostream& operator << (std::ostream&, const Quark&);
+   friend std::istream& operator >> (std::istream&, Quark&);
 };
 
 /////////////////////////////////////////////////////////////////////////

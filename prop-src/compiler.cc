@@ -11,7 +11,7 @@
 //  point of the Prop -> C++ translator.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "ir.h"
 #include "ast.h"
 #include "type.h"
@@ -431,7 +431,7 @@ void Compiler::gen(Decl d, Bool line_prefix, Bool line_suffix)
 //  Method to generate a report.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& Compiler::print_report(ostream& f)
+std::ostream& Compiler::print_report(std::ostream& f)
 {  f << 
    "------------------------------- Statistics -------------------------------"
 << "\nMerge matching rules         = " << (options.merge_match ?  "yes" : "no")

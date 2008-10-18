@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/basiccol.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ int BasicCollection::size() const
 //  The following methods are used by subclasses to report errors
 //////////////////////////////////////////////////////////////////////////
 void BasicCollection::should_not_implement(const char method_name[]) const
-{  cerr << "\n[Class " << myName() 
+{  std::cerr << "\n[Class " << myName()
         << " does not understand method " << method_name << "]\n";
    exit(1);
 }

@@ -27,7 +27,7 @@
 //  with dynamic programming.  See Aho, Tsiang, et al. for details.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/rewrite/twig.h>     // twig module
 #include <AD/memory/boundtag.h>  // boundary tag memory maager
 #include <AD/contain/bitset.h>   // bit sets

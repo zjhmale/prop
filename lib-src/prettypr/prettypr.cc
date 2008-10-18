@@ -27,7 +27,7 @@
 PrettyPrinter:: PrettyPrinter() {}
 PrettyPrinter::~PrettyPrinter() {}
 
-ostream& PrettyPrinter::print_tabs(ostream& f, int tabs) 
+std::ostream& PrettyPrinter::print_tabs(std::ostream& f, int tabs)
 {  for ( ;tabs > 0; tabs--) f << ' ';
    return f;
 }

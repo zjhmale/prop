@@ -37,7 +37,7 @@
 //  top-down style matching is at runtime.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <assert.h>
 #include <AD/automata/treegram.h>
 #include <AD/automata/topdowng.h>
@@ -156,7 +156,7 @@ void TopDownGen::add_path(int rule, const TreeTerm term, int len, Symbol path[])
 //  Emit C++ code for the tables.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TopDownGen::gen_code(ostream& out, const char name[]) const
+std::ostream& TopDownGen::gen_code(std::ostream& out, const char name[]) const
 {  
    Super::gen_code(out,name);
    return out;
@@ -167,7 +167,7 @@ ostream& TopDownGen::gen_code(ostream& out, const char name[]) const
 //  Print report
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TopDownGen::print_report(ostream& f) const
+std::ostream& TopDownGen::print_report(std::ostream& f) const
 {  
    f << "\nCanonical grammar:\n" << *G << '\n';
    return f;

@@ -10,7 +10,7 @@
 //  This file implements the low level routine for generating C++ output->
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/strings/charesc.h>
 #include "codegen.h"
@@ -26,9 +26,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 CodeGen:: CodeGen() 
-   : output(&cerr), anchored(true), tabbing(0), tab_unit(3) {}
+   : output(&std::cerr), anchored(true), tabbing(0), tab_unit(3) {}
 CodeGen::~CodeGen() {}
-void CodeGen::set_stream(ostream& s) { output = &s; }
+void CodeGen::set_stream(std::ostream& s) { output = &s; }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -123,7 +123,7 @@ void CodeGen::gen_code(const char * code)
 //  Decode a format string and dispatch to various printing routines.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& CodeGen::outv(const char * fmt, va_list arg)
+std::ostream& CodeGen::outv(const char * fmt, va_list arg)
 {  unsigned char c;
    while ((c = *fmt++) != 0)
    {  if (c == '%') {
@@ -314,7 +314,7 @@ list_1_(integer_ty,list_1_(mkptrty(QUALty(QUALconst,ty))))
 //  Entry point.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& CodeGen::pr(const char * fmt, ...)
+std::ostream& CodeGen::pr(const char * fmt, ...)
 {  va_list arg;
    va_start(arg,fmt);
    outv(fmt,arg);

@@ -30,7 +30,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //  A whole bunch of include files.
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <new.h>
 #include <AD/automata/lalr1gen.h>   // LALR(1) parser generator
 #include <AD/automata/lr0.h>        // LR(0) finite state machine
@@ -176,7 +176,7 @@ void LALR1Gen::compile(const Grammar& G, const OpPrecedence& P)
 //////////////////////////////////////////////////////////////////////////////
 //  Report printing
 //////////////////////////////////////////////////////////////////////////////
-ostream& LALR1Gen::print_report(ostream& out, int verbosity) 
+std::ostream& LALR1Gen::print_report(std::ostream& out, int verbosity)
 {  const Grammar&  G = impl->G;
    LookaheadSets& la = impl->la_sets;
 

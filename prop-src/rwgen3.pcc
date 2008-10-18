@@ -4,7 +4,7 @@
 //  used to parse a tree grammar with associated reduction cost functions.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/bitset.h>
 #include "funmap.ph"
 #include "ir.ph"

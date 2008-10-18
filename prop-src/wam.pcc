@@ -5,7 +5,7 @@
 //  loosely on the Warren Abstract Machine (WAM).  
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "basics.ph"
 #include "wam.ph"
 #include "type.h"
@@ -50,7 +50,7 @@ Instness deref (Instness inst)
 //  Pretty print the determinism.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Determinism d)
+std::ostream& operator << (std::ostream& f, Determinism d)
 {  match (deref d)
    { UNKNOWN_DET:  { f << "unknown"; }
    | DET:          { f << "det"; }

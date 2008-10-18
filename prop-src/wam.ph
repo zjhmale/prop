@@ -147,11 +147,11 @@ extern Determinism deref (Determinism);
 //  Pretty printers.
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, WAM);
-extern ostream& operator << (ostream&, WAMs);
-extern ostream& operator << (ostream&, Label);
-extern ostream& operator << (ostream&, Labels);
-extern ostream& operator << (ostream&, Instness);
-extern ostream& operator << (ostream&, Determinism);
+extern std::ostream& operator << (std::ostream&, WAM);
+extern std::ostream& operator << (std::ostream&, WAMs);
+extern std::ostream& operator << (std::ostream&, Label);
+extern std::ostream& operator << (std::ostream&, Labels);
+extern std::ostream& operator << (std::ostream&, Instness);
+extern std::ostream& operator << (std::ostream&, Determinism);
 
 #endif

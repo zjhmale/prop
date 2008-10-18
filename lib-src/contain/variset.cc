@@ -24,7 +24,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/variset.h>
 
 VarIntSet::VarIntSet(size_t init_size, size_t g)
@@ -37,7 +37,7 @@ VarIntSet::~VarIntSet() { delete [] array; }
 
 void VarIntSet::grow(size_t new_limit)
 {  if (new_limit >= 8*1024*1024)
-   {  cerr << "Limit exceeded in VarIntSet::grow(): " << new_limit << '\n';
+   {  std::cerr << "Limit exceeded in VarIntSet::grow(): " << new_limit << '\n';
       exit(1);
    }  
    Glob * a = new Glob [ new_limit ];

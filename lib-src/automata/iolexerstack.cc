@@ -22,7 +22,7 @@
 // 1994-1995
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <AD/automata/iolexerstack.h>
 
@@ -35,7 +35,7 @@ class IOLexerStackEntry
 {  IOLexerStackEntry(const IOLexerStackEntry&);
    void operator = (const IOLexerStackEntry&);
 public:
-   istream *           file_stream;
+   std::istream *           file_stream;
    char *              buffer;
    char *              buffer_limit;
    char *              cursor;
@@ -49,7 +49,7 @@ public:
    IOLexerStackEntry * next;
 
    inline
-   IOLexerStackEntry(istream * f, char * b, char * bl, char * c, char * cl,
+   IOLexerStackEntry(std::istream * f, char * b, char * bl, char * c, char * cl,
                      size_t n, int sc, Bool an, Bool pin, Bool more,
                      int context,
                      IOLexerStackEntry * nxt)
@@ -72,7 +72,7 @@ IOLexerStackEntry::~IOLexerStackEntry()
 //  Constructor and destructor
 //////////////////////////////////////////////////////////////////////////////
 IOLexerStack:: IOLexerStack() : io_stack(0) {}
-IOLexerStack:: IOLexerStack(istream& in) : Super(in), io_stack(0) {}
+IOLexerStack:: IOLexerStack(std::istream& in) : Super(in), io_stack(0) {}
 IOLexerStack::~IOLexerStack() { delete io_stack; } 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ IOLexerStack::~IOLexerStack() { delete io_stack; }
 //  Push a new stream
 //
 //////////////////////////////////////////////////////////////////////////////
-void IOLexerStack::push_stream(istream& f)
+void IOLexerStack::push_stream(std::istream& f)
 {  io_stack = new IOLexerStackEntry(
         input, buffer, buffer_limit, cursor, cursor_limit,
         buffer_size, saved_char, anchored, pinned, more_input, 
@@ -95,9 +95,9 @@ void IOLexerStack::push_stream(istream& f)
 //  Pop the stream stack
 //
 //////////////////////////////////////////////////////////////////////////////
-istream& IOLexerStack::pop_stream()
+std::istream& IOLexerStack::pop_stream()
 {  if (io_stack == 0) 
-   {  cerr << "Bug: IOLexerStack is empty in IOLexerStack::pop_stream()\n";
+   {  std::cerr << "Bug: IOLexerStack is empty in IOLexerStack::pop_stream()\n";
       exit(1);
    }
    if (! pinned) delete [] buffer;

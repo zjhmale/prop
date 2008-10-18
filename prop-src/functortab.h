@@ -7,7 +7,7 @@
 #include "hashtab.h"
 #include <AD/automata/treegram.h>
 
-class FunctorTable : private HashTable {
+class FunctorTable : public HashTable {
    FunctorTable(const FunctorTable&); // no copy constructor
    void operator = (const FunctorTable&); // no assignment
 

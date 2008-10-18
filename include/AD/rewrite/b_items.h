@@ -25,7 +25,7 @@
 #ifndef BURS_item_set_h
 #define BURS_item_set_h
 
-#include <iostream.h>
+#include <iostream>
 #include <new.h>
 #include <AD/rewrite/b_item.h>  // Item set
 #include <AD/memory/mem.h>      // Memory manager
@@ -101,7 +101,7 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Printing method
    ///////////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const BURS_Item&);
+   friend std::ostream& operator << (std::ostream&, const BURS_Item&);
 };
 
 //////////////////////////////////////////////////////////////////////////////

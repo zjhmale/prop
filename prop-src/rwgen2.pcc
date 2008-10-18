@@ -5,7 +5,7 @@
 //  and 'rewrite id { ... };' statements.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "ir.ph"
 #include "ast.ph"
 #include "type.h"

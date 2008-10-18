@@ -75,8 +75,10 @@ template<class T>
       inline int size() const           { return high - low + 1; }
       inline int capacity() const       { return size(); }
       inline Bool hasKey(int i) const   { return i >= low && i <= high; }
-      inline const T& operator [] (int i) const { return array[i]; }
-      inline T& operator [] (int i) 
+      inline const T& operator [] (int i) const { return Get(i); }
+      inline const T& Get(int i) const { return array[i]; }
+      inline T& operator [] (int i) { return At(i); }
+      inline T& At(int i)
          { if (! hasKey(i)) grow(i); return array[i]; }
 
       ////////////////////////////////////////////////////////////////////

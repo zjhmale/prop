@@ -23,10 +23,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 
 void raise_exn(const char * message)
-{  cerr << message << ": Uncaught exception ";
+{  std::cerr << message << ": Uncaught exception ";
    exit(1);
 }

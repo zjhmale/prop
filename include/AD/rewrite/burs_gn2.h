@@ -96,8 +96,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods for code generation and report generation.
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& print_report (ostream& out) const;
-   virtual ostream& gen_compressed_index (ostream& out, const char name[]) const;
+   virtual std::ostream& print_report (std::ostream& out) const;
+   virtual std::ostream& gen_compressed_index (std::ostream& out, const char name[]) const;
 };
 
 #endif

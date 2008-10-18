@@ -4,7 +4,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <new.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/pretty/postream.h>
 #include <strstream.h>
 #include <string.h>
@@ -27,7 +27,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 instantiate datatype PropToken;
 
-void PropParser::print_user_symbol(ostream& f, Symbol c)
+void PropParser::print_user_symbol(std::ostream& f, Symbol c)
 {  f << '"' << (PropToken)c << '"'; }
 
 void PropParser::explain_error() 
@@ -384,7 +384,7 @@ void PropParser::emit_header ()
 //  Append an expression
 void PropParser::emit(Exp e)
 {  ostrstream b;
-   ostream& f = b;
+   std::ostream& f = b;
    f << e << ends;
    emit(b.str());
    b.rdbuf()->freeze(0);  // free buffer

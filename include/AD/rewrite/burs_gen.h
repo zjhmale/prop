@@ -25,7 +25,7 @@
 #ifndef bottom_up_rewrite_system_generator_h
 #define bottom_up_rewrite_system_generator_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treeauto.h>  // Tree automata
 #include <AD/automata/treegram.h>  // Tree grammars
 
@@ -88,8 +88,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods for code generation and report generation.
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& print_report (ostream&) const;
-   virtual ostream& print_state (ostream&, State) const;
+   virtual std::ostream& print_report (std::ostream&) const;
+   virtual std::ostream& print_state (std::ostream&, State) const;
 
    ///////////////////////////////////////////////////////////////////////////
    //  Algorithm name

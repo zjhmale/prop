@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/backend-tools/codeemit.h>
 #include <AD/hash/lhash.h>
 
@@ -33,8 +33,8 @@
 //  Constructors and destructor
 //
 //////////////////////////////////////////////////////////////////////////////
-CodeEmitter::CodeEmitter() : out(&cerr) { init_emitter(); }
-CodeEmitter::CodeEmitter(ostream& f) : out(&f) { init_emitter(); }
+CodeEmitter::CodeEmitter() : out(&std::cerr) { init_emitter(); }
+CodeEmitter::CodeEmitter(std::ostream& f) : out(&f) { init_emitter(); }
 CodeEmitter::~CodeEmitter() { cleanup_emitter(); }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ void CodeEmitter::cleanup_emitter()
 void CodeEmitter::error(const char * message, ...)
 {  va_list A;
    va_start(A,message);
-   CodeEmitter msg(cerr);
+   CodeEmitter msg(std::cerr);
    msg.emit_driver(message, A);
    va_end(A); 
    exit(1);
@@ -132,7 +132,7 @@ void CodeEmitter::error(const char * message, ...)
 //  Open/close a stream
 //
 //////////////////////////////////////////////////////////////////////////////
-CodeEmitter& CodeEmitter::open(ostream& f) { out = &f; return *this; }
+CodeEmitter& CodeEmitter::open(std::ostream& f) { out = &f; return *this; }
 CodeEmitter& CodeEmitter::close() { return *this; }
 
 //////////////////////////////////////////////////////////////////////////////

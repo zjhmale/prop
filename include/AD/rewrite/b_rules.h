@@ -25,7 +25,7 @@
 #ifndef BURS_normalised_reduction_ruleset_h
 #define BURS_normalised_reduction_ruleset_h
 
-#include <iostream.h> 
+#include <iostream>
 #include <AD/automata/treegram.h> // tree grammar
 #include <AD/memory/mem.h>        // memory manager
 #include <AD/contain/slnklist.h>  // singly linked lists
@@ -139,11 +139,11 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods for printing.
    ///////////////////////////////////////////////////////////////////////////
-   ostream& print (ostream&, const LeafReduction&) const;
-   ostream& print (ostream&, const Reduction&)     const;
-   ostream& print (ostream&, const ChainRule&)     const;
-   ostream& print (ostream&, NonTerminal)          const;
-   friend ostream& operator << (ostream&, const BURS_RuleSet&);
+   std::ostream& print (std::ostream&, const LeafReduction&) const;
+   std::ostream& print (std::ostream&, const Reduction&)     const;
+   std::ostream& print (std::ostream&, const ChainRule&)     const;
+   std::ostream& print (std::ostream&, NonTerminal)          const;
+   friend std::ostream& operator << (std::ostream&, const BURS_RuleSet&);
 };
 
 #endif

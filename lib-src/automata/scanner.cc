@@ -53,7 +53,7 @@ void LexScanner::close()
 //   buffer < tok < cursor == read_limit < limit
 //
 /////////////////////////////////////////////////////////////////////////////
-int LexScanner::fill_buffer(istream& stream, int read_size, LexScanner::Option option)
+int LexScanner::fill_buffer(std::istream& stream, int read_size, LexScanner::Option option)
 {  int space_to_right = limit - read_limit;
    int space_to_left  = tok - buffer;
 
@@ -104,12 +104,12 @@ int LexScanner::fill_buffer(istream& stream, int read_size, LexScanner::Option o
 //  Method for reporting errors
 /////////////////////////////////////////////////////////////////////////////
 void LexScanner::error(const char file_name[], int line_number)
-{  cerr << "Scanner error in file \"" << file_name << "\" at line " << line_number;
+{  std::cerr << "Scanner error in file \"" << file_name << "\" at line " << line_number;
    if (cursor == read_limit) {
-      cerr << "\nEnd of file encountered\n";
+      std::cerr << "\nEnd of file encountered\n";
    } else {
       *read_limit = '\0';
-      cerr << "\nJammed: remaining input: \"" << cursor << "\"\n";
+      std::cerr << "\nJammed: remaining input: \"" << cursor << "\"\n";
    }
    exit(1);
 }

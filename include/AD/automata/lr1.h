@@ -25,7 +25,7 @@
 #ifndef LR1_parser_h
 #define LR1_parser_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>    // generic definitions
 #include <AD/automata/dfatable.h>  // Compressed DFA tables
 

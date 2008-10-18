@@ -26,8 +26,7 @@
 #define prop_pretty_printing_input_stream_h
 
 #include <AD/generic/generic.h>
-
-class istream;
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -37,14 +36,14 @@ class istream;
 class PrettyIStream 
 {  PrettyIStream(const PrettyIStream&);
 protected:
-   istream* the_stream; 
+   std::istream* the_stream;
 public:
             PrettyIStream();
-            explicit PrettyIStream(istream&);
+            explicit PrettyIStream(std::istream&);
    virtual ~PrettyIStream();
 
-   istream& stream() const { return *the_stream; }
-   virtual istream& set_stream(istream&);
+   std::istream& stream() const { return *the_stream; }
+   virtual std::istream& set_stream(std::istream&);
 
    PrettyIStream& operator >> (char);
    PrettyIStream& operator >> (short&);

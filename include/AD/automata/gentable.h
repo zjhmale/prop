@@ -25,12 +25,12 @@
 #ifndef table_printers_h
 #define table_printers_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 
 class TablePrinter {
 public: 
-   void print(ostream&, const char * table, int size, int width,
+   void print(std::ostream&, const char * table, int size, int width,
               const char * type, const char * name, const char * suffix,
               Bool is_unsigned = false);
 };

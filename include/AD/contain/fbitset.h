@@ -31,8 +31,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #include <string.h>
 #include <AD/contain/bitset.h>
-
-class ostream;
+#include <iostream>
 
 class FastBitSet {
 protected:
@@ -98,7 +97,7 @@ public:
           void Union      (const FastBitSet&);
    inline FastBitSet& operator = (const FastBitSet&);
 
-   friend ostream& operator << (ostream&, const FastBitSet&);
+   friend std::ostream& operator << (std::ostream&, const FastBitSet&);
    inline friend unsigned int hash (const FastBitSet *);
    inline friend Bool equal (const FastBitSet *, const FastBitSet *);
 };

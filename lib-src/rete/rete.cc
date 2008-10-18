@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/rete/rete.h>         // RETE inference engine
 #include <AD/hash/lhash.h>        // coalesced chaining hash table
 #include <AD/contain/varqueue.h>  // generic queue
@@ -157,7 +157,7 @@ Rete::Rete(int N, const Node my_network[], int M, const RelationTable T[])
       for (int i = 0; i < M; i++) {
          if (*T[i].relation_tag > max_tag) max_tag = *T[i].relation_tag;
          if (*T[i].relation_tag <= 0)
-            cerr << "Bug: relation " << T[i].relation_name 
+            std::cerr << "Bug: relation " << T[i].relation_name
                  << " has not been properly initialised in inference class "
                  << name_of() << '\n';
       }

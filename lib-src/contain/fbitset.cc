@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/contain/fbitset.h>
 
@@ -31,7 +31,7 @@
 //  Print a fast bit set
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& out, const FastBitSet& set)
+std::ostream& operator << (std::ostream& out, const FastBitSet& set)
 {  Bool comma = false;
    out << '[';
    switch (set.kind)

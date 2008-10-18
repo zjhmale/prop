@@ -32,13 +32,13 @@
 
 #include <AD/generic/generic.h>
 #include <AD/persist/pconfig.h>
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////////////
 //
 //  Opaque definitions
 //
 //////////////////////////////////////////////////////////////////////////////
-class ostream;
 class Pistream;
 class Postream;
 class PBaseFactory;
@@ -75,7 +75,7 @@ public:
             PObjectType (const char * name);
    virtual ~PObjectType ();
 
-   friend ostream&  operator << ( ostream&, const PObjectType& );
+   friend std::ostream&  operator << ( std::ostream&, const PObjectType& );
    inline Bool operator == (const PObjectType& id) const 
       {  return entry == id.entry; }
    inline Bool operator != (const PObjectType& id) const 

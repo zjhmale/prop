@@ -25,7 +25,7 @@
 #include <AD/automata/gentable.h>
 
 void TablePrinter::print
-    ( ostream& out, const char * table, int size, int width,
+    ( std::ostream& out, const char * table, int size, int width,
       const char * type, const char * name, const char * suffix, 
       Bool is_unsigned )
 {  int i;

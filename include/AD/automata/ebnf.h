@@ -32,7 +32,7 @@
 #ifndef extended_Backus_Naur_form_h
 #define extended_Backus_Naur_form_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/grammar.h>  // grammar
 #include <AD/memory/mem.h>        // memory manager
 

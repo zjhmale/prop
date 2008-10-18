@@ -438,7 +438,7 @@ const char * TreeGrammar::variable_name(Variable v) const
 ///////////////////////////////////////////////////////////////////////////
 //  Method to print a functor name.
 ///////////////////////////////////////////////////////////////////////////
-ostream& TreeGrammar::print_functor(ostream& out, Functor f) const
+std::ostream& TreeGrammar::print_functor(std::ostream& out, Functor f) const
 {  if (functor_names && f >= min_functor() && f <= max_functor()) 
       return out << functor_names[f];
    else
@@ -448,7 +448,7 @@ ostream& TreeGrammar::print_functor(ostream& out, Functor f) const
 ///////////////////////////////////////////////////////////////////////////
 //  Method to print a variable name.
 ///////////////////////////////////////////////////////////////////////////
-ostream& TreeGrammar::print_variable(ostream& out, Variable v) const
+std::ostream& TreeGrammar::print_variable(std::ostream& out, Variable v) const
 {  if (variable_names && v >= min_variable() && v <= max_variable() &&
        variable_names[v] != 0) 
       return out << '<' << variable_names[v] << '>';
@@ -459,7 +459,7 @@ ostream& TreeGrammar::print_variable(ostream& out, Variable v) const
 ///////////////////////////////////////////////////////////////////////////
 //  Method to print a tree term.
 ///////////////////////////////////////////////////////////////////////////
-ostream& TreeGrammar::print(ostream& S, const TreeTerm term) const
+std::ostream& TreeGrammar::print(std::ostream& S, const TreeTerm term) const
 {  
 #line 244 "treegram.pcc"
 #line 286 "treegram.pcc"
@@ -588,7 +588,7 @@ ostream& TreeGrammar::print(ostream& S, const TreeTerm term) const
 ///////////////////////////////////////////////////////////////////////////
 //  Method to print a tree production.
 ///////////////////////////////////////////////////////////////////////////
-ostream& TreeGrammar::print(ostream& out, const TreeProduction& P) const
+std::ostream& TreeGrammar::print(std::ostream& out, const TreeProduction& P) const
 {   print_variable(out, P.var); 
     out << " : ";
     print(out, P.term);
@@ -598,7 +598,7 @@ ostream& TreeGrammar::print(ostream& out, const TreeProduction& P) const
 ///////////////////////////////////////////////////////////////////////////
 //  Method to print a tree grammar.
 ///////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& out, const TreeGrammar& G) 
+std::ostream& operator << (std::ostream& out, const TreeGrammar& G)
 {   for (int i = 0; i < G.size(); i++) {
        out << '[' << i << ']' << '\t';
        G.print(out,G[i]) << '\n';

@@ -25,7 +25,7 @@
 #ifndef BURS_item_h
 #define BURS_item_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treegram.h>  // tree grammar
 #include <AD/generic/ordering.h>   // hashing functions
 
@@ -62,7 +62,7 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Printing method.
    ///////////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const BURS_Item&);
+   friend std::ostream& operator << (std::ostream&, const BURS_Item&);
 };
 
 #endif

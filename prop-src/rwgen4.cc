@@ -13,8 +13,8 @@
 //  This is used to implement the rewrite class/rewrite constructs of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include "funmap.h"
 #include "ir.h"
 #include "ast.h"

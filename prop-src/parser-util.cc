@@ -21,9 +21,9 @@ static const Quark _p_a_r_s_e_rcn_u_t_i_lco_c_c_Q2("$");
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <new.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/pretty/postream.h>
-#include <strstream.h>
+#include <strstream>
 #include <string.h>
 #include <stdlib.h>
 #include "ir.h"
@@ -55,7 +55,7 @@ static const Quark _p_a_r_s_e_rcn_u_t_i_lco_c_c_Q2("$");
 // Pretty printing methods for PropToken
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, PropToken  obj__);
+std::ostream& operator << (std::ostream& strm__, PropToken  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, PropToken  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, PropToken  obj__);
 // Pretty printing methods for PropToken
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, PropToken  obj__)
+std::ostream& operator << (std::ostream& strm__, PropToken  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, PropToken  obj__)
@@ -611,12 +611,12 @@ PrettyOStream& operator << (PrettyOStream& strm__, PropToken  obj__)
 #line 28 "parser-util.pcc"
 
 
-void PropParser::print_user_symbol(ostream& f, Symbol c)
+void PropParser::print_user_symbol(std::ostream& f, Symbol c)
 {  f << '"' << (PropToken)c << '"'; }
 
 void PropParser::explain_error() 
-{  nice_explain(cerr); cerr << '\n';
-   if (options.debug) debug_explain(cerr); 
+{  nice_explain(std::cerr); std::cerr << '\n';
+   if (options.debug) debug_explain(std::cerr);
 }
 
 extern int match_rule;
@@ -1031,7 +1031,7 @@ void PropParser::cleanup_lexer()
 void PropParser::open_include_file(const char * file_name)
 {  for (int i = 0; i < included_count; i++)
       if (included_files[i] == file_name) return;
-   istream * new_stream = options.open_input_file(file_name);
+   std::istream * new_stream = options.open_input_file(file_name);
    if (options.gen_dependences) 
       IncludeDependency::add_dependency(str_pool[options.current_file_path]);
    if (new_stream == 0) 
@@ -1100,9 +1100,9 @@ void PropParser::emit_header ()
 
 //  Append an expression
 void PropParser::emit(Exp e)
-{  ostrstream b;
-   ostream& f = b;
-   f << e << ends;
+{  std::ostrstream b;
+   std::ostream& f = b;
+   f << e << std::ends;
    emit(b.str());
    b.rdbuf()->freeze(0);  // free buffer
 }

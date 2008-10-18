@@ -36,7 +36,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>   // Generic definitions
 #include <AD/strings/regexp.h>    // Regular expression search
 
@@ -283,9 +283,9 @@ public:
    ///////////////////////////////////////////////////////////////////////
    //  Input and Output
    ///////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream& out, const String& s)
+   friend std::ostream& operator << (std::ostream& out, const String& s)
       { return out << s.string; }
-   friend istream& operator >> (istream&, String&);
+   friend std::istream& operator >> (std::istream&, String&);
 
    ///////////////////////////////////////////////////////////////////////
    //  Iterators

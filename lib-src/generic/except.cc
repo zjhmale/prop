@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 #include <setjmp.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/except.h>  
 
 jmp_buf * __current_handler__;
@@ -35,6 +35,6 @@ void Exception::raise()
       __current_exception__ = this;
       longjmp(*__current_handler__,1);
    }
-   cerr << "Uncaught exception " << name() << '\n';
+   std::cerr << "Uncaught exception " << name() << '\n';
    exit(1);
 }

@@ -30,7 +30,7 @@
 // The algorithm used is the one described in \cite{FL-1988}. 
 //
 
-#include <iostream.h>               // Standard C++ I/O stream
+#include <iostream>               // Standard C++ I/O stream
 #include <AD/automata/grammar.h>  // Canonical parser grammar
 #include <AD/automata/sparsdfa.h> // Compressed sparse dfa
 
@@ -67,7 +67,7 @@ public:
    //  Compilation and code emission
    ///////////////////////////////////////////////////////////////////////////
    virtual void     compile  (const Grammar& G);
-   virtual ostream& gen_code (ostream&, const char []) const;
+   virtual std::ostream& gen_code (std::ostream&, const char []) const;
 };
 
 #endif

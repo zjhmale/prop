@@ -22,9 +22,9 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
-#include <strstream.h>
-#include <iomanip.h>
+#include <iostream>
+#include <strstream>
+#include <iomanip>
 #include <ctype.h>
 #include <string.h>
 #include <AD/automata/grammar.h>
@@ -295,7 +295,7 @@ Grammar Grammar::makeCanonical() const
 //////////////////////////////////////////////////////////////////////////////
 // Print a symbol using the translation table given
 //////////////////////////////////////////////////////////////////////////////
-ostream& Grammar::print(ostream& out, Symbol c) const
+std::ostream& Grammar::print(std::ostream& out, Symbol c) const
 {
    if (c > Grammar::END_PRODUCTION) {
       if (c == EOF) return out << "$";  // eof symbol
@@ -303,8 +303,8 @@ ostream& Grammar::print(ostream& out, Symbol c) const
       if (symbol_names && symbol_names[c]) return out << symbol_names[c];
       if (isNonTerminal(c)) {
          char buf[16];
-         ostrstream F(buf,sizeof(buf));
-         F << '<' << (int)c << '>' << ends;
+         std::ostrstream F(buf,sizeof(buf));
+         F << '<' << (int)c << '>' << std::ends;
          return out << F.str();
       }
       if (c >= 0 && c <= 255) {
@@ -319,7 +319,7 @@ ostream& Grammar::print(ostream& out, Symbol c) const
 //////////////////////////////////////////////////////////////////////////////
 // Print a production
 //////////////////////////////////////////////////////////////////////////////
-ostream& Grammar::print(ostream& out, Production P, Bool lhs) const
+std::ostream& Grammar::print(std::ostream& out, Production P, Bool lhs) const
 {  int i;
    if (P == 0) return out << "[production ???]";
    if (lhs) { print(out,P[0]) << "\t->\t"; i = 1; } else i = 0;
@@ -331,7 +331,7 @@ ostream& Grammar::print(ostream& out, Production P, Bool lhs) const
 //////////////////////////////////////////////////////////////////////////////
 // Print an item
 //////////////////////////////////////////////////////////////////////////////
-ostream& Grammar::print(ostream& out, int pos, Production P) const
+std::ostream& Grammar::print(std::ostream& out, int pos, Production P) const
 {  if (P == 0) return out << "[production ???]";
    print(out,P[0]) << "\t->\t";
    for (int i = 1; ; i++) {
@@ -352,7 +352,7 @@ ostream& Grammar::print(ostream& out, int pos, Production P) const
 // Print the grammar: one on each line and omit printing the same
 // lhs non-terminal on subsequent lines.
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& out, const Grammar& G)
+std::ostream& operator << (std::ostream& out, const Grammar& G)
 {  NonTerminal A = 0;
    for (int i = 0; i < G.size(); i++) {
       Production P = G[i];

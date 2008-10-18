@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <assert.h>
 #include <AD/automata/treeauto.h>  // tree automaton definitions
 #include <AD/automata/gentable.h>  // table printer
@@ -247,7 +247,7 @@ void TreeAutomaton::compute_accept_tables ()
 //  All accepted rules are printed in base/vector format in two arrays.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_accept(ostream& out, const char name[]) const
+std::ostream& TreeAutomaton::gen_accept(std::ostream& out, const char name[]) const
 { 
    TablePrinter P;
    ((TreeAutomaton *)this)->compute_accept_tables();
@@ -269,7 +269,7 @@ ostream& TreeAutomaton::gen_accept(ostream& out, const char name[]) const
 //  The first accepted rules (or -1) are printed in array format.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_accept1(ostream& out, const char name[]) const
+std::ostream& TreeAutomaton::gen_accept1(std::ostream& out, const char name[]) const
 {
    out << "static const " << get_rule_type() << name 
        << "_accept1[" << number_of_states() << "] = \n{  ";
@@ -290,7 +290,7 @@ ostream& TreeAutomaton::gen_accept1(ostream& out, const char name[]) const
 //  All accepted rules are printed in bitmap format.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_bitmap_accept(ostream& out, const char name[]) const
+std::ostream& TreeAutomaton::gen_bitmap_accept(std::ostream& out, const char name[]) const
 {  int bytes = (number_of_states() + sizeof(unsigned char) * 8 - 1)/
                  (8 * sizeof(unsigned char)); 
    assert(sizeof(unsigned char) == 1);
@@ -318,8 +318,8 @@ ostream& TreeAutomaton::gen_bitmap_accept(ostream& out, const char name[]) const
 //  Method to generate the index table for one functor.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_index
-   (ostream& out, Functor f, Arity i, const char name[]) const
+std::ostream& TreeAutomaton::gen_index
+   (std::ostream& out, Functor f, Arity i, const char name[]) const
 {  if (arity[f] != 0) {
       out << "static const " << get_state_type() 
 	  << name << "_mu_" << (int)f << "_" << (int)i;
@@ -362,8 +362,8 @@ const char * TreeAutomaton::get_rule_type() const
 //  Method to generate the transition table for one functor.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_theta
-   (ostream& out, Functor f, const char name[]) const
+std::ostream& TreeAutomaton::gen_theta
+   (std::ostream& out, Functor f, const char name[]) const
 {  if (arity[f] != 0) {
       int n = arity[f];
       const DeltaTable& delta_table = *delta[f];
@@ -484,7 +484,7 @@ double TreeAutomaton::compression_rate() const
 //  Method for report generation.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::print_report (ostream& f) const
+std::ostream& TreeAutomaton::print_report (std::ostream& f) const
 {  
    // Print the canonical grammar
    f << "\nCanonical grammar:\n" << *G << '\n';
@@ -595,15 +595,15 @@ ostream& TreeAutomaton::print_report (ostream& f) const
 //  Method for printing a state.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::print_state (ostream& f, State) const { return f; }
+std::ostream& TreeAutomaton::print_state (std::ostream& f, State) const { return f; }
 
 //////////////////////////////////////////////////////////////////////////////
 //
 //  Methods for emitting the compressed index in C++ form.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeAutomaton::gen_compressed_index
-   (ostream& out, const char name[]) const
+std::ostream& TreeAutomaton::gen_compressed_index
+   (std::ostream& out, const char name[]) const
 {  ((TreeAutomaton *)this)->mu_index_used = true;
    out << "static const ";
    dfa_compiler.gen_check_next_tables(out, name, get_state_type());

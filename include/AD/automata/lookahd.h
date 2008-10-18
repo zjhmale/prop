@@ -25,7 +25,7 @@
 #ifndef LALR1_lookahead_sets_h
 #define LALR1_lookahead_sets_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/grammar.h>  // Grammar
 #include <AD/automata/lr0.h>      // LR(0) finite state machine
 #include <AD/automata/operprec.h> // operator precedence
@@ -97,13 +97,13 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Transition computation
    ///////////////////////////////////////////////////////////////////////////
-   int transitions(State, Symbol [], State [], State&, ostream * log = 0);
+   int transitions(State, Symbol [], State [], State&, std::ostream * log = 0);
 
    ///////////////////////////////////////////////////////////////////////////
    //  Conflict resolution
    ///////////////////////////////////////////////////////////////////////////
-   ShiftReduce resolve_shift_reduce_conflict(ItemNum i, Terminal, ostream *);
-   ShiftReduce resolve_reduce_reduce_conflict(ItemNum i, Terminal, ostream *);
+   ShiftReduce resolve_shift_reduce_conflict(ItemNum i, Terminal, std::ostream *);
+   ShiftReduce resolve_reduce_reduce_conflict(ItemNum i, Terminal, std::ostream *);
    
    ///////////////////////////////////////////////////////////////////////////
    //  Error counts
@@ -115,7 +115,7 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Print a report
    ///////////////////////////////////////////////////////////////////////////
-   ostream& print_report(ostream&, Bool print_closures, Bool print_lookaheads);
+   std::ostream& print_report(std::ostream&, Bool print_closures, Bool print_lookaheads);
 };
 
 #endif

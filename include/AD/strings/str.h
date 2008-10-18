@@ -36,7 +36,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>   // Generic definitions
 
 ////////////////////////////////////////////////////////////////////////////
@@ -56,8 +56,6 @@ class String;
 class SubString;
 class StringImpl;
 class RegExp;
-class ostream;
-class istream;
 
 ////////////////////////////////////////////////////////////////////////////
 //  Class StringImpl, the actual implementation of a string.
@@ -241,8 +239,8 @@ public:
    ///////////////////////////////////////////////////////////////////////
    //  Input and Output
    ///////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream& out, const String& s);
-   friend istream& operator >> (istream&, String&);
+   friend std::ostream& operator << (std::ostream& out, const String& s);
+   friend std::istream& operator >> (std::istream&, String&);
 };
 
 #endif

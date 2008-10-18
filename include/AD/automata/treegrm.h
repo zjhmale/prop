@@ -25,7 +25,7 @@
 #ifndef regular_tree_grammar_h
 #define regular_tree_grammar_h
 
-#include <iostream.h>
+#include <iostream>
 #include <new.h>
 #include <AD/generic/generic.h>
 #include <AD/automata/treetab.h>
@@ -180,7 +180,7 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Printing
    ///////////////////////////////////////////////////////////////////////////
-   ostream& print( ostream& out,
+   std::ostream& print( std::ostream& out,
                    const TreeTerm * term, 
                    const char * functor_names[], 
                    const char * variable_names[] ) const;

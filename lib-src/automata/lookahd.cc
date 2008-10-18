@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iomanip.h>
+#include <iomanip>
 #include <AD/automata/lookahd.h>    // Lookahead set computation
 #include <AD/automata/firstset.h>   // Grammar analysis
 #include <AD/contain/varstack.h>    // Generic stack
@@ -308,7 +308,7 @@ LookaheadSets :: ~LookaheadSets() { delete impl; }
 //  if possible.
 //////////////////////////////////////////////////////////////////////////////
 int LookaheadSets::transitions
-   (State s, Symbol symbols [], State delta[], State& def, ostream * log)
+   (State s, Symbol symbols [], State delta[], State& def, std::ostream * log)
 {  const  LHashTable <SI, BitSet * >& LA      = impl->reduction_lookaheads;
    const  SLinkList<ItemNum> * reducing_items = lr0.reducing_items(s);
    const  State * trans                       = lr0.transitions(s);
@@ -386,9 +386,9 @@ int LookaheadSets::transitions
 //////////////////////////////////////////////////////////////////////////////
 //  Method to log a message on shift/reduce conflict.
 //////////////////////////////////////////////////////////////////////////////
-static ostream&
+static std::ostream&
    log_shift_reduce_conflict
-      ( ostream& log, const Grammar& G,
+      ( std::ostream& log, const Grammar& G,
         ItemNum i, const LRItem& reducing_item, Terminal A, 
         const char * resolved, const char * shift_reduce
       )
@@ -408,7 +408,7 @@ static ostream&
 //  information.  
 //////////////////////////////////////////////////////////////////////////////
 ShiftReduce LookaheadSets::resolve_shift_reduce_conflict
-   ( ItemNum i, Terminal A, ostream * log)
+   ( ItemNum i, Terminal A, std::ostream * log)
 { 
    ///////////////////////////////////////////////////////////////////////////
    //  Check for specific forms of reducing items, like
@@ -487,7 +487,7 @@ ShiftReduce LookaheadSets::resolve_shift_reduce_conflict
 //  information.  
 //////////////////////////////////////////////////////////////////////////////
 ShiftReduce LookaheadSets::resolve_reduce_reduce_conflict
-   ( ItemNum i, Terminal A, ostream * log)
+   ( ItemNum i, Terminal A, std::ostream * log)
 {  if (log)
    {  const LRItem& reducing_item = *lr0[i];
       *log << "\treduce/reduce conflict with item {" << i << "} ";
@@ -505,8 +505,8 @@ ShiftReduce LookaheadSets::resolve_reduce_reduce_conflict
 //////////////////////////////////////////////////////////////////////////////
 //  Print a report of the lookahead sets
 //////////////////////////////////////////////////////////////////////////////
-ostream& LookaheadSets::print_report
-   (ostream& out, Bool print_closures, Bool print_lookaheads)
+std::ostream& LookaheadSets::print_report
+   (std::ostream& out, Bool print_closures, Bool print_lookaheads)
 {  
    const LHashTable <SI, BitSet * >& reduction_lookaheads = impl->reduction_lookaheads;
 
@@ -579,20 +579,20 @@ ostream& LookaheadSets::print_report
          Symbol X = symbols[k];
          State  d = delta[k];
          if (G.isShift(d)) {
-            out << '\t' << setw(16);
+            out << '\t' << std::setw(16);
             G.print(out, X);
             if (G.isTerminal(X)) out << "\tshift, and ";
             else out << "\t";
             out << "goto state <" << d << ">\n";
          } else if (G.isShiftReduce(d)) {
             int r = G.reduceRule(d);
-            out << '\t' << setw(16);
+            out << '\t' << std::setw(16);
             G.print(out, X);
             out << "\tshift and reduce using rule {" 
                 << r << "}\n";
          } else if (reduction == 0) {
             int r = G.reduceRule(d);
-            out << '\t' << setw(16);
+            out << '\t' << std::setw(16);
             G.print(out, X);
             out << "\treduce using rule {" << r << "} (";
             G.print(out, G.lhs(r)) << ')';
@@ -609,7 +609,7 @@ ostream& LookaheadSets::print_report
       //////////////////////////////////////////////////////////////////////// 
       if (reduction != 0) {
          int r = G.reduceRule(reduction);
-         out << '\t' << setw(16) << "<default>" 
+         out << '\t' << std::setw(16) << "<default>"
              << "\treduce using rule {" << r << "} (";
          G.print(out, G.lhs(r)) << ')';
          if (G.lhs(r) == G.start()) out << " and accept";

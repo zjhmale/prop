@@ -19,7 +19,7 @@ static const Quark _r_w_g_e_n_2co_c_c_Q1("\npublic:\n   inline ");
 //  and 'rewrite id { ... };' statements.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "ir.h"
 #include "ast.h"
 #include "type.h"

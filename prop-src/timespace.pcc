@@ -6,7 +6,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 #include "basics.ph"
 #include "timespace.ph"
 
@@ -22,7 +22,7 @@ instantiate datatype Complexity, Time, Space;
 //  Pretty print the complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Complexity c)
+std::ostream& operator << (std::ostream& f, Complexity c)
 {  match (c)
    { Var   id:     { f << id; }
    | Add   (a, b): { f << '(' << a << " + " << b << ')'; }
@@ -43,7 +43,7 @@ ostream& operator << (ostream& f, Complexity c)
 //  Pretty print the time complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Time t)
+std::ostream& operator << (std::ostream& f, Time t)
 {  return f << "Time(" << t << ")"; }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ ostream& operator << (ostream& f, Time t)
 //  Pretty print the space complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Space s)
+std::ostream& operator << (std::ostream& f, Space s)
 {  return f << "Space(" << s << ")"; }
 
 ///////////////////////////////////////////////////////////////////////////////

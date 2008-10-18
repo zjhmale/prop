@@ -120,7 +120,7 @@ double New_BURS_Gen::compression_rate() const
 //////////////////////////////////////////////////////////////////////////////
 //  Methods for code generation and report generation.
 //////////////////////////////////////////////////////////////////////////////
-ostream& New_BURS_Gen::print_report (ostream& f) const
+std::ostream& New_BURS_Gen::print_report (std::ostream& f) const
 {  Super::print_report(f); 
 
    // Print other statistics
@@ -136,6 +136,6 @@ ostream& New_BURS_Gen::print_report (ostream& f) const
    return f;
 }
 
-ostream& New_BURS_Gen::gen_compressed_index
-   (ostream& out, const char name[]) const
+std::ostream& New_BURS_Gen::gen_compressed_index
+   (std::ostream& out, const char name[]) const
 {  return dfa_compiler.gen_code(out, name); }

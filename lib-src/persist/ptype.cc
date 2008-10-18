@@ -24,8 +24,8 @@
 
 #define PSTREAM_IMPLEMENTATION
 #include <string.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/persist/pconfig.h>
 #include <AD/persist/ptype.h>
 #include <AD/persist/ptypeentry.h>
@@ -64,7 +64,7 @@ PObjectType::PObjectType(const char * name)
       entry->type_name_len = strlen(name);
       entry->factory       = 0;
       persist_type_map->insert(name,entry);
-      (*persist_type_table)[next_unique_id] = entry;
+      (*persist_type_table).At(next_unique_id) = entry;
       next_unique_id++;
    }
 }
@@ -106,7 +106,7 @@ int PObjectType::number_of_types () { return next_unique_id - 1; }
 //  Write an persistent type to an iostream
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, const PObjectType& id)
+std::ostream& operator << (std::ostream& f, const PObjectType& id)
 {  if (id.entry)
    {  f << "[name=" << id.entry->type_name 
         << ", id=" << id.entry->unique_id;

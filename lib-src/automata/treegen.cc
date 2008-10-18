@@ -30,7 +30,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treegram.h>  // tree grammar
 #include <AD/automata/treegen.h>    // tree automata compiler
 #include <AD/contain/bitset.h>      // bit set
@@ -103,8 +103,8 @@ public:
    BitSet * compute_transition (BitSet *, TreeTerm, int, int, const BitSet&, State [], int []);
    void     compute_delta      (BitSet *, TreeTerm, int, int, const State []);
    void     compute_accept_rules (State);
-   ostream& print_report (ostream&) const;
-   ostream& print_state (ostream&, State) const;
+   std::ostream& print_report (std::ostream&) const;
+   std::ostream& print_state (std::ostream&, State) const;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ void TreeGenerator::assign_non_terminals()
    max_non_terminal = G.max_variable() + 1; 
    non_terminals.insert(wild_term,0);
    {  for (Variable v = max_non_terminal - 1; v >= 0; v--)
-         n_states[v] = wild_term;
+         n_states.At(v) = wild_term;
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ TreeTerm TreeGenerator::assign_non_terminal( TreeTerm t )
 #line 179 "treegen.pcc"
 
       non_terminals.insert(t,var);  // update map
-      n_states[var] = t;            // update inverse map
+      n_states.At(var) = t;            // update inverse map
    } else { 
       t = non_terminals.key(p);
    }
@@ -507,7 +507,7 @@ void TreeGenerator::compute_representers()
 //  Method to compute the accept rules of a state
 //////////////////////////////////////////////////////////////////////////////
 void TreeGenerator::compute_accept_rules (State s)
-{  register const BitSet& vars     = *d_states[ s ];
+{  register const BitSet& vars     = *d_states.Get( s );
    register BitSet&       rules    = treegen.accept_rules(s);
    register Rule          min_rule = G.size();
    register int v;
@@ -535,8 +535,8 @@ void TreeGenerator::compute_initial_states()
    {  BitSet * state_zero = new (mem, max_non_terminal) BitSet;
       state_zero->add (0);
       state_labels.insert(state_zero, number_of_states);
-      d_states[ number_of_states ] = state_zero;
-      d_terms [ number_of_states ] = new(mem) 
+      d_states.At( number_of_states ) = state_zero;
+      d_terms .At( number_of_states ) = new(mem)
 #line 371 "treegen.pcc"
 TreeTerm_set_term
 #line 371 "treegen.pcc"
@@ -568,8 +568,8 @@ TreeTerm_set_term
                   if (closure0[v]) new_state->Union(*closure0[v]);
                   else             new_state->add(v);
                   state_labels.insert(new_state, number_of_states);
-                  d_states[ number_of_states ] = new_state;
-                  d_terms [ number_of_states ] = 
+                  d_states.At( number_of_states ) = new_state;
+                  d_terms .At( number_of_states ) =
 #line 390 "treegen.pcc"
 #line 390 "treegen.pcc"
                   new (mem) TreeTerm_set_term(new_state)
@@ -626,7 +626,7 @@ void TreeGenerator::compute_transitions()
    //  Compute the transitions of the states.  We'll start from state 0.
    ///////////////////////////////////////////////////////////////////////////
    for (State current = 0; current < number_of_states; current++) {
-      const BitSet& S = *d_states[current];  
+      const BitSet& S = *d_states.Get(current);
 
       ////////////////////////////////////////////////////////////////////////
       // Iterate over all the non-unit functors and compute their transition
@@ -739,7 +739,7 @@ BitSet * TreeGenerator::compute_transition
                for (StateList * r = representers[_tree_term(term)->_1][i]; r; r = r->tail) {
                   inputs[i]   = r->head;
                   equiv [i]   = treegen.index_map(_tree_term(term)->_1,i,r->head);
-                  _tree_term(term)->_3[i] = d_terms[ r->head ];
+                  _tree_term(term)->_3[i] = d_terms.Get( r->head );
                   T = compute_transition(T, term, i+1, fixed, S, inputs, equiv);
                }
             } else {
@@ -764,8 +764,8 @@ BitSet * TreeGenerator::compute_transition
                if ((s = state_labels.lookup(T))) { // old state
                   mapped = state_labels.value(s);
                } else {                      // new state
-                  d_states[ number_of_states ] = T;
-                  d_terms [ number_of_states ] = new(mem) 
+                  d_states.At( number_of_states ) = T;
+                  d_terms .At( number_of_states ) = new(mem)
 #line 538 "treegen.pcc"
 TreeTerm_set_term
 #line 538 "treegen.pcc"
@@ -841,7 +841,7 @@ void TreeGenerator::compute_delta
 #line 590 "treegen.pcc"
           
             if (i < _tree_term(term)->_2) {
-               const BitSet& U = *d_states[ inputs[i] ];
+               const BitSet& U = *d_states.Get( inputs[i] );
                TreeTerm save = _tree_term(term)->_3[i];  
                BitSet * V;
                if (first) V = T;
@@ -881,7 +881,7 @@ void TreeGenerator::compute_delta
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a report of the generated tables. 
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeGenerator::print_report(ostream& log) const
+std::ostream& TreeGenerator::print_report(std::ostream& log) const
 {
    ///////////////////////////////////////////////////////////////////////////
    //  (1) Print the item set.
@@ -889,7 +889,7 @@ ostream& TreeGenerator::print_report(ostream& log) const
    {  log << "\nItems:\n";
       for (Variable v = 0; v < max_non_terminal; v++) {
          log << '{' << v << "}\t";
-         G.print(log, n_states[v]) << '\n';
+         G.print(log, n_states.Get(v)) << '\n';
       }
    }   
 
@@ -907,12 +907,12 @@ ostream& TreeGenerator::print_report(ostream& log) const
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a state 
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeGenerator::print_state(ostream& log, State s) const
+std::ostream& TreeGenerator::print_state(std::ostream& log, State s) const
 {
    log << '<' << s << '>';
-   const BitSet& S = *d_states[s];
+   const BitSet& S = *d_states.Get(s);
    Variable v;
-   foreach_bit(v,S) G.print(log << '\t', n_states[v]) << '\n';
+   foreach_bit(v,S) G.print(log << '\t', n_states.Get(v)) << '\n';
    if (treegen.is_accept_state(s)) 
       log << "\t[accept " << treegen.accept1_rule(s) << "]\n";
    return log;
@@ -962,7 +962,7 @@ void TreeGen::compile (TreeGrammar& Gram)
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a report of the generated tables.
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeGen::print_report(ostream& log) const
+std::ostream& TreeGen::print_report(std::ostream& log) const
 {  Super::print_report(log);
    if (impl) impl->print_report(log);
    return log;
@@ -971,7 +971,7 @@ ostream& TreeGen::print_report(ostream& log) const
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a state of the generated tables.
 //////////////////////////////////////////////////////////////////////////////
-ostream& TreeGen::print_state(ostream& log, State s) const
+std::ostream& TreeGen::print_state(std::ostream& log, State s) const
 {  if (impl) impl->print_state(log,s);
    return log;
 }

@@ -26,7 +26,7 @@
 #define vector_of_3_dimensions_h
 
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 
 struct Vector3D {
@@ -58,8 +58,8 @@ struct Vector3D {
    double norm() const { return (*this) * (*this); }
    double abs() const  { return sqrt(this->norm()); }
 
-   friend ostream& operator << (ostream&, const Vector3D&);
-   friend istream& operator >> (istream&, Vector3D&);
+   friend std::ostream& operator << (std::ostream&, const Vector3D&);
+   friend std::istream& operator >> (std::istream&, Vector3D&);
 };
 
 #endif

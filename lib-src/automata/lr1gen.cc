@@ -27,7 +27,7 @@
 //  is a parser table generator for LR(1) grammars.   
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <new.h>
@@ -76,7 +76,7 @@ void LR1Gen::compile(const Grammar& /*G*/)
 //////////////////////////////////////////////////////////////////////////////
 //  Code emission
 //////////////////////////////////////////////////////////////////////////////
-ostream& LR1Gen::gen_code(ostream& out, const char name []) const
+std::ostream& LR1Gen::gen_code(std::ostream& out, const char name []) const
 {  Super::gen_code(out, name); 
    return out;
 }

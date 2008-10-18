@@ -2,7 +2,7 @@
 //  This test implements a rewrite based simplifier for the abstract
 //  syntax of a toy imperative language.  
 /////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////
 //  The following recursive type equations define the abstract syntax

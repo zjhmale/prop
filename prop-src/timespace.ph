@@ -15,7 +15,7 @@
 //  Forward type declaration
 //
 ///////////////////////////////////////////////////////////////////////////////
-class ostream;
+class std::ostream;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -54,9 +54,9 @@ and      Space : MEM = SPACE Complexity
 //  Pretty printing routines.
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, Complexity);
-extern ostream& operator << (ostream&, Time);
-extern ostream& operator << (ostream&, Space);
+extern std::ostream& operator << (std::ostream&, Complexity);
+extern std::ostream& operator << (std::ostream&, Time);
+extern std::ostream& operator << (std::ostream&, Space);
 
 ///////////////////////////////////////////////////////////////////////////////
 //

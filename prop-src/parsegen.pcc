@@ -3,7 +3,7 @@
 //  This file implements the syntax/syntax class constructs of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <i.h>
 #include <AD/strings/charesc.h>
 #include <AD/strings/quark.h>
 #include <AD/automata/grammar.h>
@@ -48,7 +48,7 @@ ParserCompiler::~ParserCompiler() {}
 //  Pretty print a production symbol
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, ProductionSymbol sym)
+& operator << (& f, ProductionSymbol sym)
 {  match (sym)
    {  TERMsym c:                    {  f << '\'' << print_char(c) << '\''; }
    |  TOKENsym NOcons:              {  f << "<?>"; }
@@ -72,7 +72,7 @@ ostream& operator << (ostream& f, ProductionSymbol sym)
 //  Pretty print a list of production symbols
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, ProductionSymbols P)
+& operator << (& f, ProductionSymbols P)
 {  for (ProductionSymbols l = P; l; l = l->#2)
    {  f << l->#1; if (l->#2) f << " "; }
    return f;
@@ -83,7 +83,7 @@ ostream& operator << (ostream& f, ProductionSymbols P)
 //  Pretty print a BNF
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, BNF bnf)
+& operator << (& f, BNF bnf)
 {  match (bnf)
    {  BNFrule(id,ty,alts):
       {  f << id;
@@ -101,7 +101,7 @@ ostream& operator << (ostream& f, BNF bnf)
 //  Pretty print a list of alternatives
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, BNFs rules)
+& operator << (& f, BNFs rules)
 {  for_each(BNF, rule, rules) f << rule; 
    return f;
 }
@@ -111,7 +111,7 @@ ostream& operator << (ostream& f, BNFs rules)
 //  Print a precedence rule
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, PrecRule r)
+& operator << (& f, PrecRule r)
 {  match (r)
    {  PRECrule(assoc,pri,symbols):
       {  match (assoc)
@@ -130,7 +130,7 @@ ostream& operator << (ostream& f, PrecRule r)
 //  Print a list of precedence rules
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, List<PrecRule> rules)
+& operator << (& f, List<PrecRule> rules)
 {  for_each (PrecRule, r, rules) f << r;
    return f;
 }
@@ -140,7 +140,7 @@ ostream& operator << (ostream& f, List<PrecRule> rules)
 //  Pretty print a grammar expression
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, GramExp exp)
+& operator << (& f, GramExp exp)
 {  match (exp)
    {  EXPgram (precs,_,rules):  { f << precs << rules; }
    |  _:              
@@ -858,7 +858,7 @@ void SyntaxClass::compile_rules
    //
    ////////////////////////////////////////////////////////////////////////////
    if (options.generate_report)
-   {  ostream& log = open_logfile();
+   {  std::ostream& log = open_logfile();
       log << "[Syntax class " << class_name << "]\n";
       parserGen->print_report(log, options.verbosity) << '\n';
    }

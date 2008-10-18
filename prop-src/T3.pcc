@@ -3,7 +3,7 @@
 //
 
 #include <assert.h>
-#include <iostream.h>
+#include <iostream>
 
 enum exp_tag { Int = 1, Ident, Add, Sub, Mul, Div };
 
@@ -57,7 +57,7 @@ datatype Exp :: view
 			   argument : Exp = this->u.children.r}
     ;
 
-ostream& operator << (ostream& s, const Exp& e)
+std::ostream& operator << (std::ostream& s, const Exp& e)
 {  match (e)
    {  NONE:      { return s << "NONE"; }
    |  INT i:     { return s << i; }

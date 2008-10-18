@@ -7,7 +7,7 @@
 #ifndef prop_visualizer_h
 #define prop_visualizer_h
 
-#include <strstream.h>
+#include <strstream>
 #include <AD/visualize/vcg.h>
 #include "codegen.h"
 
@@ -23,7 +23,7 @@ class PropVisualizer : public VCG, private CodeGen
 private:
 
    char       text_buffer[1024];
-   ostrstream label_text; 
+   std::ostrstream label_text;
 
 public:
 

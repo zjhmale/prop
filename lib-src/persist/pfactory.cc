@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <AD/persist/ptype.h>
 #include <AD/persist/ptypeentry.h>
@@ -55,7 +55,7 @@ PObject * PBaseFactory::create_object(const PObjectType& id)
    if (f) {
       return f->create_object();
    } else {
-      cerr << "Object factory for typeid " << id << " is undefined\n";
+      std::cerr << "Object factory for typeid " << id << " is undefined\n";
       exit(1);
    }
    return 0;

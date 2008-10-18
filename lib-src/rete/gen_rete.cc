@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/rete/gen_rete.h>    // generalised Rete network
 #include <AD/rete/alphamem.h>    // alpha memory
 #include <AD/rete/betamem.h>     // beta memory

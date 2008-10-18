@@ -40,7 +40,7 @@
 // when computing the indices.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treetab.h>   // tree automata tables
 #include <AD/automata/treegram.h>  // tree grammar
 #include <AD/automata/sparsdfa.h>  // DFA compression
@@ -208,12 +208,12 @@ public:
    //////////////////////////////////////////////////////////////////////////
    const char * get_state_type () const;
    const char * get_rule_type () const;
-   virtual ostream& gen_index(ostream&, Functor, Arity, const char []) const;
-   virtual ostream& gen_theta(ostream&, Functor, const char []) const;
-   virtual ostream& gen_accept          (ostream&, const char name[]) const;
-   virtual ostream& gen_bitmap_accept   (ostream&, const char name[]) const;
-   virtual ostream& gen_accept1         (ostream&, const char name[]) const;
-   virtual ostream& gen_compressed_index(ostream&, const char name[]) const;
+   virtual std::ostream& gen_index(std::ostream&, Functor, Arity, const char []) const;
+   virtual std::ostream& gen_theta(std::ostream&, Functor, const char []) const;
+   virtual std::ostream& gen_accept          (std::ostream&, const char name[]) const;
+   virtual std::ostream& gen_bitmap_accept   (std::ostream&, const char name[]) const;
+   virtual std::ostream& gen_accept1         (std::ostream&, const char name[]) const;
+   virtual std::ostream& gen_compressed_index(std::ostream&, const char name[]) const;
  
    //////////////////////////////////////////////////////////////////////////
    // Advance one state within the tree automaton.
@@ -226,8 +226,8 @@ public:
    //////////////////////////////////////////////////////////////////////////
    //  Method for printing a report
    //////////////////////////////////////////////////////////////////////////
-   virtual ostream& print_report(ostream&) const;
-   virtual ostream& print_state(ostream&, State) const;
+   virtual std::ostream& print_report(std::ostream&) const;
+   virtual std::ostream& print_state(std::ostream&, State) const;
 
    //////////////////////////////////////////////////////////////////////////
    //  Name of algorithm 

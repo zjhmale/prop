@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/memory/mem.h>
 #include <AD/memory/sysmem.h>
@@ -56,7 +56,7 @@ Mem::~Mem() {}
 //  Error reporting
 //////////////////////////////////////////////////////////////////////////////
 void Mem::error(const char message[]) const
-{  cerr << "Bug! [ " << memory_manager_name << "::" << message << "]\n"; }
+{  std::cerr << "Bug! [ " << memory_manager_name << "::" << message << "]\n"; }
 
 //////////////////////////////////////////////////////////////////////////////
 //  Set/get the manager 

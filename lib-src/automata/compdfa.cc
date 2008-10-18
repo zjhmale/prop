@@ -91,8 +91,8 @@ void CompressedDFA::grow_states(int increment)
 }
 
 
-ostream& CompressedDFA::gen_state_table
-    ( ostream& out, const char name[], const char table[],
+std::ostream& CompressedDFA::gen_state_table
+    ( std::ostream& out, const char name[], const char table[],
       const State s[], int size, const char * mytype) const
 {  TablePrinter pr;
    if (mytype == 0) mytype = "static const DFATables::State ";
@@ -101,8 +101,8 @@ ostream& CompressedDFA::gen_state_table
    return out;
 }
 
-ostream& CompressedDFA::gen_offset_table
-    ( ostream& out, const char name[], const char table[], 
+std::ostream& CompressedDFA::gen_offset_table
+    ( std::ostream& out, const char name[], const char table[],
       const Offset s[], int size) const
 {  TablePrinter pr;
    pr.print(out, (const char *)s, size, sizeof(Offset),
@@ -110,15 +110,15 @@ ostream& CompressedDFA::gen_offset_table
    return out;
 }
 
-ostream& CompressedDFA::gen_check_next_tables 
-   (ostream& out, const char name[], const char * mytype) const
+std::ostream& CompressedDFA::gen_check_next_tables
+   (std::ostream& out, const char name[], const char * mytype) const
 {   
    gen_state_table(out,name,"check",check,max_check + 1,mytype);
    gen_state_table(out,name,"next",next,max_check + 1,mytype);
    return out;
 }
 
-ostream& CompressedDFA::gen_code (ostream& out, const char name[]) const
+std::ostream& CompressedDFA::gen_code (std::ostream& out, const char name[]) const
 {
    gen_offset_table(out,name,"base",base, max_state + 1);
    CompressedDFA::gen_check_next_tables(out, name);

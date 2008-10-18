@@ -25,7 +25,7 @@
 #ifndef persistent_object_stream_h
 #define persistent_object_stream_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 #include <AD/persist/pobject.h>
 #include <AD/memory/mem.h>
@@ -299,7 +299,7 @@ class Pistream : virtual public Pstream {
 
 protected:
 
-   istream&           _in;            // actual attached input stream
+   std::istream&           _in;            // actual attached input stream
    class PMarkerLog * _marker_log;    // mapping from marker to pointer
    P_OBJECT_MARKER    _next_marker;   // next available marker.
    Mem *              _mem;           // memory manager
@@ -311,15 +311,15 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Constructors and destructor
    ///////////////////////////////////////////////////////////////////////////
-            explicit Pistream(istream&);
-            Pistream(istream&, Mem&);
+            explicit Pistream(std::istream&);
+            Pistream(std::istream&, Mem&);
    virtual ~Pistream();
 
    ///////////////////////////////////////////////////////////////////////////
    //  Conversions
    ///////////////////////////////////////////////////////////////////////////
-   inline operator const istream& () const { return _in; }
-   inline operator       istream& ()       { return _in; }
+   inline operator const std::istream& () const { return _in; }
+   inline operator       std::istream& ()       { return _in; }
 
    ///////////////////////////////////////////////////////////////////////////
    //  Input for predefined types
@@ -359,7 +359,7 @@ class Postream : virtual public Pstream {
 
 protected:
 
-   ostream&           _out;           // actually attached output stream.
+   std::ostream&           _out;           // actually attached output stream.
    class PObjectLog * _object_log;    // mapping from pointer to marker.
    P_OBJECT_MARKER    _next_marker;   // next available marker.
 
@@ -369,14 +369,14 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Constructors and destructor
    ///////////////////////////////////////////////////////////////////////////
-            explicit Postream(ostream&);
+            explicit Postream(std::ostream&);
    virtual ~Postream();
 
    ///////////////////////////////////////////////////////////////////////////
    //  Conversions
    ///////////////////////////////////////////////////////////////////////////
-   inline operator const ostream& () const { return _out; }
-   inline operator       ostream& ()       { return _out; }
+   inline operator const std::ostream& () const { return _out; }
+   inline operator       std::ostream& ()       { return _out; }
 
    ///////////////////////////////////////////////////////////////////////////
    //  Output for predefined types
@@ -417,10 +417,10 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Constructors and destructor
    ///////////////////////////////////////////////////////////////////////////
-            Piostream(iostream&);
-            Piostream(iostream&, Mem&);
-            Piostream(istream&, ostream&);
-            Piostream(istream&, ostream&, Mem&);
+            Piostream(std::iostream&);
+            Piostream(std::iostream&, Mem&);
+            Piostream(std::istream&, std::ostream&);
+            Piostream(std::istream&, std::ostream&, Mem&);
    virtual ~Piostream();
 };
 

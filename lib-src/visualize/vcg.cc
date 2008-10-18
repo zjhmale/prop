@@ -23,8 +23,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/visualize/vcg.h>
 #include <AD/hash/lhash.h>
 #include <AD/memory/strpool.h>
@@ -357,7 +357,7 @@ Bool VCG::visited(Node a, Node b) const
 //////////////////////////////////////////////////////////////////////////////
 VCG& VCG::error(const char * message,...)
 {
-   cerr << "VCG error: " << message << '\n';
+   std::cerr << "VCG error: " << message << '\n';
    exit(1);
    return *this;
 }
@@ -472,7 +472,7 @@ VCG& VCG::edge(Node a, Node b, EdgeType edgeType)
 //  Print graph as GDL new graph
 //
 //////////////////////////////////////////////////////////////////////////////
-VCG& VCG::print_GDL_on(ostream& f)
+VCG& VCG::print_GDL_on(std::ostream& f)
 {
    if (impl->root_node == 0) 
       error("root node has not been defined in VCG::print_GDL_on");
@@ -523,8 +523,8 @@ VCG& VCG::attrib_quoted(VCG::String name, VCG::String s)
 
 VCG& VCG::attrib_int(VCG::String name, int i)
 {  char buffer[256];
-   ostrstream S(buffer,sizeof(buffer));
-   S << i << ends;
+   std::ostrstream S(buffer,sizeof(buffer));
+   S << i << std::ends;
    attrib(name,S.str());
    return *this;
 }
@@ -540,8 +540,8 @@ VCG& VCG::attrib_bool(VCG::String name, Bool b)
 VCG& VCG::label(Label l)       { return attrib_quoted("label", l); }
 VCG& VCG::label(int i)  
 {  char buffer[256];
-   ostrstream S(buffer,sizeof(buffer));
-   S << i << ends;
+   std::ostrstream S(buffer,sizeof(buffer));
+   S << i << std::ends;
    return label(S.str()); 
 }
 VCG& VCG::color(Color c)       { return attrib("color",String(c)); }

@@ -11,7 +11,7 @@ class CodeGen {
    CodeGen(const CodeGen&);           // no copy constructor
    void operator = (const CodeGen&);  // no assignment
 protected:
-   ostream* output;              // output stream
+   std::ostream* output;              // output stream
    Bool     anchored;            // is the current output character newline
    int      tabbing, tab_unit;   // tabbing counters
 
@@ -25,9 +25,9 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods to emit code. 
    ///////////////////////////////////////////////////////////////////////////
-   void     set_stream (ostream&);
-   ostream& pr   (const char *, ...);
-   ostream& outv (const char *, va_list); 
+   void     set_stream (std::ostream&);
+   std::ostream& pr   (const char *, ...);
+   std::ostream& outv (const char *, va_list);
 
 private:
    ///////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@
 //  This file implements the inference rules compiler of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/memory/mempool.h>
 #include <AD/generic/ordering.h>
 #include "ir.h"

@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/numeric/matrix.h>
 
 ////////////////////////////////////////////////////////////////////////////

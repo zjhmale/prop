@@ -18,7 +18,7 @@
 //
 //                                      Allen Leung (leunga@cs.nyu.edu)
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include "basics.h"

@@ -10,7 +10,7 @@
 //  This file generates a readable report of the graph type representation.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "graphtype.h"
 #include "graphedges.h"
 

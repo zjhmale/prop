@@ -25,7 +25,7 @@
 #ifndef LR1_parser_generator_h
 #define LR1_parser_generator_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/grammar.h>  // Parser grammar
 #include <AD/automata/lrgen.h>    // LR parser generator base class
 
@@ -59,7 +59,7 @@ public:
    //  Table compilation and code generation
    /////////////////////////////////////////////////////////////////////////
    virtual void     compile (const Grammar&);
-   virtual ostream& gen_code(ostream&, const char []) const;
+   virtual std::ostream& gen_code(std::ostream&, const char []) const;
 };
 
 #endif

@@ -13,7 +13,7 @@
 //
 
 #include <assert.h>
-#include <iostream.h>
+#include <istd::ostream.h>
 
 enum exp_tag { Int = 1, Ident, Add, Sub, Mul, Div };
 
@@ -60,7 +60,7 @@ Exp DIV(Exp a, Exp b)
 #line 58 "T3.pcc"
 
 
-ostream& operator << (ostream& s, const Exp& e)
+std::ostream& operator << (std::ostream& s, const Exp& e)
 {  
 #line 61 "T3.pcc"
 #line 68 "T3.pcc"

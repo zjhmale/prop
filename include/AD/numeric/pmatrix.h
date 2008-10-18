@@ -36,7 +36,7 @@
 // For example, we can have AMatrix<Complex>, or AMatrix<int>, etc.
 //
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/array2.h>  // two dimensional arrays
 
 //////////////////////////////////////////////////////////////////////
@@ -128,8 +128,8 @@ template <class T>
       //////////////////////////////////////////////////////////////////
       // I/O
       //////////////////////////////////////////////////////////////////
-      friend ostream& operator << (ostream&, const AMatrix&);
-      friend istream& operator >> (istream&, AMatrix&);
+      friend std::ostream& operator << (std::ostream&, const AMatrix&);
+      friend std::istream& operator >> (std::istream&, AMatrix&);
    };
    
 #endif

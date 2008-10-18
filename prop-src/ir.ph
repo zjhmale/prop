@@ -350,21 +350,21 @@ and        PrintFormats = List<ProductionSymbol>
 //  Pretty printing methods
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, Ids);
-extern ostream& operator << (ostream&, Scope);
-extern ostream& operator << (ostream&, Ty);
-extern ostream& operator << (ostream&, List<Ty>);
-extern ostream& operator << (ostream&, Pat);
-extern ostream& operator << (ostream&, LabPat);
-extern ostream& operator << (ostream&, List<Pat>);
-extern ostream& operator << (ostream&, List<LabPat>);
-extern ostream& operator << (ostream&, Literal);
-extern ostream& operator << (ostream&, Inherit);
-extern ostream& operator << (ostream&, List<Inherit>);
-extern ostream& operator << (ostream&, Pid);
-extern ostream& print_cons (ostream&, Cons);
-extern void     print_parameter (ostream&, Ty, Id, Parameter);
-extern void     print_tyvars    (ostream&, TyVars, char, char, Bool);
+extern std::ostream& operator << (std::ostream&, Ids);
+extern std::ostream& operator << (std::ostream&, Scope);
+extern std::ostream& operator << (std::ostream&, Ty);
+extern std::ostream& operator << (std::ostream&, List<Ty>);
+extern std::ostream& operator << (std::ostream&, Pat);
+extern std::ostream& operator << (std::ostream&, LabPat);
+extern std::ostream& operator << (std::ostream&, List<Pat>);
+extern std::ostream& operator << (std::ostream&, List<LabPat>);
+extern std::ostream& operator << (std::ostream&, Literal);
+extern std::ostream& operator << (std::ostream&, Inherit);
+extern std::ostream& operator << (std::ostream&, List<Inherit>);
+extern std::ostream& operator << (std::ostream&, Pid);
+extern std::ostream& print_cons (std::ostream&, Cons);
+extern void     print_parameter (std::ostream&, Ty, Id, Parameter);
+extern void     print_tyvars    (std::ostream&, TyVars, char, char, Bool);
 extern Id       index_of (int, Id = 0);
 
 #endif

@@ -12,7 +12,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include "ir.h"
 #include "ast.h"
 #include "setl-ast.h"
@@ -335,7 +335,7 @@ template int untag(const a_List<Stmt> *);
 //  Pretty print a signature
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Sig s)
+std::ostream& operator << (std::ostream& f, Sig s)
 {  
 #line 34 "setl-ast.pcc"
 #line 40 "setl-ast.pcc"
@@ -385,7 +385,7 @@ ostream& operator << (ostream& f, Sig s)
 //  Pretty print a signature list
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Sigs ss)
+std::ostream& operator << (std::ostream& f, Sigs ss)
 {  
 #line 51 "setl-ast.pcc"
 #line 53 "setl-ast.pcc"
@@ -422,7 +422,7 @@ ostream& operator << (ostream& f, Sigs ss)
 //  Pretty print a statement
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Stmt s)
+std::ostream& operator << (std::ostream& f, Stmt s)
 {
    
 #line 65 "setl-ast.pcc"
@@ -493,7 +493,7 @@ ostream& operator << (ostream& f, Stmt s)
 //  Pretty print a list of statements
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Stmts s)
+std::ostream& operator << (std::ostream& f, Stmts s)
 {  
 #line 93 "setl-ast.pcc"
 #line 95 "setl-ast.pcc"
@@ -530,7 +530,7 @@ ostream& operator << (ostream& f, Stmts s)
 //  Pretty print a generator expression
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Generator b)
+std::ostream& operator << (std::ostream& f, Generator b)
 {  
 #line 106 "setl-ast.pcc"
 #line 111 "setl-ast.pcc"
@@ -553,7 +553,7 @@ ostream& operator << (ostream& f, Generator b)
 //  Pretty print a list of generator expressions
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Generators b)
+std::ostream& operator << (std::ostream& f, Generators b)
 {  
 #line 122 "setl-ast.pcc"
 #line 124 "setl-ast.pcc"

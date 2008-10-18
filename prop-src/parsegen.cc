@@ -16,7 +16,7 @@ static const Quark _p_a_r_s_e_g_e_nco_c_c_Q1("'");
 //  This file implements the syntax/syntax class constructs of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/strings/charesc.h>
 #include <AD/strings/quark.h>
 #include <AD/automata/grammar.h>
@@ -379,7 +379,7 @@ ParserCompiler::~ParserCompiler() {}
 //  Pretty print a production symbol
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, ProductionSymbol sym)
+std::ostream& operator << (std::ostream& f, ProductionSymbol sym)
 {  
 #line 52 "parsegen.pcc"
 #line 65 "parsegen.pcc"
@@ -465,7 +465,7 @@ ostream& operator << (ostream& f, ProductionSymbol sym)
 //  Pretty print a list of production symbols
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, ProductionSymbols P)
+std::ostream& operator << (std::ostream& f, ProductionSymbols P)
 {  for (ProductionSymbols l = P; l; l = l->_2)
    {  f << l->_1; if (l->_2) f << " "; }
    return f;
@@ -476,7 +476,7 @@ ostream& operator << (ostream& f, ProductionSymbols P)
 //  Pretty print a BNF
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, BNF bnf)
+std::ostream& operator << (std::ostream& f, BNF bnf)
 {  
 #line 87 "parsegen.pcc"
 #line 94 "parsegen.pcc"
@@ -501,7 +501,7 @@ ostream& operator << (ostream& f, BNF bnf)
 //  Pretty print a list of alternatives
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, BNFs rules)
+std::ostream& operator << (std::ostream& f, BNFs rules)
 {  for_each(BNF, rule, rules) f << rule; 
    return f;
 }
@@ -511,7 +511,7 @@ ostream& operator << (ostream& f, BNFs rules)
 //  Print a precedence rule
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, PrecRule r)
+std::ostream& operator << (std::ostream& f, PrecRule r)
 {  
 #line 115 "parsegen.pcc"
 #line 123 "parsegen.pcc"
@@ -558,7 +558,7 @@ ostream& operator << (ostream& f, PrecRule r)
 //  Print a list of precedence rules
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, 
+std::ostream& operator << (std::ostream& f,
 #line 133 "parsegen.pcc"
 a_List<PrecRule> *  
 #line 133 "parsegen.pcc"
@@ -572,7 +572,7 @@ a_List<PrecRule> *
 //  Pretty print a grammar expression
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, GramExp exp)
+std::ostream& operator << (std::ostream& f, GramExp exp)
 {  
 #line 147 "parsegen.pcc"
 {
@@ -1551,7 +1551,7 @@ void SyntaxClass::compile_rules
    //
    ////////////////////////////////////////////////////////////////////////////
    if (options.generate_report)
-   {  ostream& log = open_logfile();
+   {  std::ostream& log = open_logfile();
       log << "[Syntax class " << class_name << "]\n";
       parserGen->print_report(log, options.verbosity) << '\n';
    }

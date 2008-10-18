@@ -33,7 +33,7 @@
 //  for details.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treeauto.h>  // Tree automaton
 #include <AD/automata/treepat.h>   // Tree patterns
 

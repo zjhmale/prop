@@ -25,7 +25,7 @@
 #define PSTREAM_IMPLEMENTATION
 #include <stdlib.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/persist/ptype.h>     // persistent type id
 #include <AD/persist/pstream.h>   // persistent stream base class
 #include <AD/persist/pconvert.h>  // conversions
@@ -46,7 +46,7 @@ typedef PObjectLog::PObjectInfo PObjectInfo;
 //////////////////////////////////////////////////////////////////////////////
 //  Class Postream
 //////////////////////////////////////////////////////////////////////////////
-Postream:: Postream(ostream& out)
+Postream:: Postream(std::ostream& out)
    : _out(out), 
      _object_log(new PObjectLog(1025)),
      _next_marker(P_FIRST_MARKER)

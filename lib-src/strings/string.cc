@@ -66,7 +66,7 @@ int SubString::contains (const SubString&) const
 ////////////////////////////////////////////////////////////////////////////
 
 void String::out_of_bounds(int i) const     // error handler
-   {  cerr << "[Attempting to index location " << i << " of string: "
+   {  std::cerr << "[Attempting to index location " << i << " of string: "
            << string << "]\n";
       exit(1);
    }
@@ -357,5 +357,5 @@ int String::contains (const SubString&) const
 ///////////////////////////////////////////////////////////////////////
 //  Input and Output
 ///////////////////////////////////////////////////////////////////////
-istream& operator >> (istream& in, String&)
+std::istream& operator >> (std::istream& in, String&)
 { return in; }

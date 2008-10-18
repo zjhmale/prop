@@ -140,7 +140,7 @@ void ACGen::finish ()
    delete trie;
 }
 
-ostream& ACGen::gen_code(ostream& out, const char name[]) const
+std::ostream& ACGen::gen_code(std::ostream& out, const char name[]) const
 {
    Super::gen_code(out,name);
    gen_state_table(out,name,"fail",epsilon,number_of_states);

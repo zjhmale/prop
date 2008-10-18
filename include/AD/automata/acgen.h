@@ -89,8 +89,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods to emit C++ code
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& gen_code(ostream&, const char []) const;
-           void     gen_fast_automaton(ostream&, const char []) const;
+   virtual std::ostream& gen_code(std::ostream&, const char []) const;
+           void     gen_fast_automaton(std::ostream&, const char []) const;
 
    ///////////////////////////////////////////////////////////////////////////
    //  Return the start state

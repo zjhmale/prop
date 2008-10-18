@@ -20,7 +20,7 @@
 class FunctorMap;
 class RewritingCompiler;
 class CodeGen;
-class ostream;
+class std::ostream;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -105,10 +105,10 @@ public:
    //  Pretty printing
    //
    ////////////////////////////////////////////////////////////////////////////
-   void print (ostream&) const;
-   void print (ostream&,Term) const;
-   void print_report(ostream&) const;
-   void print_specializations(ostream&) const;
+   void print (std::ostream&) const;
+   void print (std::ostream&,Term) const;
+   void print_report(std::ostream&) const;
+   void print_specializations(std::ostream&) const;
 
    ////////////////////////////////////////////////////////////////////////////
    //

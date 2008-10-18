@@ -35,7 +35,7 @@
 // This base class handles some of the memory management logic.  
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 #include <AD/automata/dfatable.h>
 
@@ -84,11 +84,11 @@ protected:
    ///////////////////////////////////////////////////////////////////////////
    // Code emitters
    ///////////////////////////////////////////////////////////////////////////
-   ostream& gen_state_table
-      (ostream&, const char [], const char [], const State [], int size,
+   std::ostream& gen_state_table
+      (std::ostream&, const char [], const char [], const State [], int size,
        const char * mytype = 0) const;
-   ostream& gen_offset_table
-      (ostream&, const char [], const char [], const Offset [], int size) const;
+   std::ostream& gen_offset_table
+      (std::ostream&, const char [], const char [], const Offset [], int size) const;
 
 public:
 
@@ -123,8 +123,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    // Emit the compressed tables as C++ code.
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& gen_code              (ostream&, const char []) const;
-   virtual ostream& gen_check_next_tables (ostream&, const char [],
+   virtual std::ostream& gen_code              (std::ostream&, const char []) const;
+   virtual std::ostream& gen_check_next_tables (std::ostream&, const char [],
 	    const char * mytype = 0) const;
 };
 

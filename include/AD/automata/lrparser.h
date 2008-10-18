@@ -27,8 +27,7 @@
 
 #include <string.h>
 #include <AD/automata/lr1.h>
-
-class ostream;
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////////////
 //  This base class is an abstract datatype representing a full LR(1)-based 
@@ -82,10 +81,10 @@ protected:
 
    virtual void parser_prefix();  // the default does nothing
    virtual void parser_suffix();  // the default does nothing
-   virtual void print_user_symbol(ostream&, Symbol);
-   virtual void print_symbol(ostream&, Symbol);
-           void nice_explain(ostream&);  // method to explain nicely
-           void debug_explain(ostream&); // method to dump the state
+   virtual void print_user_symbol(std::ostream&, Symbol);
+   virtual void print_symbol(std::ostream&, Symbol);
+           void nice_explain(std::ostream&);  // method to explain nicely
+           void debug_explain(std::ostream&); // method to dump the state
    virtual void explain_error();  // the default does nothing
    const Symbol error_token;
    const Symbol max_terminal;

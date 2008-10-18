@@ -45,7 +45,7 @@ inline int untag(const a_Exp * x) { return x->tag__; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, Exp);
+extern std::ostream& operator<<(std::ostream&, Exp);
 extern PrettyOStream& operator<<(PrettyOStream&, Exp);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -331,7 +331,7 @@ public:
 // Pretty printing methods for Exp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Exp  obj__);
+std::ostream& operator << (std::ostream& strm__, Exp  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -345,7 +345,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__);
 // Pretty printing methods for Exp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Exp  obj__)
+std::ostream& operator << (std::ostream& strm__, Exp  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__)

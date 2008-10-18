@@ -25,7 +25,7 @@
 #ifndef floating_point_matrix_h
 #define floating_point_matrix_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/array2.h>  // two dimensional arrays
 
 //////////////////////////////////////////////////////////////////////
@@ -127,8 +127,8 @@ public:
    //////////////////////////////////////////////////////////////////
    // I/O
    //////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const Matrix&);
-   friend istream& operator >> (istream&, Matrix&);
+   friend std::ostream& operator << (std::ostream&, const Matrix&);
+   friend std::istream& operator >> (std::istream&, Matrix&);
 };
 
 #endif

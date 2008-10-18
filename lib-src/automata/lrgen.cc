@@ -149,7 +149,7 @@ void LRGen::grow_states(int increment)
 //////////////////////////////////////////////////////////////////////////////
 //  Code generation
 //////////////////////////////////////////////////////////////////////////////
-ostream& LRGen::gen_code (ostream& out, const char name[]) const 
+std::ostream& LRGen::gen_code (std::ostream& out, const char name[]) const
 {  Super::gen_code(out,name);
    gen_state_table(out, name, "defact", defact, max_state + 1);
    TablePrinter pr;   

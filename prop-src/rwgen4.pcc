@@ -4,8 +4,8 @@
 //  This is used to implement the rewrite class/rewrite constructs of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include "funmap.ph"
 #include "ir.ph"
 #include "ast.ph"

@@ -6,7 +6,7 @@
 #ifndef prop_parser_interface_h
 #define prop_parser_interface_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/iolexerstack.h>
 #include "ir.h"
 #include "ast.h"
@@ -113,7 +113,7 @@ private:
    {  int          line;
       int          first_line;
       const char * file;
-      istream    * file_stream;
+      std::istream    * file_stream;
       TextBuffer   scan;
       TextBuffer   doc;
       TextBuffer   meta;
@@ -180,7 +180,7 @@ private:
    void  add_parse_stack_binding (int,int,int);
 
    // For error explanation
-   void  print_user_symbol (ostream&, Symbol);
+   void  print_user_symbol (std::ostream&, Symbol);
    void  explain_error();
 };
 

@@ -16,7 +16,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 #include "basics.h"
 #include "timespace.h"
 
@@ -180,7 +180,7 @@ a_Space * SPACE (Complexity x_SPACE)
 //  Pretty print the complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Complexity c)
+std::ostream& operator << (std::ostream& f, Complexity c)
 {  
 #line 26 "timespace.pcc"
 #line 36 "timespace.pcc"
@@ -249,7 +249,7 @@ ostream& operator << (ostream& f, Complexity c)
 //  Pretty print the time complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Time t)
+std::ostream& operator << (std::ostream& f, Time t)
 {  return f << "Time(" << t << ")"; }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -257,7 +257,7 @@ ostream& operator << (ostream& f, Time t)
 //  Pretty print the space complexity 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Space s)
+std::ostream& operator << (std::ostream& f, Space s)
 {  return f << "Space(" << s << ")"; }
 
 ///////////////////////////////////////////////////////////////////////////////

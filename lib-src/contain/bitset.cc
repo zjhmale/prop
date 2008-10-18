@@ -22,10 +22,10 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/contain/bitset.h>
 
-ostream& operator << (ostream& out, const BitSet& set)
+std::ostream& operator << (std::ostream& out, const BitSet& set)
 {  int  i;
    Bool comma = false;
    out << '[';

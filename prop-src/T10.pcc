@@ -1,4 +1,4 @@
-#include <iostream.h>
+#include <iostream>
 
 struct IA { void hasIA() {} };
 struct IB { void hasIB() {} };
@@ -26,9 +26,9 @@ public:
 }
 ;
 
-refine T : I1 :: collectable { virtual ostream& print(ostream&) = 0; }
-and    A, B, C, D : I2 { ostream& print(ostream&); }
-and    T2 : I3 :: collectable { virtual ostream& print(ostream&); }
+refine T : I1 :: collectable { virtual std::ostream& print(std::ostream&) = 0; }
+and    A, B, C, D : I2 { std::ostream& print(std::ostream&); }
+and    T2 : I3 :: collectable { virtual std::ostream& print(std::ostream&); }
 ;
 
 instantiate datatype T, T2;
@@ -39,11 +39,11 @@ void classof C::get_C() { hasIC(); hasI1(); hasI2(); }
 void classof D::get_D() { hasID(); hasI1(); hasI2(); }
 void classof E::get_E() { hasIE(); hasI3(); }
 
-ostream& classof A::print(ostream& s) { return s << "A"; }
-ostream& classof B::print(ostream& s) { return s << "B"; }
-ostream& classof C::print(ostream& s) { return s << "C"; }
-ostream& classof D::print(ostream& s) { return s << "D"; }
-ostream& classof E::print(ostream& s) { return s << "E"; }
+std::ostream& classof A::print(std::ostream& s) { return s << "A"; }
+std::ostream& classof B::print(std::ostream& s) { return s << "B"; }
+std::ostream& classof C::print(std::ostream& s) { return s << "C"; }
+std::ostream& classof D::print(std::ostream& s) { return s << "D"; }
+std::ostream& classof E::print(std::ostream& s) { return s << "E"; }
 
 int main()
 {  T x = A();

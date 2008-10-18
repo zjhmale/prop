@@ -12,8 +12,8 @@
 //
 //  This is the driver routine for the translator
 //
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -31,9 +31,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 int          errors                = 0;
 int          warnings              = 0;
-istream *    input_stream          = 0;
-ostream *    output_stream         = 0;
-ostream *    log_stream            = 0;
+std::istream *    input_stream          = 0;
+std::ostream *    output_stream         = 0;
+std::ostream *    log_stream            = 0;
 Compiler *   error_log             = 0;
 Decls        program               = 0;
 
@@ -90,7 +90,7 @@ void PropOptions::compute_output_file_name ()
    const char * dot   = my_strrchr(input_file_name,'.');
    const char * slash = my_strrchr(input_file_name,PATH_SEPARATOR);
    if (dot == 0 || ! (dot[1] == 'p' || dot[1] == 'P')) {   
-      cerr << '"' << input_file_name 
+      std::cerr << '"' << input_file_name
            << "\" is not a valid source file name.  "
               "It must be of the form \"*.p*\".\n";
       exit(1);
@@ -164,7 +164,7 @@ int process_input(PropOptions& options)
    ////////////////////////////////////////////////////////////////////////////
    //  Open input file
    ////////////////////////////////////////////////////////////////////////////
-   {  input_stream = new ifstream(options.input_file_name);
+   {  input_stream = new std::ifstream(options.input_file_name);
       if (! *input_stream) { perror(options.input_file_name); return 1; }
    }
 
@@ -193,10 +193,10 @@ int process_input(PropOptions& options)
    Bool clean_up_file = false;
    if (! options.gen_dependences)
    {  if (options.to_stdout) {
-         output_stream = &cout;
+         output_stream = &std::cout;
       } else {
          output_stream = options.emit_code ? 
-            (new ofstream(options.output_file_name)) : (new ofstream);
+            (new std::ofstream(options.output_file_name)) : (new std::ofstream);
          if (! (*output_stream)) {
             perror(options.output_file_name); return 1;
          }
@@ -230,7 +230,7 @@ int process_input(PropOptions& options)
    ////////////////////////////////////////////////////////////////////////////
    if (errors > 0) return 1;
    if (options.gen_dependences) IncludeDependency::print_dependences();
-   else cerr << options.output_file_name << '\n';
+   else std::cerr << options.output_file_name << '\n';
    return 0;
 }
 
@@ -239,7 +239,7 @@ int process_input(PropOptions& options)
 //  Print messages on the console
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& pr_msg(const char * fmt, va_list arg)
+std::ostream& pr_msg(const char * fmt, va_list arg)
 {  if (error_log == 0) error_log = new Compiler(0,0);
    return error_log->outv(fmt,arg).flush(); 
 }
@@ -249,10 +249,10 @@ ostream& pr_msg(const char * fmt, va_list arg)
 //  Print messages
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& msg (const char * fmt, ...)
+std::ostream& msg (const char * fmt, ...)
 {  va_list arg;
    va_start(arg,fmt);
-   ostream& f = pr_msg(fmt,arg);
+   std::ostream& f = pr_msg(fmt,arg);
    va_end(arg);
    return f;
 }
@@ -262,12 +262,12 @@ ostream& msg (const char * fmt, ...)
 //  Print debugging messages
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& debug_msg (const char * fmt, ...)
+std::ostream& debug_msg (const char * fmt, ...)
 {  va_list arg;
    va_start(arg,fmt);
    if (options.debug) pr_msg(fmt,arg);
    va_end(arg);
-   return cerr;
+   return std::cerr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -275,10 +275,10 @@ ostream& debug_msg (const char * fmt, ...)
 //  Print error message
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& error (const char * fmt, ...)
+std::ostream& error (const char * fmt, ...)
 {  va_list arg;
    va_start(arg,fmt);
-   ostream& f = pr_msg(fmt,arg);
+   std::ostream& f = pr_msg(fmt,arg);
    errors++;
    va_end(arg);
    return f;
@@ -295,7 +295,7 @@ void bug (const char * fmt, ...)
    msg("%Lbug: ");
    pr_msg(fmt,arg);
    va_end(arg);
-   cerr << "\nPlease send bug report to " << EMAIL << '\n';
+   std::cerr << "\nPlease send bug report to " << EMAIL << '\n';
    exit (1);
 }
 
@@ -305,7 +305,7 @@ void bug (const char * fmt, ...)
 //  starting point.  Returns NIL if none can be found.
 //
 //////////////////////////////////////////////////////////////////////////////
-istream * PropOptions::open_input_file(const char file_name[])
+std::istream * PropOptions::open_input_file(const char file_name[])
 {  
    register const char * p;
    register char * q;
@@ -316,7 +316,7 @@ istream * PropOptions::open_input_file(const char file_name[])
       *q++ = PATH_SEPARATOR; *q = '\0';
       strcat(current_file_path,file_name);
       debug_msg("[Opening file %s]\n",current_file_path);
-      ifstream * f = new ifstream(current_file_path);
+      std::ifstream * f = new std::ifstream(current_file_path);
       if (*f) return f; 
       delete f;
    }
@@ -328,9 +328,9 @@ istream * PropOptions::open_input_file(const char file_name[])
 //  Routine to open a file for write and returns the handle
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream * open_output_file(const char file_name[])
+std::ostream * open_output_file(const char file_name[])
 {
-   ofstream * F = new ofstream(file_name);
+   std::ofstream * F = new std::ofstream(file_name);
    if (! *F) { perror(file_name); exit(1); }
    return F;
 }
@@ -340,10 +340,10 @@ ostream * open_output_file(const char file_name[])
 //  Routine to open a log file and returns the handle.
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& open_logfile()
+std::ostream& open_logfile()
 {  if (log_stream) return *log_stream;
    if (! options.generate_report)
-   {  log_stream = new ofstream;
+   {  log_stream = new std::ofstream;
       return *log_stream;
    } else
    {  char log_file_name[256];

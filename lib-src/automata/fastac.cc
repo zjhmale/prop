@@ -24,7 +24,7 @@
 
 #include <AD/automata/acgen.h>
 
-void ACGen::gen_fast_automaton(ostream& out, const char class_name[]) const
+void ACGen::gen_fast_automaton(std::ostream& out, const char class_name[]) const
 {
    out << "class " << class_name 
        << " : public FastAC {\npublic:\n"

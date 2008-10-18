@@ -19,8 +19,8 @@ static const Quark _f_u_n_m_a_pco_c_c_Q2("$");
 //  This file implements the FunctorMap data structure 
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/automata/treegram.h>
 #include <AD/automata/treegen.h>
 #include <AD/rewrite/burs_gen.h>
@@ -1440,9 +1440,9 @@ void FunctorMap::compute_names ()
       {  Literal l = (Literal)literal_map.key(i); 
          Functor f = literal_map.value(i);
          char buf[1024];
-         ostrstream b(buf,sizeof(buf));
-         ostream& s = b;
-         s << l << ends;
+         std::ostrstream b(buf,sizeof(buf));
+         std::ostream& s = b;
+         s << l << std::ends;
          functor_names[f] = Quark(buf); 
       }
    }
@@ -1519,7 +1519,7 @@ void FunctorMap::compute_names ()
 //  the tree grammar and the generated table size.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void FunctorMap::print_report (ostream& log)
+void FunctorMap::print_report (std::ostream& log)
 { 
    if (var_map.size() > 0) 
    {  log << "Variable encoding:\n";

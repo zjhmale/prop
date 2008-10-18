@@ -111,9 +111,9 @@ enum PropToken {
 //  Pretty printing methods for PropToken
 //
 ///////////////////////////////////////////////////////////////////////////////
-class PrettyOStream;
-extern ostream& operator<<(ostream&, PropToken);
-extern PrettyOStream& operator<<(PrettyOStream&, PropToken);
+class PrettyOstream;
+extern std::ostream& operator<<(std::ostream&, PropToken);
+extern PrettyOstream& operator<<(PrettyOstream&, PropToken);
 #line 122 "keywords.ph"
 #line 122 "keywords.ph"
 

@@ -267,7 +267,7 @@ void DenseDFA::add_state(State s, const State delta[])
 //////////////////////////////////////////////////////////////////////////
 //  Emit C++ code that reconstructs the tables
 //////////////////////////////////////////////////////////////////////////
-ostream& DenseDFA::gen_code (ostream& out, const char name []) const
+std::ostream& DenseDFA::gen_code (std::ostream& out, const char name []) const
 {
    Super::gen_code(out,name);
    gen_state_table(out,name,"def",def + error_state,max_state-error_state+1);
@@ -277,8 +277,8 @@ ostream& DenseDFA::gen_code (ostream& out, const char name []) const
 //////////////////////////////////////////////////////////////////////////
 //  Emit C++ code that reconstructs the tables (sans base)
 //////////////////////////////////////////////////////////////////////////
-ostream& DenseDFA::gen_check_next_tables 
-   (ostream& out, const char name [], const char * mytype) const
+std::ostream& DenseDFA::gen_check_next_tables
+   (std::ostream& out, const char name [], const char * mytype) const
 {
    Super::gen_check_next_tables(out,name,mytype);
    gen_state_table(out,name,"def",def + error_state,max_state-error_state+1,

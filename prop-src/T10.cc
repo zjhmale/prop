@@ -7,7 +7,7 @@
 #define PROP_GARBAGE_COLLECTION_USED
 #include <propdefs.h>
 #line 1 "T10.pcc"
-#include <iostream.h>
+#include <iostream>
 
 struct IA { void hasIA() {} };
 struct IB { void hasIB() {} };
@@ -65,7 +65,7 @@ public:
    void test_T() {}
 #line 20 "T10.pcc"
 #line 29 "T10.pcc"
-  virtual ostream& print(ostream&) = 0; 
+  virtual std::ostream& print(std::ostream&) = 0;
 #line 29 "T10.pcc"
 };
 inline int boxed(const a_T *) { return 1; }
@@ -98,7 +98,7 @@ public:
   void get_A(); 
 #line 13 "T10.pcc"
 #line 30 "T10.pcc"
-  ostream& print(ostream&); 
+  std::ostream& print(std::ostream&);
 #line 30 "T10.pcc"
 };
 
@@ -130,7 +130,7 @@ public:
   void get_B(); 
 #line 14 "T10.pcc"
 #line 30 "T10.pcc"
-  ostream& print(ostream&); 
+  std::ostream& print(std::ostream&);
 #line 30 "T10.pcc"
 };
 
@@ -162,7 +162,7 @@ public:
   void get_C(); 
 #line 15 "T10.pcc"
 #line 30 "T10.pcc"
-  ostream& print(ostream&); 
+  std::ostream& print(std::ostream&);
 #line 30 "T10.pcc"
 };
 
@@ -194,7 +194,7 @@ public:
   void get_D(); 
 #line 16 "T10.pcc"
 #line 30 "T10.pcc"
-  ostream& print(ostream&); 
+  std::ostream& print(std::ostream&);
 #line 30 "T10.pcc"
 };
 
@@ -278,7 +278,7 @@ public:
   void get_E(); 
 #line 22 "T10.pcc"
 #line 31 "T10.pcc"
-  virtual ostream& print(ostream&); 
+  virtual std::ostream& print(std::ostream&);
 #line 31 "T10.pcc"
 };
 inline int boxed(const a_T2 *) { return 1; }
@@ -399,31 +399,31 @@ a_T2
 #line 40 "T10.pcc"
 ::get_E() { hasIE(); hasI3(); }
 
-ostream& 
+std::ostream&
 #line 42 "T10.pcc"
 T_A
 #line 42 "T10.pcc"
-::print(ostream& s) { return s << "A"; }
-ostream& 
+::print(std::ostream& s) { return s << "A"; }
+std::ostream&
 #line 43 "T10.pcc"
 T_B
 #line 43 "T10.pcc"
-::print(ostream& s) { return s << "B"; }
-ostream& 
+::print(std::ostream& s) { return s << "B"; }
+std::ostream&
 #line 44 "T10.pcc"
 T_C
 #line 44 "T10.pcc"
-::print(ostream& s) { return s << "C"; }
-ostream& 
+::print(std::ostream& s) { return s << "C"; }
+std::ostream&
 #line 45 "T10.pcc"
 T_D
 #line 45 "T10.pcc"
-::print(ostream& s) { return s << "D"; }
-ostream& 
+::print(std::ostream& s) { return s << "D"; }
+std::ostream&
 #line 46 "T10.pcc"
 a_T2
 #line 46 "T10.pcc"
-::print(ostream& s) { return s << "E"; }
+::print(std::ostream& s) { return s << "E"; }
 
 int main()
 {  T x = A();

@@ -14,7 +14,7 @@
 //  This program tests rewriting and garbage collection by using 
 //  the rewriting mechanism to compute the Fibonacci number the hard way. 
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/gc/gcobject.h>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ inline int untag(const a_EXP * x) { return x->tag__; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, EXP);
+extern std::ostream& operator<<(std::ostream&, EXP);
 extern PrettyOStream& operator<<(PrettyOStream&, EXP);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -354,7 +354,7 @@ accept__:
 // Pretty printing methods for EXP
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, EXP  obj__);
+std::ostream& operator << (std::ostream& strm__, EXP  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, EXP  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -372,7 +372,7 @@ void a_EXP::trace(GC * gc__)
 // Pretty printing methods for EXP
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, EXP  obj__)
+std::ostream& operator << (std::ostream& strm__, EXP  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, EXP  obj__)

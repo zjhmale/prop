@@ -25,7 +25,7 @@
 #ifndef binary_coded_decimal_h
 #define binary_coded_decimal_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -84,8 +84,8 @@ public:
    ////////////////////////////////////////////////////////////////////////
    //  I/O
    ////////////////////////////////////////////////////////////////////////
-   friend ostream& operator << (ostream&, const BCD&);
-   friend istream& operator >> (istream&, BCD&);
+   friend std::ostream& operator << (std::ostream&, const BCD&);
+   friend std::istream& operator >> (std::istream&, BCD&);
 };
 
 #endif

@@ -29,7 +29,7 @@
 //  Class BigInt is a variable precision integer type.
 //////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <new.h>
 #include <AD/generic/generic.h>  // Generic definitions
 
@@ -255,8 +255,8 @@ public:
    char * makeString (char [], size_t length = 1024, 
 		      unsigned int base = 10) const;
    int parseString (const char *, unsigned int base = 10);
-   friend ostream& operator << (ostream&, const BigInt&);
-   friend istream& operator >> (istream&, BigInt&);
+   friend std::ostream& operator << (std::ostream&, const BigInt&);
+   friend std::istream& operator >> (std::istream&, BigInt&);
 };
 
 ///////////////////////////////////////////////////////////////////////////

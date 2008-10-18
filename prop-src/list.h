@@ -9,7 +9,7 @@
 #define list_operations_h
 
 #include "basics.h"
-
+/*
 template <class T> int length (
 #line 6 "list.ph"
 a_List<T> *  
@@ -27,7 +27,8 @@ template <class T> a_List<T> *
  rev (a_List<T> *  
 #line 8 "list.ph"
 );
-
+*/
+#include "listimpl.h"
 #endif
 /*
 ------------------------------- Statistics -------------------------------

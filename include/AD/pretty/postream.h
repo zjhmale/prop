@@ -26,8 +26,7 @@
 #define prop_pretty_printing_output_stream_h
 
 #include <AD/generic/generic.h>
-
-class ostream;
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -38,7 +37,7 @@ class PrettyOStream
 {  PrettyOStream(const PrettyOStream&);
 protected:
    enum TokenClass { NONE, IDENTIFIER, DELIMITER, NUMBER, OBJECT };
-   ostream*   the_stream; 
+   std::ostream*   the_stream;
    int        indentation;
    TokenClass last_token;
    int        spaces_in_tab;
@@ -46,12 +45,12 @@ protected:
    void init();
 public:
             PrettyOStream();
-            explicit PrettyOStream(ostream&);
+            explicit PrettyOStream(std::ostream&);
    virtual ~PrettyOStream();
 
-   ostream& stream() const { return *the_stream; }
+   std::ostream& stream() const { return *the_stream; }
    virtual PrettyOStream& set_tab_spacing(int);
-   virtual ostream& set_stream(ostream&);
+   virtual std::ostream& set_stream(std::ostream&);
    virtual PrettyOStream& indent();
    virtual PrettyOStream& unindent();
    virtual PrettyOStream& tab();

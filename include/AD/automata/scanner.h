@@ -29,7 +29,7 @@
 // Class LexScanner implements a lexical scanner with buffering.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 #include <AD/automata/lexer.h>
 
@@ -79,7 +79,7 @@ protected:
    //  Method to replenish the input buffer.  Returns the number of
    //  characters read.
    ///////////////////////////////////////////////////////////////////// 
-   virtual int fill_buffer(istream& stream, int read_size, Option option);
+   virtual int fill_buffer(std::istream& stream, int read_size, Option option);
 
 public:
 
@@ -109,8 +109,8 @@ public:
    virtual void   open();            
    virtual void   close();
    void   begin(int context = 0) { current_context = context; }
-   Rule   advance(istream&, int = 4096, Option = Line_buffering); 
-   Rule   fast_advance(istream&, int = 4096, Option = Line_buffering);
+   Rule   advance(std::istream&, int = 4096, Option = Line_buffering);
+   Rule   fast_advance(std::istream&, int = 4096, Option = Line_buffering);
 
    ////////////////////////////////////////////////////////////////////////
    //  Buffer management
@@ -149,7 +149,7 @@ public:
 //  Returns EOF-1 if the scanner is jammed. 
 /////////////////////////////////////////////////////////////////////////////
 inline Lexer::Rule LexScanner::advance
-   (istream& stream, int read_size, LexScanner::Option option)
+   (std::istream& stream, int read_size, LexScanner::Option option)
 {  register State s = current_context * 2 + (anchored ? 2 : 1);
    register unsigned char c;
    register Rule r = 0, last_accept_rule;
@@ -209,7 +209,7 @@ inline Lexer::Rule LexScanner::advance
 //  Backtracking option.
 /////////////////////////////////////////////////////////////////////////////
 inline Lexer::Rule LexScanner::fast_advance
-   (istream& stream, int read_size, LexScanner::Option option)
+   (std::istream& stream, int read_size, LexScanner::Option option)
 {  register State s = current_context * 2 + (anchored ? 2 : 1);
    tok = cursor;
    if (save_char >= 0) *cursor = save_char; 

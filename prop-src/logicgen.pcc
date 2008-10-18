@@ -3,7 +3,7 @@
 //  This file implements the constraint compiler.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <AD/strings/quark.h>
 #include "ir.ph"
 #include "ast.ph"

@@ -25,7 +25,7 @@
 #ifndef LL_k_parser_generator_h
 #define LL_k_parser_generator_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/grammar.h>
 #include <AD/automata/sparsdfa.h>
 
@@ -61,7 +61,7 @@ public:
    //  Compilation and code generation
    ///////////////////////////////////////////////////////////////////////////
    virtual void     compile (const Grammar&); 
-   virtual ostream& gen_code(ostream&, const char []) const;
+   virtual std::ostream& gen_code(std::ostream&, const char []) const;
 };
 
 #endif

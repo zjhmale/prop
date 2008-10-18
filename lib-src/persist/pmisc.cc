@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #define PSTREAM_IMPLEMENTATION
 #include <AD/persist/pconfig.h>
 #include <AD/persist/pstream.h>
@@ -71,7 +71,7 @@ void version (Pistream& f)
 
    // Simple minded check for now
    if (strcmp(version,PROP_PERSISTENT_VERSION))
-   {  cerr << "Persistent library version mismatch:\n"
+   {  std::cerr << "Persistent library version mismatch:\n"
            << "Version of persistent data: " << version << '\n'
            << "Version of library: " << PROP_PERSISTENT_VERSION << '\n'
            << "Aborting program...\n";

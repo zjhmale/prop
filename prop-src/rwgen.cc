@@ -17,8 +17,8 @@ static const Quark _r_w_g_e_nco_c_c_Q1("redex");
 //  This is used to implement the rewrite class/rewrite constructs of Prop.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/automata/treegram.h>
 #include <AD/automata/treegen.h>
 #include <AD/automata/topdowng.h>

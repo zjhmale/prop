@@ -1804,19 +1804,19 @@ extern Exp component_exp(LabExps, Id);
 //  Pretty printing methods.
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, Exp);
-extern ostream& operator << (ostream&, 
+extern std::ostream& operator << (std::ostream&, Exp);
+extern std::ostream& operator << (std::ostream&,
 #line 416 "ast.ph"
 a_List<Exp> *  
 #line 416 "ast.ph"
 );
-extern ostream& operator << (ostream&, LabExp);
-extern ostream& operator << (ostream&, a_List<LabExp> *  
+extern std::ostream& operator << (std::ostream&, LabExp);
+extern std::ostream& operator << (std::ostream&, a_List<LabExp> *
 #line 418 "ast.ph"
 );
-extern ostream& operator << (ostream&, Cost);
-extern ostream& operator << (ostream&, MatchRule);
-extern ostream& operator << (ostream&, QualId);
+extern std::ostream& operator << (std::ostream&, Cost);
+extern std::ostream& operator << (std::ostream&, MatchRule);
+extern std::ostream& operator << (std::ostream&, QualId);
 
 #endif
 /*

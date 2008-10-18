@@ -77,7 +77,7 @@ public:
    /////////////////////////////////////////////////////////////////////////
    //  Method for printing the compiled tables
    /////////////////////////////////////////////////////////////////////////
-   virtual ostream& gen_code (ostream&, const char []) const;
+   virtual std::ostream& gen_code (std::ostream&, const char []) const;
 };
 
 #endif

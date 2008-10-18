@@ -27,5 +27,5 @@
 //  generator using Proebsting's algorithm(see. PLDI '92).
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/rewrite/b_item.h>  // BURS item

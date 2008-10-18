@@ -22,16 +22,16 @@
 // 1994-1995
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/automata/iolexerbuf.h>
 
 //////////////////////////////////////////////////////////////////////////////
 //  Constructor and destructor
 //////////////////////////////////////////////////////////////////////////////
-IOLexerBuffer:: IOLexerBuffer() : input(&cin) 
+IOLexerBuffer:: IOLexerBuffer() : input(&std::cin)
    { allocate_buffer(4096); }
-IOLexerBuffer:: IOLexerBuffer(istream& in) : input(&in) 
+IOLexerBuffer:: IOLexerBuffer(std::istream& in) : input(&in)
    { allocate_buffer(4096); }
 IOLexerBuffer::~IOLexerBuffer() {} 
 
@@ -72,7 +72,7 @@ size_t IOLexerBuffer::fill_buffer()
 //////////////////////////////////////////////////////////////////////////////
 //  Set/reset the input buffer
 //////////////////////////////////////////////////////////////////////////////
-void IOLexerBuffer::set_stream(istream& in) 
+void IOLexerBuffer::set_stream(std::istream& in)
 {  // Yank back the saved character 
    if (buffer && saved_char >= 0) *cursor_limit = saved_char;
    saved_char = -1;

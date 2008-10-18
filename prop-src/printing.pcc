@@ -4,8 +4,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/contain/bitset.h>
 #include <AD/strings/charesc.h>
 #include <AD/strings/quark.h>
@@ -38,7 +38,7 @@ Parameter ty_parameter         = TYformal;
 //  Print an identifier list 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Ids vars)
+std::ostream& operator << (std::ostream& f, Ids vars)
 {  for(Ids vs = vars; vs; vs = vs->#2)
    {  f << vs->#1; if (vs->#2) f << ", "; }
    return f;
@@ -49,7 +49,7 @@ ostream& operator << (ostream& f, Ids vars)
 //  Print a scope
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Scope s)
+std::ostream& operator << (std::ostream& f, Scope s)
 {  match (s)  
    {  case PUBLICscope:    f << "public";
       case PROTECTEDscope: f << "protected"; 
@@ -71,7 +71,7 @@ Id index_of(int i,Id prefix)
 //  Print a persistent id.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pid pid)
+std::ostream& operator << (std::ostream& f, Pid pid)
 {  match (pid)
    {  PERSISTid id:  { f << id; }
    |  PERSISTnone:   // skip
@@ -84,7 +84,7 @@ ostream& operator << (ostream& f, Pid pid)
 //  Print a literal.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Literal l)
+std::ostream& operator << (std::ostream& f, Literal l)
 {  match (l)
    {  INTlit    i:  { f << i; }
    |  BOOLlit   b:  { f << (b ? "true" : "false"); }
@@ -95,7 +95,7 @@ ostream& operator << (ostream& f, Literal l)
          sprintf(buf,"%lf", r);
          f << buf; 
          // ostrstream S(buf,sizeof(buf));
-         // ostream& S2 = S;
+         // std::ostream& S2 = S;
          // S2 << r << ends;
          // f << S.str(); 
       }
@@ -116,7 +116,7 @@ ostream& operator << (ostream& f, Literal l)
 //  Print type list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Tys tys)
+std::ostream& operator << (std::ostream& f, Tys tys)
 {  for(Tys t = tys; t; t = t->#2) {  
       f << t->#1; 
       if (t->#2 != #[]) f << ", "; 
@@ -129,7 +129,7 @@ ostream& operator << (ostream& f, Tys tys)
 //  Print type variables (i.e. template actual arguments)
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tyvars(ostream& f, Tys tys, Bool is_datatype)
+void print_tyvars(std::ostream& f, Tys tys, Bool is_datatype)
 {  if (tys != #[]) 
       if (is_datatype) f << "(" << tys << ")";
       else             f << '<' << tys << "> ";
@@ -140,7 +140,7 @@ void print_tyvars(ostream& f, Tys tys, Bool is_datatype)
 //  Print type variables (i.e. formal template arguments)
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tyvars(ostream& f, TyVars tyvars, char open, char close, Bool header)
+void print_tyvars(std::ostream& f, TyVars tyvars, char open, char close, Bool header)
 {  if (tyvars != #[]) {
       if (header) f << "template ";
       f << open;
@@ -159,7 +159,7 @@ void print_tyvars(ostream& f, TyVars tyvars, char open, char close, Bool header)
 //  Print a tuple type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tuple(ostream& f, Tys tys)
+void print_tuple(std::ostream& f, Tys tys)
 {  if (pretty_print_ty) {
       f << '(' << tys << ')';
    } else {
@@ -179,7 +179,7 @@ void print_tuple(ostream& f, Tys tys)
 //  Print a mktuple type
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_mktuple(ostream& f, Tys tys)
+void print_mktuple(std::ostream& f, Tys tys)
 {  if (pretty_print_ty) {
       f << ".[" << tys << ']';
    } else {
@@ -193,7 +193,7 @@ void print_mktuple(ostream& f, Tys tys)
 //  Print a record type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_record(ostream& f, Ids labs, Tys tys, Bool flex)
+void print_record(std::ostream& f, Ids labs, Tys tys, Bool flex)
 {  if (! pretty_print_ty) f << "struct ";
    f << "{ ";
    Tys t; Ids l;
@@ -215,7 +215,7 @@ void print_record(ostream& f, Ids labs, Tys tys, Bool flex)
 //  Print a function parameter.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_parameter (ostream& f, Ty ty, Id id, Parameter p)
+void print_parameter (std::ostream& f, Ty ty, Id id, Parameter p)
 {  Parameter save = ty_parameter;
    Bool      sp = pretty_print_ty;
    pretty_print_ty = false;
@@ -277,7 +277,7 @@ void print_parameter (ostream& f, Ty ty, Id id, Parameter p)
 //  Method to print a type expression.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Ty ty)
+std::ostream& operator << (std::ostream& f, Ty ty)
 {  Id this_id = 0;
    if (ty_id) { this_id = ty_id; ty_id = 0; }
    ty = deref(ty);
@@ -347,7 +347,7 @@ ostream& operator << (ostream& f, Ty ty)
          }
       }
    |  NESTEDty(a,b):  { f << a << "::" << b; }
-   |  _: { bug ("operator << (ostream&, Ty)"); }
+   |  _: { bug ("operator << (std::ostream&, Ty)"); }
    }
    if (this_id) f << ' ' << this_id; 
    return f;
@@ -359,7 +359,7 @@ ostream& operator << (ostream& f, Ty ty)
 //  Method to print a pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print (ostream& f, Pats pats, Id open, Id close, 
+void print (std::ostream& f, Pats pats, Id open, Id close, 
             Bool flex1, Pat p, Bool flex2 = false, 
             Pat len = NOpat, Pat array = NOpat)
 {  f << open;
@@ -383,7 +383,7 @@ void print (ostream& f, Pats pats, Id open, Id close,
 //  Method to print a labeled pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print (ostream& f, LabPats lab_pats, Bool flex)
+void print (std::ostream& f, LabPats lab_pats, Bool flex)
 {  f << '{';
    for (LabPats ps = lab_pats; ps; ps = ps->#2) {
       f << ps->#1.label << " = " << ps->#1.pat;
@@ -426,7 +426,7 @@ Id close_of2(Cons c)
 //  Method to print a pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pats ps)
+std::ostream& operator << (std::ostream& f, Pats ps)
 {  print(f,ps,"","",false,NOpat); return f; }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ ostream& operator << (ostream& f, Pats ps)
 //  Method to print a pattern.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pat p)
+std::ostream& operator << (std::ostream& f, Pat p)
 {  match (p)
    {  NOpat:                      // skip
    |  WILDpat _:                  { f << '_'; }
@@ -536,7 +536,7 @@ fun mangle id | id == 0: { return "(null)"; }
 //  Method to print the name of a constructor
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& print_cons (ostream& f, Cons cons)
+std::ostream& print_cons (std::ostream& f, Cons cons)
 {  match (cons)
    {  ONEcons { name, ty = NOty ... }: {  f << mangle(name); }
    |  ONEcons { name, alg_ty = DATATYPEty({ opt, id ... },_) ... }:
@@ -555,7 +555,7 @@ ostream& print_cons (ostream& f, Cons cons)
 //  Method to print an expression list
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Exps es)
+std::ostream& operator << (std::ostream& f, Exps es)
 {  for (Exps l = es; l; l = l->#2) {
       f << l->#1; if (l->#2) f << ',';
    }
@@ -567,7 +567,7 @@ ostream& operator << (ostream& f, Exps es)
 //  Method to print an expression.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Exp e)
+std::ostream& operator << (std::ostream& f, Exp e)
 {  match (e)
    {  NOexp:                     { }
    |  IDexp id:                  { f << id; }
@@ -722,7 +722,7 @@ ostream& operator << (ostream& f, Exp e)
          f << ')';
       }
    |  VECTORexp _: // skip
-   |  _:  { bug("operator << (ostream&, Exp);"); }
+   |  _:  { bug("operator << (std::ostream&, Exp);"); }
    }
    return f;
 }
@@ -732,7 +732,7 @@ ostream& operator << (ostream& f, Exp e)
 //  Method to print an inheritance type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Inherit i)
+std::ostream& operator << (std::ostream& f, Inherit i)
 {  if (i->qualifiers & QUALvirtual) f << "virtual ";
    return f << i->scope << ' ' << i->super_class;
 }
@@ -742,7 +742,7 @@ ostream& operator << (ostream& f, Inherit i)
 //  Method to print a class inheritance list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Inherits i)
+std::ostream& operator << (std::ostream& f, Inherits i)
 {  for ( ;i; i = i->#2) {
       f << i->#1;
       if (i->#2) f << ", ";
@@ -755,7 +755,7 @@ ostream& operator << (ostream& f, Inherits i)
 //  Method to print a cost expression
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Cost c)
+std::ostream& operator << (std::ostream& f, Cost c)
 {  match (c)
    {  NOcost:
    |  EXPcost (e,_): { f << " \\ " << e; }
@@ -769,7 +769,7 @@ ostream& operator << (ostream& f, Cost c)
 //  Method to print a qualified identifier.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, QualId id)
+std::ostream& operator << (std::ostream& f, QualId id)
 {  match (id)
    {  NESTEDid(ty, id):             { f << ty << "::" << id; }
    |  SIMPLEid id | isalpha(id[0]): { f << id; }
@@ -781,7 +781,7 @@ ostream& operator << (ostream& f, QualId id)
 ///////////////////////////////////////////////////////////////////////////////
 //  Method to print a pattern match rule.
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, MatchRule mr)
+std::ostream& operator << (std::ostream& f, MatchRule mr)
 {  match (mr)
    {  MATCHrule (non_terminal, pat, guard, cost, action): 
       {  Bool save = pretty_print_exp;
@@ -801,7 +801,7 @@ ostream& operator << (ostream& f, MatchRule mr)
 //  Method to pretty print a decision tree.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Match m)
+std::ostream& operator << (std::ostream& f, Match m)
 {  match (m)
    {  FAILmatch:              { f << '_'; }
    |  DONTCAREmatch:          { f << '-'; }
@@ -858,7 +858,7 @@ ostream& operator << (ostream& f, Match m)
       }
    |  RANGEmatch(_,_,lo,hi,y,n):
       {  f << '[' << lo << ".." << hi << ": " << y << ", " << n << ']'; }
-   |  _:  { bug("operator << (ostream&, Match);"); }
+   |  _:  { bug("operator << (std::ostream&, Match);"); }
    }
    return f;
 }

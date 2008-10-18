@@ -25,7 +25,7 @@
 #ifndef tree_grammar_h
 #define tree_grammar_h
 
-#include <iostream.h>
+#include <iostream>
 #include <new.h>
 #include <AD/generic/generic.h>   // generic definitions
 #include <AD/automata/treetab.h>  // tree grammar tables
@@ -175,12 +175,12 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    const char * functor_name  (Functor)  const;
    const char * variable_name (Variable) const;
-   ostream& print_functor  (ostream&, Functor)               const;
-   ostream& print_variable (ostream&, Variable)              const;
-   ostream& print          (ostream&, const TreeTerm)        const;
-   ostream& print          (ostream&, const TreeProduction&) const;
-   ostream& print          (ostream&, const TreeGrammar&)    const;
-   friend ostream& operator << (ostream&, const TreeGrammar&);
+   std::ostream& print_functor  (std::ostream&, Functor)               const;
+   std::ostream& print_variable (std::ostream&, Variable)              const;
+   std::ostream& print          (std::ostream&, const TreeTerm)        const;
+   std::ostream& print          (std::ostream&, const TreeProduction&) const;
+   std::ostream& print          (std::ostream&, const TreeGrammar&)    const;
+   friend std::ostream& operator << (std::ostream&, const TreeGrammar&);
 
    ///////////////////////////////////////////////////////////////////////////
    //  Iterator macros

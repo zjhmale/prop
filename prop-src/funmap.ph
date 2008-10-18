@@ -13,6 +13,7 @@
 #include "type.h"
 #include "hashtab.h"
 #include "functortab.h"
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -20,7 +21,6 @@
 //  classes.
 //
 ///////////////////////////////////////////////////////////////////////////////
-class ostream;
 class TreeAutomaton;
 class TopDownGen;
 typedef TreeGrammar::Functor        Functor;

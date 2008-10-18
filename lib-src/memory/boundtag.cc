@@ -24,6 +24,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <stddef.h> // for offsetof
 #include <AD/memory/boundtag.h>   // Boundary tag memory manager
 
 //////////////////////////////////////////////////////////////////////////////

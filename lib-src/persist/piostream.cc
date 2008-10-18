@@ -24,18 +24,18 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/persist/pstream.h>
 
 //////////////////////////////////////////////////////////////////////////////
 //  Constructors and destructor
 //////////////////////////////////////////////////////////////////////////////
-Piostream:: Piostream(iostream& s) 
+Piostream:: Piostream(std::iostream& s)
    : Pistream(s), Postream(s) {}
-Piostream:: Piostream(iostream& s, Mem& m) 
+Piostream:: Piostream(std::iostream& s, Mem& m)
    : Pistream(s,m), Postream(s) {}
-Piostream:: Piostream(istream& i, ostream& o) 
+Piostream:: Piostream(std::istream& i, std::ostream& o)
    : Pistream(i), Postream(o) {}
-Piostream:: Piostream(istream& i, ostream& o, Mem& m) 
+Piostream:: Piostream(std::istream& i, std::ostream& o, Mem& m)
    : Pistream(i,m), Postream(o) {}
 Piostream::~Piostream() {}

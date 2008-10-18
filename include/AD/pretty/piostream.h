@@ -27,25 +27,24 @@
 
 #include <AD/pretty/pistream.h>
 #include <AD/pretty/postream.h>
-
-class iostream;
+#include <iostream>
 
 class PrettyIOStream : public PrettyIStream, public PrettyOStream
 {  PrettyIOStream (PrettyIOStream&);
    void operator = (PrettyIOStream&);
 public:
    PrettyIOStream();
-   PrettyIOStream(istream&);
-   PrettyIOStream(ostream&);
-   PrettyIOStream(iostream&);
-   PrettyIOStream(istream&,ostream&);
+   PrettyIOStream(std::istream&);
+   PrettyIOStream(std::ostream&);
+   PrettyIOStream(std::iostream&);
+   PrettyIOStream(std::istream&,std::ostream&);
   ~PrettyIOStream();
 
-   istream& get_instream() { return PrettyIStream::stream(); }
-   ostream& get_onstream() { return PrettyOStream::stream(); }
-   istream& set_instream(istream& s) 
+   std::istream& get_instream() { return PrettyIStream::stream(); }
+   std::ostream& get_onstream() { return PrettyOStream::stream(); }
+   std::istream& set_instream(std::istream& s)
       { return PrettyIStream::set_stream(s); }
-   ostream& set_outstream(ostream& s) 
+   std::ostream& set_outstream(std::ostream& s)
       { return PrettyOStream::set_stream(s); }
 };
 

@@ -26,13 +26,7 @@
 
 #include <stdarg.h>
 #include <AD/generic/generic.h>
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Forward declarations
-//
-///////////////////////////////////////////////////////////////////////////////
-class ostream;
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -54,7 +48,7 @@ public:
    typedef va_list (*CharAction)(CodeEmitter&,unsigned char,va_list);
 
 protected:
-   ostream *                 out;               // internal stream.
+   std::ostream *                 out;               // internal stream.
    Action                    abbrev_table[256]; // action table
    CharAction                char_table[256];   // character action table
    int                       line_number;       // line numbering
@@ -69,7 +63,7 @@ public:
    //
    ////////////////////////////////////////////////////////////////////////////
             CodeEmitter();
-            CodeEmitter(ostream&);
+            CodeEmitter(std::ostream&);
    virtual ~CodeEmitter();
 
    ////////////////////////////////////////////////////////////////////////////
@@ -77,7 +71,7 @@ public:
    //  Methods to open and close the code emitter
    //
    ////////////////////////////////////////////////////////////////////////////
-   virtual CodeEmitter& open(ostream&);
+   virtual CodeEmitter& open(std::ostream&);
    virtual CodeEmitter& close();
 
    ////////////////////////////////////////////////////////////////////////////

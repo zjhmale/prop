@@ -35,7 +35,7 @@
 //  BURS_Item        --- an item in the tree grammar.
 //  BURS_ItemSet     --- a set of items.
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #define TreeGrammar_Iterators
 #include <AD/rewrite/burs_gen.h>   // the BURS generator definition
 #include <AD/rewrite/b_items.h>    // the BURS item sets
@@ -131,9 +131,9 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Methods for printing a report
    ///////////////////////////////////////////////////////////////////////////
-   ostream& print (ostream&, const BURS_ItemSet&) const; 
-   friend ostream& operator << (ostream&, const BURS_Generator&);
-   ostream& print_state(ostream&, State) const;
+   std::ostream& print (std::ostream&, const BURS_ItemSet&) const;
+   friend std::ostream& operator << (std::ostream&, const BURS_Generator&);
+   std::ostream& print_state(std::ostream&, State) const;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ void BURS_Generator::compute_closure(register BURS_ItemSet& state)
 //////////////////////////////////////////////////////////////////////////////
 void BURS_Generator::compute_projection 
    ( register BURS_ItemSet& projected, Functor f, Arity i, State s)
-{  register const BURS_ItemSet&   state = *states[s];
+{  register const BURS_ItemSet&   state = *states.Get(s);
    register const NonTerminalSet& set   = *proj[f][i];
    for(register NonTerminal n = state.size() - 1; n >= 0; n--) {
       if (set[n]) {
@@ -305,7 +305,7 @@ void BURS_Generator::compute_leaf_states()
    {  BURS_ItemSet * error_state = new (mem, number_of_non_terminals) BURS_ItemSet;
       gen.new_state(number_of_states);
       compute_closure(*error_state);
-      states[ number_of_states ] = error_state;
+      states.At( number_of_states ) = error_state;
       state_map.insert(error_state, number_of_states);
       compute_accept_rules(number_of_states, *error_state);
       number_of_states++;
@@ -329,7 +329,7 @@ void BURS_Generator::compute_leaf_states()
       if (found) {
          s->normalise_costs();
          compute_closure(*s);
-         states[ number_of_states ] = s;
+         states.At( number_of_states ) = s;
          state_map.insert(s, number_of_states);
          gen.add_delta(f, number_of_states);
          compute_accept_rules(number_of_states, *s);
@@ -470,7 +470,7 @@ void BURS_Generator::compute_delta(Functor f, Arity fixed, Arity n)
       // compute_closure( *delta_set );
       gen.new_state (number_of_states);
       compute_accept_rules(number_of_states, *delta_set);
-      states[ number_of_states ] = delta_set;
+      states.At( number_of_states ) = delta_set;
       state_map.insert(delta_set, number_of_states);
       d = number_of_states++;
       // cerr << "State " << d << ":\t"; print(cerr,*delta_set);
@@ -497,7 +497,7 @@ void BURS_Generator::trim (BURS_ItemSet& /*set*/)
 //  e.g. in format such as:
 //    [ A : 1, B : 2, C : 5 ]
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_Generator::print (ostream& f, const BURS_ItemSet& set) const
+std::ostream& BURS_Generator::print (std::ostream& f, const BURS_ItemSet& set) const
 {  Bool first = true;
    for (NonTerminal n = 0; n < set.size(); n++) {
       if (set[n].cost != BURS_ItemSet::infinite_cost) {
@@ -515,7 +515,7 @@ ostream& BURS_Generator::print (ostream& f, const BURS_ItemSet& set) const
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a report on a stream.
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, const BURS_Generator& g)
+std::ostream& operator << (std::ostream& f, const BURS_Generator& g)
 {  
    // Print the set of states
    f << "Canonical rules:\n" << g.R << '\n'
@@ -529,8 +529,8 @@ ostream& operator << (ostream& f, const BURS_Generator& g)
 //////////////////////////////////////////////////////////////////////////////
 //  Method to print a state on a stream.
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_Generator::print_state(ostream& f, State s) const
-{  f << '[' << s << "]\t"; print(f,*states[s]);
+std::ostream& BURS_Generator::print_state(std::ostream& f, State s) const
+{  f << '[' << s << "]\t"; print(f,*states.Get(s));
    if (gen.is_accept_state(s)) 
       f << "\t[accept " << gen.accept1_rule(s) << "]\n";
    return f;
@@ -593,7 +593,7 @@ Bool BURS_Gen::is_complete() const
 //////////////////////////////////////////////////////////////////////////////
 //  Method to generate a new report
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_Gen::print_report(ostream& log) const
+std::ostream& BURS_Gen::print_report(std::ostream& log) const
 {  if (impl) {
       Super::print_report(log);
       log << *impl; 
@@ -604,7 +604,7 @@ ostream& BURS_Gen::print_report(ostream& log) const
 //////////////////////////////////////////////////////////////////////////////
 //  Method to generate a state
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_Gen::print_state(ostream& log, State s) const
+std::ostream& BURS_Gen::print_state(std::ostream& log, State s) const
 {  if (impl) impl->print_state(log,s);
    return log;
 }

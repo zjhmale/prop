@@ -25,21 +25,21 @@
 #ifndef Prop_pretty_printer_h
 #define Prop_pretty_printer_h
 
-#include <iostream.h>
+#include <iostream>
 
-inline ostream& pretty_print(ostream& f, char x, int = 0, int = 0)           { return f << x; }
-inline ostream& pretty_print(ostream& f, unsigned char x, int = 0, int = 0)  { return f << x; }
-inline ostream& pretty_print(ostream& f, short x, int = 0, int = 0)          { return f << x; }
-inline ostream& pretty_print(ostream& f, unsigned short x, int = 0, int = 0) { return f << x; }
-inline ostream& pretty_print(ostream& f, int x, int = 0, int = 0)            { return f << x; }
-inline ostream& pretty_print(ostream& f, unsigned int x, int = 0, int = 0)   { return f << x; }
-inline ostream& pretty_print(ostream& f, long x, int = 0, int = 0)           { return f << x; }
-inline ostream& pretty_print(ostream& f, unsigned long x, int = 0, int = 0)  { return f << x; }
-inline ostream& pretty_print(ostream& f, float x, int = 0, int = 0)          { return f << x; }
-inline ostream& pretty_print(ostream& f, double x, int = 0, int = 0)         { return f << x; }
-inline ostream& pretty_print(ostream& f, const char * x, int = 0, int = 0)   { return f << x; }
-inline ostream& pretty_print(ostream& f, const unsigned char * x, int = 0, int = 0) { return f << (const char *)x; }
-//inline ostream& pretty_print(ostream& f, const void * x, int = 0, int = 0)   { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, char x, int = 0, int = 0)           { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, unsigned char x, int = 0, int = 0)  { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, short x, int = 0, int = 0)          { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, unsigned short x, int = 0, int = 0) { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, int x, int = 0, int = 0)            { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, unsigned int x, int = 0, int = 0)   { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, long x, int = 0, int = 0)           { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, unsigned long x, int = 0, int = 0)  { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, float x, int = 0, int = 0)          { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, double x, int = 0, int = 0)         { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, const char * x, int = 0, int = 0)   { return f << x; }
+inline std::ostream& pretty_print(std::ostream& f, const unsigned char * x, int = 0, int = 0) { return f << (const char *)x; }
+//inline std::ostream& pretty_print(std::ostream& f, const void * x, int = 0, int = 0)   { return f << x; }
 
 class PrettyPrinter {
    PrettyPrinter(const PrettyPrinter&);
@@ -48,7 +48,7 @@ public:
             PrettyPrinter();
    virtual ~PrettyPrinter();
 
-   static ostream& print_tabs(ostream&, int);
+   static std::ostream& print_tabs(std::ostream&, int);
 };
 
 #endif

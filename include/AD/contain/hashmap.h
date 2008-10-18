@@ -48,9 +48,9 @@ template<class K, class V, class HashTable>
       //  Inherit types
       ///////////////////////////////////////////////////////////////
       typedef Map<K,V>       Super;
-      typedef Map<K,V>::Key     Key;
-      typedef Map<K,V>::Value   Value;
-      typedef Map<K,V>::Element Element;
+      typedef typename Map<K,V>::Key     Key;
+      typedef typename Map<K,V>::Value   Value;
+      typedef typename Map<K,V>::Element Element;
 
       ///////////////////////////////////////////////////////////////
       //  Creator and destructors

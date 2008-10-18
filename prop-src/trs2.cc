@@ -13,7 +13,7 @@
 //  This is the main partial evaluation routines.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 #include "trs.h"
@@ -507,7 +507,7 @@ TRS::EvalResult TRS::eval_guard(Exp exp)
 //
 ///////////////////////////////////////////////////////////////////////////////
 void TRS::print_residue(Rule r, Term rhs_residue) const
-{  ostream& log = open_logfile();
+{  std::ostream& log = open_logfile();
    MatchRule rule = rule_map[r];
    log << "line " << rule->begin_line << ": "
        << rule_map[r] << ' ';

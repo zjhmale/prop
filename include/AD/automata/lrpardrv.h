@@ -25,7 +25,7 @@
 #ifndef LR1_parser_driver_h
 #define LR1_parser_driver_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/lr1.h>   // LR driver basics
 #include <AD/contain/stack.h>  // generic stacks
 

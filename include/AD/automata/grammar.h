@@ -25,7 +25,7 @@
 #ifndef grammar_for_parsers_h
 #define grammar_for_parsers_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>   // Generic definitions
 #include <AD/automata/dfatable.h> // DFA tables
 
@@ -175,10 +175,10 @@ public:
    //////////////////////////////////////////////////////////////////////////
    //  Printing
    //////////////////////////////////////////////////////////////////////////
-   ostream& print (ostream&, Symbol)                  const; // Print a symbol
-   ostream& print (ostream&, Production, Bool = true) const; // Print a production
-   ostream& print (ostream&, int, Production)         const; // Print an item
-   friend ostream& operator << (ostream&, const Grammar&);   // Print a grammar
+   std::ostream& print (std::ostream&, Symbol)                  const; // Print a symbol
+   std::ostream& print (std::ostream&, Production, Bool = true) const; // Print a production
+   std::ostream& print (std::ostream&, int, Production)         const; // Print an item
+   friend std::ostream& operator << (std::ostream&, const Grammar&);   // Print a grammar
 };
 
 #endif

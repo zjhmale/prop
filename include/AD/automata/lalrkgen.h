@@ -66,7 +66,7 @@ public:
    /////////////////////////////////////////////////////////////////////////
 
    virtual void     compile      (const Grammar&, const OpPrecedence&);
-   virtual ostream& print_report (ostream&, int verbosity = 0);
+   virtual std::ostream& print_report (std::ostream&, int verbosity = 0);
 };
 
 #endif

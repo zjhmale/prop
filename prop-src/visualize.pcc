@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdarg.h>
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include "options.h"
 #include "compiler.h"
@@ -115,7 +115,7 @@ void Compiler::print_definitions_as_GDL()
    {  char vcg_file[256];
       strcpy(vcg_file, options.file_prefix);
       strcat(vcg_file, "vcg");
-      ostream * F = open_output_file(vcg_file);
+      std::ostream * F = open_output_file(vcg_file);
       msg("[Writing vcg output to %s]\n",vcg_file);
       v . print_GDL_on(*F);
       delete F;

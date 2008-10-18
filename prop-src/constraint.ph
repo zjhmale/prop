@@ -65,12 +65,12 @@ where type ConstraintDefs  = List<ConstraintDef>
 //  Pretty printing routines.
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, ConstraintSet);
-extern ostream& operator << (ostream&, ConstraintDef);
-extern ostream& operator << (ostream&, ConstraintDefs);
-extern ostream& operator << (ostream&, ConstraintRule);
-extern ostream& operator << (ostream&, ConstraintRules);
-extern ostream& operator << (ostream&, ConstraintBody);
+extern std::ostream& operator << (std::ostream&, ConstraintSet);
+extern std::ostream& operator << (std::ostream&, ConstraintDef);
+extern std::ostream& operator << (std::ostream&, ConstraintDefs);
+extern std::ostream& operator << (std::ostream&, ConstraintRule);
+extern std::ostream& operator << (std::ostream&, ConstraintRules);
+extern std::ostream& operator << (std::ostream&, ConstraintBody);
 
 ///////////////////////////////////////////////////////////////////////////////
 //

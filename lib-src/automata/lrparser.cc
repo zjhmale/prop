@@ -21,7 +21,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 #include <AD/automata/lrparser.h>
@@ -75,7 +75,7 @@ void LR1Parser::parser_prefix() {}
 void LR1Parser::parser_suffix() {}
 void LR1Parser::adjust_stack(int) {}
 LR1Parser::ErrorAction LR1Parser::error_report(const char * message) 
-{  cerr << message << '\n';
+{  std::cerr << message << '\n';
    return Abort;
 }
 
@@ -167,14 +167,14 @@ REPAIR_ERROR:
 //  Default symbol printing method.  Should be redefined by user.
 //
 //////////////////////////////////////////////////////////////////////////////
-void LR1Parser::print_symbol(ostream& f, Symbol S) 
+void LR1Parser::print_symbol(std::ostream& f, Symbol S)
 {  if (S < 0) f << "<eof>";
    else if (S < 256) f << '\'' << print_char((char)S) << '\'';
    else if (S <= max_terminal) print_user_symbol(f,S);
    else f << "[token " << (int)S << "]";
 }
 
-void LR1Parser::print_user_symbol(ostream& f, Symbol S) 
+void LR1Parser::print_user_symbol(std::ostream& f, Symbol S)
 {  f << "[token " << (int)S << "]"; }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ void LR1Parser::explain_error()
 //  This method prints out the expected tokens. 
 //
 //////////////////////////////////////////////////////////////////////////////
-void LR1Parser::nice_explain(ostream& f)
+void LR1Parser::nice_explain(std::ostream& f)
 {
    f << "expecting: ";
    for (Symbol c = 0; c <= max_terminal; c++)
@@ -208,7 +208,7 @@ void LR1Parser::nice_explain(ostream& f)
 //  This method explains things in great detail.
 //
 //////////////////////////////////////////////////////////////////////////////
-void LR1Parser::debug_explain(ostream& f)
+void LR1Parser::debug_explain(std::ostream& f)
 {  if (error_status == 0) return;
    int j;
 

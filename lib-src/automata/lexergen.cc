@@ -125,14 +125,14 @@ void LexerGen::compile
    {  for (State s = 1; s <= nfa.context_count() * 2 + 2; s++)
       {  NFA_Node * theNFA = nfa.context_nfa(s-1);
          if (theNFA == 0) {
-            nstates[s]     = 0;
-            accept_rule[s] = 0;
+            nstates.At(s)     = 0;
+            accept_rule.At(s) = 0;
          } else {
             FastBitSet * set = new (mem) FastBitSet(mem, nfa.state_count());
             theNFA->closure(set);
-            accept_rule[s] = NFA_Node::accept_thinning(set,n);
+            accept_rule.At(s) = NFA_Node::accept_thinning(set,n);
             dstates.insert(set,s);
-            nstates[s] = set;
+            nstates.At(s) = set;
          }
       }
    }
@@ -158,7 +158,7 @@ void LexerGen::compile
    ////////////////////////////////////////////////////////////////////////
    State number_of_dfa_states = nfa.context_count() * 2 + 3;
    for (State s = 1; s < number_of_dfa_states; s++)
-   {  register FastBitSet * set = nstates[s];
+   {  register FastBitSet * set = nstates.Get(s);
       if (set == 0) continue;
       Bool is_jammed = true; // assume no out transition for now.
 
@@ -199,8 +199,8 @@ void LexerGen::compile
          {  // create a new state            
             Rule r = NFA_Node::accept_thinning(trans[i],n);
             dstates.insert(trans[i], number_of_dfa_states);
-            nstates[number_of_dfa_states] = trans[i]; 
-            accept_rule[number_of_dfa_states] = r;
+            nstates.At(number_of_dfa_states) = trans[i];
+            accept_rule.At(number_of_dfa_states) = r;
             trans[i] = new (mem) FastBitSet(mem, nfa.state_count());
             delta[i] = number_of_dfa_states++;
             is_jammed = false;
@@ -219,9 +219,9 @@ void LexerGen::compile
       // a state has any out going states.
       /////////////////////////////////////////////////////////////////////
       if ((options & Backtracking) && is_jammed)
-         rule[s] = -accept_rule[s]-1;
+         rule[s] = -accept_rule.Get(s)-1;
       else
-         rule[s] = accept_rule[s];
+         rule[s] = accept_rule.Get(s);
    }
 
    ////////////////////////////////////////////////////////////////////////
@@ -239,7 +239,7 @@ void LexerGen::compile
 ////////////////////////////////////////////////////////////////////////////
 //  Emit C++ code 
 ////////////////////////////////////////////////////////////////////////////
-ostream& LexerGen::gen_code(ostream& out, const char name[]) const
+std::ostream& LexerGen::gen_code(std::ostream& out, const char name[]) const
 {  if (ok()) { 
       Super::gen_code(out,name);
       TablePrinter pr;
@@ -256,7 +256,7 @@ ostream& LexerGen::gen_code(ostream& out, const char name[]) const
 ////////////////////////////////////////////////////////////////////////////
 //  Method to generate a report.
 ////////////////////////////////////////////////////////////////////////////
-ostream& LexerGen::print_report(ostream& log) const
+std::ostream& LexerGen::print_report(std::ostream& log) const
 {  log <<   "Lexer statistics:"
           "\nNumber of states                        = " << (max_state + 1) 
        << "\nNumber of next/check entries            = " << (max_check + 1)

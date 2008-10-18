@@ -22,15 +22,15 @@
 // 1994-1997
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/pretty/pistream.h>
 
-PrettyIStream::PrettyIStream() : the_stream(&cin) {} 
-PrettyIStream::PrettyIStream(istream& s) : the_stream(&s) {}
+PrettyIStream::PrettyIStream() : the_stream(&std::cin) {}
+PrettyIStream::PrettyIStream(std::istream& s) : the_stream(&s) {}
 PrettyIStream::~PrettyIStream() {}
 
-istream& PrettyIStream::set_stream(istream& s)
-{  istream * old = the_stream;
+std::istream& PrettyIStream::set_stream(std::istream& s)
+{  std::istream * old = the_stream;
    the_stream = &s;
    return *old;
 }
@@ -93,4 +93,3 @@ PrettyIStream& PrettyIStream::operator >> (double&)
 PrettyIStream& PrettyIStream::operator >> (char *)
 {  return *this; 
 }
-

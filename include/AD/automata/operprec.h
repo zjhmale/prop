@@ -25,7 +25,7 @@
 #ifndef operator_precedence_h
 #define operator_precedence_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/grammar.h>
 
 //////////////////////////////////////////////////////////////////////////////

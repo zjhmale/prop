@@ -42,7 +42,7 @@ void LRkGen::compile(const Grammar& /*G*/)
 //////////////////////////////////////////////////////////////////////////////
 //  Code emission
 //////////////////////////////////////////////////////////////////////////////
-ostream& LRkGen::gen_code(ostream& out, const char /*name*/[]) const
+std::ostream& LRkGen::gen_code(std::ostream& out, const char /*name*/[]) const
 {
    return out;
 }

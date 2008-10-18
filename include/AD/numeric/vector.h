@@ -25,7 +25,7 @@
 #ifndef vector_h
 #define vector_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>
 
 template <class T>
@@ -99,8 +99,8 @@ template <class T>
       //
       // Input and output
       //
-      friend ostream& operator << (ostream&, const Vector&);
-      friend istream& operator >> (istream&, Vector&);
+      friend std::ostream& operator << (std::ostream&, const Vector&);
+      friend std::istream& operator >> (std::istream&, Vector&);
    };
    
 #endif

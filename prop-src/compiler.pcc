@@ -4,7 +4,7 @@
 //  point of the Prop -> C++ translator.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "ir.ph"
 #include "ast.ph"
 #include "type.h"

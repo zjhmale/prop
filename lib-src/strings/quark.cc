@@ -24,8 +24,8 @@
 
 #include <string.h>
 #include <ctype.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/strings/quark.h>   //  Atomic strings
 #include <AD/strings/charesc.h> //  Escape characters
 #include <AD/hash/lhash.h>      //  Hash table
@@ -75,58 +75,58 @@ Quark::Quark(const unsigned char string[])
    { intern((const char *)string); }
 Quark::Quark(short n)  
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(unsigned short n)    
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(int n)   
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(const char string[], int n)   
-   { ostrstream S;
-     ostream& S2 = S;
-     S2 << string << n << ends;
+   { std::ostrstream S;
+     std::ostream& S2 = S;
+     S2 << string << n << std::ends;
      intern(S.str()); 
      S.rdbuf()->freeze(0);
    }
 Quark::Quark(unsigned int n)   
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(long n)   
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(unsigned long n)   
    { char buf[32]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(double n) 
    { char buf[64]; 
-     ostrstream S(buf,sizeof(buf));
-     ostream& S2 = S;
-     S2 << n << ends;
+     std::ostrstream S(buf,sizeof(buf));
+     std::ostream& S2 = S;
+     S2 << n << std::ends;
      intern(buf); 
    }
 Quark::Quark(char c)
@@ -136,31 +136,31 @@ Quark::Quark(char c)
    intern(buf); 
 }
 Quark::Quark (const char s1[], const char s2[])
-{  ostrstream S;
-   ostream& S2 = S;
-   S2 << s1 << s2 << ends;
+{  std::ostrstream S;
+   std::ostream& S2 = S;
+   S2 << s1 << s2 << std::ends;
    intern(S.str()); 
    S.rdbuf()->freeze(0);
 }
 Quark::Quark (const char s1[], const char s2[], const char s3[])
-{  ostrstream S;
-   ostream& S2 = S;
-   S2 << s1 << s2 << s3 << ends;
+{  std::ostrstream S;
+   std::ostream& S2 = S;
+   S2 << s1 << s2 << s3 << std::ends;
    intern(S.str()); 
    S.rdbuf()->freeze(0);
 }
 Quark::Quark (const char s1[], const char s2[], const char s3[], const char s4[])
-{  ostrstream S;
-   ostream& S2 = S;
-   S2 << s1 << s2 << s3 << s4 << ends;
+{  std::ostrstream S;
+   std::ostream& S2 = S;
+   S2 << s1 << s2 << s3 << s4 << std::ends;
    intern(S.str()); 
    S.rdbuf()->freeze(0);
 }
 
-ostream& operator << (ostream& f, const Quark& q)
+std::ostream& operator << (std::ostream& f, const Quark& q)
 {  return f << q.name; }
 
-istream& operator >> (istream& f, Quark& q)
+std::istream& operator >> (std::istream& f, Quark& q)
 {  char buf[4096];
    f >> buf;
    q = Quark(buf);
@@ -177,4 +177,4 @@ unsigned int hash_nocase(const Quark& q)
 }
 
 int compare_nocase(const Quark& a, const Quark& b)
-{  return strcasecmp(a.string(),b.string()); }
+{  return stricmp(a.string(),b.string()); }

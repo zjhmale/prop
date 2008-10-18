@@ -7,8 +7,7 @@
 #define prop_options_h
 
 #include <AD/generic/generic.h>
-
-class istream;
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -79,7 +78,7 @@ public:
   ~PropOptions();
    void process_command_line_arguments(int argc, const char * argv[]);
    void compute_output_file_name();
-   istream * open_input_file(const char file_name[]);
+   std::istream * open_input_file(const char file_name[]);
 };
 
 extern PropOptions options;

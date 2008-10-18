@@ -18,8 +18,8 @@ static const Quark _p_r_i_n_t_i_n_gco_c_c_Q1("x_");
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/contain/bitset.h>
 #include <AD/strings/charesc.h>
 #include <AD/strings/quark.h>
@@ -52,7 +52,7 @@ Parameter ty_parameter         = TYformal;
 //  Print an identifier list 
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Ids vars)
+std::ostream& operator << (std::ostream& f, Ids vars)
 {  for(Ids vs = vars; vs; vs = vs->_2)
    {  f << vs->_1; if (vs->_2) f << ", "; }
    return f;
@@ -63,7 +63,7 @@ ostream& operator << (ostream& f, Ids vars)
 //  Print a scope
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Scope s)
+std::ostream& operator << (std::ostream& f, Scope s)
 {  
 #line 53 "printing.pcc"
 #line 57 "printing.pcc"
@@ -108,7 +108,7 @@ Id index_of(int i,Id prefix)
 //  Print a persistent id.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pid pid)
+std::ostream& operator << (std::ostream& f, Pid pid)
 {  
 #line 75 "printing.pcc"
 #line 78 "printing.pcc"
@@ -130,7 +130,7 @@ ostream& operator << (ostream& f, Pid pid)
 //  Print a literal.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Literal l)
+std::ostream& operator << (std::ostream& f, Literal l)
 {  
 #line 88 "printing.pcc"
 #line 109 "printing.pcc"
@@ -158,7 +158,7 @@ ostream& operator << (ostream& f, Literal l)
          sprintf(buf,"%lf", ((Literal_REALlit *)l)->REALlit);
          f << buf; 
          // ostrstream S(buf,sizeof(buf));
-         // ostream& S2 = S;
+         // std::ostream& S2 = S;
          // S2 << r << ends;
          // f << S.str(); 
          
@@ -201,7 +201,7 @@ ostream& operator << (ostream& f, Literal l)
 //  Print type list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Tys tys)
+std::ostream& operator << (std::ostream& f, Tys tys)
 {  for(Tys t = tys; t; t = t->_2) {  
       f << t->_1; 
       if (t->_2 != 
@@ -220,7 +220,7 @@ nil_1_
 //  Print type variables (i.e. template actual arguments)
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tyvars(ostream& f, Tys tys, Bool is_datatype)
+void print_tyvars(std::ostream& f, Tys tys, Bool is_datatype)
 {  if (tys != 
 #line 133 "printing.pcc"
 #line 133 "printing.pcc"
@@ -237,7 +237,7 @@ nil_1_
 //  Print type variables (i.e. formal template arguments)
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tyvars(ostream& f, TyVars tyvars, char open, char close, Bool header)
+void print_tyvars(std::ostream& f, TyVars tyvars, char open, char close, Bool header)
 {  if (tyvars != 
 #line 144 "printing.pcc"
 #line 144 "printing.pcc"
@@ -262,7 +262,7 @@ nil_1_
 //  Print a tuple type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_tuple(ostream& f, Tys tys)
+void print_tuple(std::ostream& f, Tys tys)
 {  if (pretty_print_ty) {
       f << '(' << tys << ')';
    } else {
@@ -288,7 +288,7 @@ nil_1_
 //  Print a mktuple type
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_mktuple(ostream& f, Tys tys)
+void print_mktuple(std::ostream& f, Tys tys)
 {  if (pretty_print_ty) {
       f << ".[" << tys << ']';
    } else {
@@ -302,7 +302,7 @@ void print_mktuple(ostream& f, Tys tys)
 //  Print a record type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_record(ostream& f, Ids labs, Tys tys, Bool flex)
+void print_record(std::ostream& f, Ids labs, Tys tys, Bool flex)
 {  if (! pretty_print_ty) f << "struct ";
    f << "{ ";
    Tys t; Ids l;
@@ -330,7 +330,7 @@ nil_1_
 //  Print a function parameter.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print_parameter (ostream& f, Ty ty, Id id, Parameter p)
+void print_parameter (std::ostream& f, Ty ty, Id id, Parameter p)
 {  Parameter save = ty_parameter;
    Bool      sp = pretty_print_ty;
    pretty_print_ty = false;
@@ -473,7 +473,7 @@ void print_parameter (ostream& f, Ty ty, Id id, Parameter p)
 //  Method to print a type expression.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Ty ty)
+std::ostream& operator << (std::ostream& f, Ty ty)
 {  Id this_id = 0;
    if (ty_id) { this_id = ty_id; ty_id = 0; }
    ty = deref(ty);
@@ -614,7 +614,7 @@ ostream& operator << (ostream& f, Ty ty)
                         if (((Ty_TYCONty *)ty)->_2->_2) {
                            L4:; 
 #line 350 "printing.pcc"
-                          bug ("operator << (ostream&, Ty)"); 
+                          bug ("operator << (std::ostream&, Ty)");
 #line 350 "printing.pcc"
                         } else {
 #line 321 "printing.pcc"
@@ -755,7 +755,7 @@ ostream& operator << (ostream& f, Ty ty)
 //  Method to print a pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print (ostream& f, Pats pats, Id open, Id close, 
+void print (std::ostream& f, Pats pats, Id open, Id close,
             Bool flex1, Pat p, Bool flex2 = false, 
             Pat len = NOpat, Pat array = NOpat)
 {  f << open;
@@ -785,7 +785,7 @@ nil_1_
 //  Method to print a labeled pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void print (ostream& f, LabPats lab_pats, Bool flex)
+void print (std::ostream& f, LabPats lab_pats, Bool flex)
 {  f << '{';
    for (LabPats ps = lab_pats; ps; ps = ps->_2) {
       f << ps->_1.label << " = " << ps->_1.pat;
@@ -867,7 +867,7 @@ Id close_of2(Cons c)
 //  Method to print a pattern list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pats ps)
+std::ostream& operator << (std::ostream& f, Pats ps)
 {  print(f,ps,"","",false,NOpat); return f; }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -875,7 +875,7 @@ ostream& operator << (ostream& f, Pats ps)
 //  Method to print a pattern.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Pat p)
+std::ostream& operator << (std::ostream& f, Pat p)
 {  
 #line 438 "printing.pcc"
 #line 486 "printing.pcc"
@@ -1227,7 +1227,7 @@ Id mangle (char const * x_1)
 //  Method to print the name of a constructor
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& print_cons (ostream& f, Cons cons)
+std::ostream& print_cons (std::ostream& f, Cons cons)
 {  
 #line 540 "printing.pcc"
 #line 548 "printing.pcc"
@@ -1283,7 +1283,7 @@ ostream& print_cons (ostream& f, Cons cons)
 //  Method to print an expression list
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Exps es)
+std::ostream& operator << (std::ostream& f, Exps es)
 {  for (Exps l = es; l; l = l->_2) {
       f << l->_1; if (l->_2) f << ',';
    }
@@ -1295,7 +1295,7 @@ ostream& operator << (ostream& f, Exps es)
 //  Method to print an expression.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Exp e)
+std::ostream& operator << (std::ostream& f, Exp e)
 {  
 #line 571 "printing.pcc"
 #line 725 "printing.pcc"
@@ -1656,7 +1656,7 @@ ostream& operator << (ostream& f, Exp e)
             } else {
                L21:; 
 #line 725 "printing.pcc"
-              bug("operator << (ostream&, Exp);"); 
+              bug("operator << (std::ostream&, Exp);");
 #line 725 "printing.pcc"
             }
             } break;
@@ -1750,7 +1750,7 @@ ostream& operator << (ostream& f, Exp e)
 //  Method to print an inheritance type.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Inherit i)
+std::ostream& operator << (std::ostream& f, Inherit i)
 {  if (i->qualifiers & QUALvirtual) f << "virtual ";
    return f << i->scope << ' ' << i->super_class;
 }
@@ -1760,7 +1760,7 @@ ostream& operator << (ostream& f, Inherit i)
 //  Method to print a class inheritance list.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Inherits i)
+std::ostream& operator << (std::ostream& f, Inherits i)
 {  for ( ;i; i = i->_2) {
       f << i->_1;
       if (i->_2) f << ", ";
@@ -1773,7 +1773,7 @@ ostream& operator << (ostream& f, Inherits i)
 //  Method to print a cost expression
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Cost c)
+std::ostream& operator << (std::ostream& f, Cost c)
 {  
 #line 759 "printing.pcc"
 #line 762 "printing.pcc"
@@ -1803,7 +1803,7 @@ ostream& operator << (ostream& f, Cost c)
 //  Method to print a qualified identifier.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, QualId id)
+std::ostream& operator << (std::ostream& f, QualId id)
 {  
 #line 773 "printing.pcc"
 #line 776 "printing.pcc"
@@ -1841,7 +1841,7 @@ ostream& operator << (ostream& f, QualId id)
 ///////////////////////////////////////////////////////////////////////////////
 //  Method to print a pattern match rule.
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, MatchRule mr)
+std::ostream& operator << (std::ostream& f, MatchRule mr)
 {  
 #line 785 "printing.pcc"
 #line 794 "printing.pcc"
@@ -1868,7 +1868,7 @@ ostream& operator << (ostream& f, MatchRule mr)
 //  Method to pretty print a decision tree.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& f, Match m)
+std::ostream& operator << (std::ostream& f, Match m)
 {  
 #line 805 "printing.pcc"
 #line 861 "printing.pcc"
@@ -1962,7 +1962,7 @@ ostream& operator << (ostream& f, Match m)
                            default: {
                               L22:; 
 #line 861 "printing.pcc"
-                             bug("operator << (ostream&, Match);"); 
+                             bug("operator << (std::ostream&, Match);");
 #line 861 "printing.pcc"
                               } break;
                         }

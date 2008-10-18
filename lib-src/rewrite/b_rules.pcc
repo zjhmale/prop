@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #define TreeGrammar_Iterators
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/automata/treegram.ph>
 #include <assert.h>
@@ -288,7 +288,7 @@ NonTerminal BURS_RuleSet::add_reduction
 // Print a leaf reduction rule
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::LeafReduction& r) const
+std::ostream& BURS_RuleSet::print (std::ostream& f, const BURS_RuleSet::LeafReduction& r) const
 {  G.print_variable(f, r.lhs);
    f << "\t -> ";
    G.print_functor (f, r.f);
@@ -302,7 +302,7 @@ ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::LeafReduction& r) 
 // Print a reduction rule
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::Reduction& r) const
+std::ostream& BURS_RuleSet::print (std::ostream& f, const BURS_RuleSet::Reduction& r) const
 {  G.print_variable(f, r.lhs);
    f << "\t -> ";
    const char * f_name = G.functor_name(r.f);
@@ -334,7 +334,7 @@ ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::Reduction& r) cons
 //  Print a chain rule
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::ChainRule& r) const
+std::ostream& BURS_RuleSet::print (std::ostream& f, const BURS_RuleSet::ChainRule& r) const
 {  G.print_variable(f,r.lhs);
    f << "\t -> ";
    G.print_variable(f,r.rhs);
@@ -348,7 +348,7 @@ ostream& BURS_RuleSet::print (ostream& f, const BURS_RuleSet::ChainRule& r) cons
 //  Print a rule set
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator <<(ostream& f, const BURS_RuleSet& r) 
+std::ostream& operator <<(std::ostream& f, const BURS_RuleSet& r) 
 {  int i;
    if (r.number_of_leaf_reductions() > 0) f << "Leaf reductions:\n";
    for (i = 0; i < r.number_of_leaf_reductions(); i++) 
@@ -367,7 +367,7 @@ ostream& operator <<(ostream& f, const BURS_RuleSet& r)
 //  Print a non-terminal
 //
 //////////////////////////////////////////////////////////////////////////////
-ostream& BURS_RuleSet::print (ostream& f, NonTerminal n) const
+std::ostream& BURS_RuleSet::print (std::ostream& f, NonTerminal n) const
 {  TreeTerm t = non_term_to_tree[n];
    if (t != wild_term || n == 0)
    {  G.print(f,t);

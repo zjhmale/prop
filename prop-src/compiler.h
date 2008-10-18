@@ -61,7 +61,7 @@ public:
    void     generate     (Decls);     // generate code
    void     emit_header  (const char *, int);
    void     emit_header_text ();
-   ostream& print_report (ostream&);      // print report
+   std::ostream& print_report (std::ostream&);      // print report
    void     print_definitions_as_GDL ();  // print definitions as GDL
 
 protected:

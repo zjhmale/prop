@@ -4,7 +4,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include "basics.h"
 #include "config.h"
 #include "options.h"
@@ -93,7 +93,7 @@ void IncludeDependency::add_dependency (const char * file)
 //
 ///////////////////////////////////////////////////////////////////////////////
 void IncludeDependency::print_dependences ()
-{  cout << options.output_file_name << ":\t" << options.input_file_name << ' ';
+{  std::cout << options.output_file_name << ":\t" << options.input_file_name << ' ';
    int len = strlen(options.output_file_name) + 10 + strlen(options.input_file_name);
    IncludeDependency * d;
    for (d = dependences; d; d = d->next)
@@ -101,9 +101,9 @@ void IncludeDependency::print_dependences ()
       if (file_name[0] == '.' && file_name[1] == PATH_SEPARATOR) 
           file_name += 2;
       int this_len = strlen(file_name);
-      if (this_len + len >= 79) { len = 8; cout << "\\\n\t"; }
-      cout << file_name << ' ';
+      if (this_len + len >= 79) { len = 8; std::cout << "\\\n\t"; }
+      std::cout << file_name << ' ';
       len += this_len + 1;
    }
-   cout << '\n';
+   std::cout << '\n';
 }

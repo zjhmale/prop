@@ -10,7 +10,7 @@
 //  This file implements the meta-syntax compiler. 
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "metasyntax.h"
 #include "ir.h"
 #include "ast.h"
@@ -138,7 +138,7 @@ void MetaSyntaxCompiler::flush_grammar (size_t memory_needed)
 //  Method to generate a report of all the grammars generated.
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& MetaSyntaxCompiler::print_report(ostream& f)
+std::ostream& MetaSyntaxCompiler::print_report(std::ostream& f)
 {   
     return f;
 }

@@ -10,7 +10,7 @@
 
 #include "basics.h"
 
-#pragma interface
+//#pragma interface
 
 template <class T>
    int length (

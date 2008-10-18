@@ -11,7 +11,7 @@
 //  SETL-style collection types.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "collection.h"
 #include "type.h"
 

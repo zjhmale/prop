@@ -83,8 +83,8 @@ public:
    //  Compilation and code emission
    ///////////////////////////////////////////////////////////////////////////
            void     compile  (const TreeGrammar&);
-   virtual ostream& gen_code (ostream&, const char name[]) const;
-   virtual ostream& print_report (ostream&) const;
+   virtual std::ostream& gen_code (std::ostream&, const char name[]) const;
+   virtual std::ostream& print_report (std::ostream&) const;
 
    ///////////////////////////////////////////////////////////////////////////
    // Advance one state within the tree matching automaton

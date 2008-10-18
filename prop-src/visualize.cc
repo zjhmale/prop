@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdarg.h>
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include "options.h"
 #include "compiler.h"
@@ -53,12 +53,13 @@ void PropVisualizer::add_label(const char * fmt, ...)
 //
 //////////////////////////////////////////////////////////////////////////////
 void PropVisualizer::make_label() 
-{  label_text << ends;
+{  label_text << std::ends;
 
    label(text_buffer);
 
    // reset buffer
-   label_text.rdbuf()->seekpos(0);
+   //label_text.rdbuf()->seekpos(0);
+   label_text.seekp(0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -122,7 +123,7 @@ void Compiler::print_definitions_as_GDL()
    {  char vcg_file[256];
       strcpy(vcg_file, options.file_prefix);
       strcat(vcg_file, "vcg");
-      ostream * F = open_output_file(vcg_file);
+      std::ostream * F = open_output_file(vcg_file);
       msg("[Writing vcg output to %s]\n",vcg_file);
       v . print_GDL_on(*F);
       delete F;

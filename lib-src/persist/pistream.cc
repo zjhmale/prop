@@ -26,8 +26,8 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <AD/persist/pstream.h>      // persistent stream base class
 #include <AD/persist/pconvert.h>     // conversions
 #include <AD/persist/ptype.h>        // object types
@@ -51,14 +51,14 @@ void PMarkerLog::clean()
 //////////////////////////////////////////////////////////////////////////////
 //  Class Pistream
 //////////////////////////////////////////////////////////////////////////////
-Pistream:: Pistream(istream& in)
+Pistream:: Pistream(std::istream& in)
    : _in          (in), 
      _marker_log  (new PMarkerLog(256)),
      _next_marker (P_FIRST_MARKER),
      _mem         (0)
    {}
 
-Pistream:: Pistream(istream& in, Mem& m)
+Pistream:: Pistream(std::istream& in, Mem& m)
    : _in          (in), 
      _marker_log  (new PMarkerLog(256)),
      _next_marker (P_FIRST_MARKER),
@@ -76,9 +76,9 @@ Pistream& operator >> (Pistream& s, PObject& obj)
    actual_id.read(s);
    if (expected_id != actual_id) 
    {  char buf [1024];
-      ostrstream ERR(buf,sizeof(buf)); 
+      std::ostrstream ERR(buf,sizeof(buf));
       ERR << "expecting type id " << expected_id 
-          << " but found " << actual_id << ends; 
+          << " but found " << actual_id << std::ends;
       s.error(ERR.str());
       return s;
    }
@@ -97,16 +97,16 @@ PObject * read_object (Pistream& s)
       id.read(s);
       PObject * new_object = PBaseFactory::create_object(id);
       P_OBJECT_MARKER new_marker = s._next_marker--;
-      s._marker_log->objects[new_marker] = new_object;
+      s._marker_log->objects.At(new_marker) = new_object;
       new_object->persist_read(s);
       return new_object;
    } else if (P_IS_MARKER(marker)) {
       if (marker > s._next_marker) {
-         return s._marker_log->objects[marker];
+         return s._marker_log->objects.Get(marker);
       } else {
          char buf [1024];
-         ostrstream ERR(buf,sizeof(buf)); 
-         ERR << "object marker " << marker << " is undefined" << ends;
+         std::ostrstream ERR(buf,sizeof(buf));
+         ERR << "object marker " << marker << " is undefined" << std::ends;
          s.error(ERR.str());
          return 0;
       }
@@ -205,7 +205,7 @@ int Pistream::read(char buf[], int max)
       if (length < 0) length = 0; 
       _in.read(buf,max < length ? max : length);
       if (max > length) buf[length] = '\0';
-      else _in.seekg(streamoff(length - max), ios::cur);
+      else _in.seekg(std::streamoff(length - max), std::ios::cur);
       return length;
    }
 
@@ -230,37 +230,37 @@ void PObjectType::read (Pistream& f)
       int len = f.read(name,sizeof(name)-1);
       if (len >= 0) name[len] = '\0';
       if ((entry = PObjectType::lookup_entry(name)))
-      {  f._marker_log->object_types[id] = entry;
+      {  f._marker_log->object_types.At(id) = entry;
          // cerr << "Name " << name << ", id " << id << " = " << *this << '\n';
       } else
       {  char buf[1024];
-         ostrstream ERR(buf,sizeof(buf));
-         ERR << "unknown persistent type name " << name << ends;
+         std::ostrstream ERR(buf,sizeof(buf));
+         ERR << "unknown persistent type name " << name << std::ends;
          f.error(ERR.str());
       }
    } else if (tag == P_OBJECT_ID_TAG)
    {  // check id
       if (f._marker_log->object_types.hasKey(id))
-      {  entry = f._marker_log->object_types[id];
+      {  entry = f._marker_log->object_types.Get(id);
          // cerr << "Id " << id << " = " << *this << '\n';
          if (entry == 0)
          {  char buf[1024];
-            ostrstream ERR(buf,sizeof(buf));
-            ERR << "undefined persistent id " << id << ends;
+            std::ostrstream ERR(buf,sizeof(buf));
+            ERR << "undefined persistent id " << id << std::ends;
             f.error(ERR.str());
          }
       } else
       {  char buf[1024];
-         ostrstream ERR(buf,sizeof(buf));
-         ERR << "bad persistent id " << id << ends;
+         std::ostrstream ERR(buf,sizeof(buf));
+         ERR << "bad persistent id " << id << std::ends;
          f.error(ERR.str());
       }
    } else
    {  // bad tag error here
       char buf[1024];
-      ostrstream ERR(buf,sizeof(buf));
+      std::ostrstream ERR(buf,sizeof(buf));
       ERR << "bad persistent stream tag " << tag 
-          << "(id = " << id << ')' << ends;
+          << "(id = " << id << ')' << std::ends;
       f.error(ERR.str());
       entry = 0;
    }

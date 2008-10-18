@@ -25,7 +25,7 @@
 #ifndef bottomup_prioritized_reducer_generator_h
 #define bottomup_prioritized_reducer_generator_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treegen.h>  // bottom up tree matcher generator
 
 //////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    // Code emission
    ///////////////////////////////////////////////////////////////////////////
-   ostream& gen_code(ostream&, const char []) const;
+   std::ostream& gen_code(std::ostream&, const char []) const;
 };
 
 #endif

@@ -13,7 +13,7 @@
 //  This test implements a rewrite based simplifier for the abstract
 //  syntax of a toy imperative language.  
 /////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////
 //  The following recursive type equations define the abstract syntax
@@ -145,7 +145,7 @@ template <class T> inline int untag(const a_List<T> * x) { return x ? 1 : 0; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-template <class T> extern ostream& operator<<(ostream&, List(T));
+template <class T> extern std::ostream& operator<<(std::ostream&, List(T));
 template <class T> extern PrettyOStream& operator<<(PrettyOStream&, List(T));
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -174,7 +174,7 @@ template <class T> inline a_List<T> * list_1_ (T x_1)
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, BOOL);
+extern std::ostream& operator<<(std::ostream&, BOOL);
 extern PrettyOStream& operator<<(PrettyOStream&, BOOL);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -203,7 +203,7 @@ inline int untag(const a_Exp * x) { return x->tag__; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, Exp);
+extern std::ostream& operator<<(std::ostream&, Exp);
 extern PrettyOStream& operator<<(PrettyOStream&, Exp);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -363,7 +363,7 @@ inline Exp_var * _var(const a_Exp * _x_) { return (Exp_var *)_x_; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, BinOp);
+extern std::ostream& operator<<(std::ostream&, BinOp);
 extern PrettyOStream& operator<<(PrettyOStream&, BinOp);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -371,7 +371,7 @@ extern PrettyOStream& operator<<(PrettyOStream&, BinOp);
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, UnaryOp);
+extern std::ostream& operator<<(std::ostream&, UnaryOp);
 extern PrettyOStream& operator<<(PrettyOStream&, UnaryOp);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -399,7 +399,7 @@ inline int untag(const a_Stmt * x) { return x->tag__; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, Stmt);
+extern std::ostream& operator<<(std::ostream&, Stmt);
 extern PrettyOStream& operator<<(PrettyOStream&, Stmt);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -538,7 +538,7 @@ inline int untag(const a_Type * x) { return x->tag__; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, Type);
+extern std::ostream& operator<<(std::ostream&, Type);
 extern PrettyOStream& operator<<(PrettyOStream&, Type);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -693,7 +693,7 @@ inline int untag(const a_Decl *) { return 0; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, Decl);
+extern std::ostream& operator<<(std::ostream&, Decl);
 extern PrettyOStream& operator<<(PrettyOStream&, Decl);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -733,7 +733,7 @@ inline int untag(const a_LabeledType *) { return 0; }
 //
 ///////////////////////////////////////////////////////////////////////////////
 class PrettyOStream;
-extern ostream& operator<<(ostream&, LabeledType);
+extern std::ostream& operator<<(std::ostream&, LabeledType);
 extern PrettyOStream& operator<<(PrettyOStream&, LabeledType);
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -788,7 +788,7 @@ inline a_LabeledType * labeled_type (Id x_1, Type x_2)
 // Pretty printing methods for List<Type>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Type> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Type> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Type> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -802,7 +802,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Type> *   obj__);
 // Pretty printing methods for List<Stmt>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Stmt> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Stmt> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Stmt> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -816,7 +816,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Stmt> *   obj__);
 // Pretty printing methods for List<LabeledType>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<LabeledType> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<LabeledType> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<LabeledType> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -830,7 +830,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<LabeledType> *   obj__
 // Pretty printing methods for List<Decl>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Decl> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Decl> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Decl> *   obj__);
 
 #line 122 "prog.pC"
@@ -853,7 +853,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Decl> *   obj__);
 // Pretty printing methods for Exp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Exp  obj__);
+std::ostream& operator << (std::ostream& strm__, Exp  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -867,7 +867,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__);
 // Pretty printing methods for BOOL
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, BOOL  obj__);
+std::ostream& operator << (std::ostream& strm__, BOOL  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, BOOL  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -881,7 +881,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, BOOL  obj__);
 // Pretty printing methods for BinOp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, BinOp  obj__);
+std::ostream& operator << (std::ostream& strm__, BinOp  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, BinOp  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -895,7 +895,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, BinOp  obj__);
 // Pretty printing methods for UnaryOp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, UnaryOp  obj__);
+std::ostream& operator << (std::ostream& strm__, UnaryOp  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, UnaryOp  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -909,7 +909,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, UnaryOp  obj__);
 // Pretty printing methods for Stmt
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Stmt  obj__);
+std::ostream& operator << (std::ostream& strm__, Stmt  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, Stmt  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -923,7 +923,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Stmt  obj__);
 // Pretty printing methods for Type
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Type  obj__);
+std::ostream& operator << (std::ostream& strm__, Type  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, Type  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -937,7 +937,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Type  obj__);
 // Pretty printing methods for Decl
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Decl  obj__);
+std::ostream& operator << (std::ostream& strm__, Decl  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, Decl  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -951,7 +951,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Decl  obj__);
 // Pretty printing methods for LabeledType
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, LabeledType  obj__);
+std::ostream& operator << (std::ostream& strm__, LabeledType  obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, LabeledType  obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -965,7 +965,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, LabeledType  obj__);
 // Pretty printing methods for List<Type>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Type> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Type> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Type> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -979,7 +979,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Type> *   obj__);
 // Pretty printing methods for List<Stmt>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Stmt> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Stmt> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Stmt> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -993,7 +993,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Stmt> *   obj__);
 // Pretty printing methods for List<LabeledType>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<LabeledType> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<LabeledType> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<LabeledType> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1007,7 +1007,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<LabeledType> *   obj__
 // Pretty printing methods for List<Decl>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Decl> *   obj__);
+std::ostream& operator << (std::ostream& strm__, a_List<Decl> *   obj__);
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Decl> *   obj__);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1021,7 +1021,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, a_List<Decl> *   obj__);
 // Pretty printing methods for Exp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Exp  obj__)
+std::ostream& operator << (std::ostream& strm__, Exp  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__)
@@ -1075,7 +1075,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Exp  obj__)
 // Pretty printing methods for BOOL
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, BOOL  obj__)
+std::ostream& operator << (std::ostream& strm__, BOOL  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, BOOL  obj__)
@@ -1105,7 +1105,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, BOOL  obj__)
 // Pretty printing methods for BinOp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, BinOp  obj__)
+std::ostream& operator << (std::ostream& strm__, BinOp  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, BinOp  obj__)
@@ -1168,7 +1168,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, BinOp  obj__)
 // Pretty printing methods for UnaryOp
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, UnaryOp  obj__)
+std::ostream& operator << (std::ostream& strm__, UnaryOp  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, UnaryOp  obj__)
@@ -1198,7 +1198,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, UnaryOp  obj__)
 // Pretty printing methods for Stmt
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Stmt  obj__)
+std::ostream& operator << (std::ostream& strm__, Stmt  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, Stmt  obj__)
@@ -1264,7 +1264,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Stmt  obj__)
 // Pretty printing methods for Type
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Type  obj__)
+std::ostream& operator << (std::ostream& strm__, Type  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, Type  obj__)
@@ -1318,7 +1318,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Type  obj__)
 // Pretty printing methods for Decl
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, Decl  obj__)
+std::ostream& operator << (std::ostream& strm__, Decl  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, Decl  obj__)
@@ -1344,7 +1344,7 @@ PrettyOStream& operator << (PrettyOStream& strm__, Decl  obj__)
 // Pretty printing methods for LabeledType
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, LabeledType  obj__)
+std::ostream& operator << (std::ostream& strm__, LabeledType  obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, LabeledType  obj__)
@@ -1375,7 +1375,7 @@ template int untag(const a_List<Type> *);
 // Pretty printing methods for List<Type>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Type> *   obj__)
+std::ostream& operator << (std::ostream& strm__, a_List<Type> *   obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Type> *   obj__)
@@ -1414,7 +1414,7 @@ template int untag(const a_List<Stmt> *);
 // Pretty printing methods for List<Stmt>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Stmt> *   obj__)
+std::ostream& operator << (std::ostream& strm__, a_List<Stmt> *   obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Stmt> *   obj__)
@@ -1453,7 +1453,7 @@ template int untag(const a_List<LabeledType> *);
 // Pretty printing methods for List<LabeledType>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<LabeledType> *   obj__)
+std::ostream& operator << (std::ostream& strm__, a_List<LabeledType> *   obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<LabeledType> *   obj__)
@@ -1492,7 +1492,7 @@ template int untag(const a_List<Decl> *);
 // Pretty printing methods for List<Decl>
 //
 ///////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& strm__, a_List<Decl> *   obj__)
+std::ostream& operator << (std::ostream& strm__, a_List<Decl> *   obj__)
 {  PrettyOStream S(strm__); S << obj__; return strm__; }
 
 PrettyOStream& operator << (PrettyOStream& strm__, a_List<Decl> *   obj__)

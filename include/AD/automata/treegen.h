@@ -25,7 +25,7 @@
 #ifndef deterministic_finite_state_tree_automata_generator_h
 #define deterministic_finite_state_tree_automata_generator_h
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/automata/treeauto.h>  // Tree automata
 #include <AD/automata/treegram.h>  // Tree grammars
 
@@ -73,8 +73,8 @@ public:
    //  Compilation and table emission
    ///////////////////////////////////////////////////////////////////////////
    virtual void     compile      (TreeGrammar&);
-   virtual ostream& print_report (ostream&) const;
-   virtual ostream& print_state  (ostream&, State) const;
+   virtual std::ostream& print_report (std::ostream&) const;
+   virtual std::ostream& print_state  (std::ostream&, State) const;
 
    ///////////////////////////////////////////////////////////////////////////
    //  Name of algorithm

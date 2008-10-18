@@ -316,13 +316,13 @@ void LR0::build(const Grammar& G, const OpPrecedence& prec)
       // Compute the states
       //
       for (state = 1; state <= max_state; state++) {
-         ItemSet& s = *new_states[state];
+         ItemSet& s = *new_states.Get(state);
 
          //
          // Compute the goto function
          //
          State * delta = (State *) mem.m_alloc(sizeof(State) * (G.max_non_terminal() + 1));
-         trans[ state ] = delta;
+         trans.At(state) = delta;
          goto0(s, G, num_to_items, 
                non_term_to_item, non_term_to_one_item,
                is_used, new_s);
@@ -344,16 +344,16 @@ void LR0::build(const Grammar& G, const OpPrecedence& prec)
                   // state is new
                   new_state_num = ++max_state;
                   item_sets.insert( new_s[X], new_state_num );
-                  new_states[ new_state_num ] = new_s[X];
+                  new_states.At(new_state_num) = new_s[X];
                   new_s[X] = new (mem, number_of_items) ItemSet;
-                  pred[new_state_num] = 0;
+                  pred.At(new_state_num) = 0;
                } else {
                   // state is old; reuse it
                   new_state_num = item_sets.value(new_state); 
                }
                delta[X] = new_state_num;
-               pred[new_state_num] = 
-                  new (mem, state, pred[new_state_num]) SLinkList<State>;
+               pred.At(new_state_num) =
+                  new (mem, state, pred.Get(new_state_num)) SLinkList<State>;
             }
          }
       }

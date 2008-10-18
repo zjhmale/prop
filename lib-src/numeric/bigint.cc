@@ -31,7 +31,7 @@
 // Integer class and SmallTalk's LargeInteger class.   
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <new.h>
@@ -66,7 +66,7 @@ inline unsigned long abs(long a) { return a > 0 ? a : -a; }
 //  Default error handler
 //////////////////////////////////////////////////////////////////////////////
 static void bigint_error(const char message[])
-{  cerr << "BigInt error: " << message << '\n';
+{  std::cerr << "BigInt error: " << message << '\n';
    exit(1);
 }
 
@@ -1012,7 +1012,7 @@ char * BigInt::makeString(char buf[], size_t length, unsigned int base) const
 //////////////////////////////////////////////////////////////////////////////
 // Print a BigInt
 //////////////////////////////////////////////////////////////////////////////
-ostream& operator << (ostream& out, const BigInt& n)
+std::ostream& operator << (std::ostream& out, const BigInt& n)
 {  char buffer[256];
    char * buf;
    size_t len = n.D->len * 5 + 3;

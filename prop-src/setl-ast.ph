@@ -104,15 +104,15 @@ where type LabSig     = { id : Id, sig : Sig } // labeled signature
 //  Pretty printing routines for definitions, statements and generators
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, Def);
-extern ostream& operator << (ostream&, Defs);
-extern ostream& operator << (ostream&, Sig);
-extern ostream& operator << (ostream&, Sigs);
-extern ostream& operator << (ostream&, Stmt);
-extern ostream& operator << (ostream&, Stmts);
-extern ostream& operator << (ostream&, LabSig);
-extern ostream& operator << (ostream&, LabSigs);
-extern ostream& operator << (ostream&, Generator);
-extern ostream& operator << (ostream&, Generators);
+extern std::ostream& operator << (std::ostream&, Def);
+extern std::ostream& operator << (std::ostream&, Defs);
+extern std::ostream& operator << (std::ostream&, Sig);
+extern std::ostream& operator << (std::ostream&, Sigs);
+extern std::ostream& operator << (std::ostream&, Stmt);
+extern std::ostream& operator << (std::ostream&, Stmts);
+extern std::ostream& operator << (std::ostream&, LabSig);
+extern std::ostream& operator << (std::ostream&, LabSigs);
+extern std::ostream& operator << (std::ostream&, Generator);
+extern std::ostream& operator << (std::ostream&, Generators);
 
 #endif

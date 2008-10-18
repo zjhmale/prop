@@ -182,7 +182,7 @@ static TreePat * collect_subterms
    if (previous) return memo.key(previous);
    a_term = new (pool,a->tag(),a->arity(),D.p.subterms) TreePat;
    memo.insert(a_term, new_state);  
-   states[new_state++] = a_term;
+   states.At(new_state++) = a_term;
    return a_term;
 }
 
@@ -239,7 +239,7 @@ static TreePat * unify
       { answer = unifiers.key(last); goto update_table; }
    answer = new (pool, a->tag(),a->arity(),D.p.subterms) TreePat;
    unifiers[answer] = new_state;  
-   states[new_state++] = answer;
+   states.At(new_state++) = answer;
 
 update_table:
 
@@ -317,15 +317,15 @@ static UnifierSet *** compute_relevant_sets
                if ((*set)(j) & (1 << k)) stack.push(s);
          }
          for (j = 2; j < stack.size(); j++) {
-            TreePat * a = states[stack[j]];
+            TreePat * a = states.Get(stack[j]);
             for (k = 1; k < j; k++) {
-               TreePat * b = states[stack[k]];
+               TreePat * b = states.Get(stack[k]);
                if (nonunifiable(a,b)) continue;
                TreePat * u = unify( a, b, unifiers, memo, pool, 
                                     states, number_of_states );
                if (u == Fail) continue;
                s = unifiers[u]; 
-               if (! (*set)[s]) { set->setUnion(s); stack.push(s); }
+               if (! (*set).operator[](s)) { set->setUnion(s); stack.push(s); }
             }
          }
       }
@@ -428,7 +428,7 @@ inline State approx
    // TreePat * p = states[t];
    while (! Q.is_empty()) {
       t = Q.remove_head();
-      if (S[t]) return t;
+      if (S.operator[](t)) return t;
       for (StateList * l = ordering[t]; l; l = l->tl) 
          Q.insert_tail(l->s);
    }
@@ -602,14 +602,14 @@ void BottomUp::compile (TreePatterns& patterns)
       State indices [TreeGrammar::Max_arity];
       for (i = top; i >= 0; i--) 
          { indices[i] = bounds[i] - 1; 
-           D.p.subterms[i] = states[mus[i][bounds[i] - 1]]; }
+           D.p.subterms[i] = states.Get(mus[i][bounds[i] - 1]); }
       do {
          //State d = approx(&D.p, unifiers, ordering, states, approxMemo, pool);
          for (i = top; i >= 0; i--) {
             if (indices[i] > 0) { 
-               D.p.subterms[i] = states[mus[i][--indices[i]]]; break;
+               D.p.subterms[i] = states.Get(mus[i][--indices[i]]); break;
             } else {
-               D.p.subterms[i] = states[mus[i][indices[i] = bounds[i] - 1]];
+               D.p.subterms[i] = states.Get(mus[i][indices[i] = bounds[i] - 1]);
             }
          }
       } while (i >= 0);

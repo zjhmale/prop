@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <limits.h>
-#include <iostream.h>
+#include <iostream>
 #include <strstream.h>
 #include <AD/contain/bitset.h>
 #include <AD/automata/lexergen.h>
@@ -53,7 +53,7 @@ const char * MatchCompiler::current_rule_text() const
 {  if (current_rule == 0) bug("MatchCompiler::current_rule_text()\n");
    char buffer[4096];
    ostrstream stream(buffer,sizeof(buffer));
-   ostream& s = stream;
+   std::ostream& s = stream;
    s << current_rule << ends;
    buffer[sizeof(buffer)-1] = '\0';
    return make_quoted_string(buffer);
@@ -666,7 +666,7 @@ void MatchCompiler::instrument_trace(MatchRules rules)
       {  MATCHrule(id,pat,guard,cost,action): 
          {  char buffer[4096];
             ostrstream stream(buffer, sizeof(buffer));
-            ostream& s = stream;
+            std::ostream& s = stream;
             s << r << ends;
             action =
               #[ EXPdecl(
@@ -997,9 +997,9 @@ void MatchCompiler::gen_fun_def (FunDefs fundefs)
          {  FUNdef(id, arg_ty, return_ty, rules):
             {  arg_ty = type_match_rules(rules);
                char buf[1024];
-               ostrstream b(buf,sizeof(buf));
-               ostream& s = b;
-               s << id << ends;
+               std::ostrstream b(buf,sizeof(buf));
+               std::ostream& s = b;
+               s << id << std::ends;
                Ty ret_ty = return_ty == NOty ? void_ty : return_ty;
                pr ("%^%t %b;\n", 
                    ret_ty, buf, arg_ty, "1", TYformal);
@@ -1020,9 +1020,9 @@ void MatchCompiler::gen_fun_def (FunDefs fundefs)
                check_refutable(m, rules, MATCHnone);
                Ty ret_ty = return_ty == NOty ? void_ty : return_ty;
                char buf[1024];
-               ostrstream b(buf,sizeof(buf));
-               ostream& s = b;
-               s << id << ends;
+               std::ostrstream b(buf,sizeof(buf));
+               std::ostream& s = b;
+               s << id << std::ends;
                pr ("%^%t %b\n{\n%+", 
                    ret_ty, buf, arg_ty, "1", TYformal);
                gen(m);

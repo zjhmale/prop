@@ -130,8 +130,8 @@ public:
    ///////////////////////////////////////////////////////////////////////////
    //  Emit the tables as C++ code. 
    ///////////////////////////////////////////////////////////////////////////
-   virtual ostream& gen_code              (ostream&, const char []) const;
-   virtual ostream& gen_check_next_tables (ostream&, const char [],
+   virtual std::ostream& gen_code              (std::ostream&, const char []) const;
+   virtual std::ostream& gen_check_next_tables (std::ostream&, const char [],
 	const char * mytype = 0) const;
 };
 

@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////
 
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/generic/generic.h>  // Generic definitions
 
 #define Complex Complex_

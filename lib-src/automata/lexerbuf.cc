@@ -22,7 +22,7 @@
 // 1994-1995
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/automata/lexerbuf.h>
 #include <AD/strings/charesc.h>
@@ -78,13 +78,13 @@ void LexerBuffer::set_buffer(char * buf) { set_buffer(buf,strlen(buf)); }
 //  format.
 //////////////////////////////////////////////////////////////////////////////
 void LexerBuffer::error(const char * start, const char * stop)
-{  cerr << "[ Scanner error in context " << current_context << ": '";
+{  std::cerr << "[ Scanner error in context " << current_context << ": '";
    char buf[32];
    for ( ;start < stop; start++) {
      print_char(buf,*start);
-     cerr << buf;
+     std::cerr << buf;
    }
-   cerr << "' ]\n";
+   std::cerr << "' ]\n";
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@ static const Quark _p_a_r_s_e_rco_c_c_Q1("this");
 //                                      Allen Leung (leunga@cs.nyu.edu)
 ///////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <AD/strings/charesc.h>
 #include <AD/strings/quark.h>
 #include "options.h"

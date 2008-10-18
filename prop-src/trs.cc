@@ -14,7 +14,7 @@
 //  for partial evaluting a TRS
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include "trs.h"
 #include "ir.h"
@@ -825,7 +825,7 @@ Term * TRS::make_term(Exps exps)
 //  Method to print a term 
 //
 ///////////////////////////////////////////////////////////////////////////////
-void TRS::print (ostream& s, Term term) const
+void TRS::print (std::ostream& s, Term term) const
 {  
 #line 302 "trs.pcc"
 #line 336 "trs.pcc"
@@ -965,7 +965,7 @@ void TRS::print (ostream& s, Term term) const
 //  Method to print a TRS 
 //
 ///////////////////////////////////////////////////////////////////////////////
-void TRS::print (ostream& s) const
+void TRS::print (std::ostream& s) const
 {  s << "\n\nBottom-up term rewriting system:\n";
    Bool save = pretty_print_exp;
    pretty_print_exp = true;

@@ -22,12 +22,12 @@
 // 1994-1997
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <AD/strings/charesc.h>
 #include <AD/pretty/postream.h>
 
-PrettyOStream::PrettyOStream() : the_stream(&cout) { init(); }
-PrettyOStream::PrettyOStream(ostream& s) : the_stream(&s) { init(); }
+PrettyOStream::PrettyOStream() : the_stream(&std::cout) { init(); }
+PrettyOStream::PrettyOStream(std::ostream& s) : the_stream(&s) { init(); }
 PrettyOStream::~PrettyOStream() { init(); }
 
 void PrettyOStream::init()
@@ -36,8 +36,8 @@ void PrettyOStream::init()
    spaces_in_tab = 3;
 }
 
-ostream& PrettyOStream::set_stream(ostream& s)
-{  ostream * old = the_stream;
+std::ostream& PrettyOStream::set_stream(std::ostream& s)
+{  std::ostream * old = the_stream;
    the_stream = &s;
    return *old;
 }

@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <AD/trees/trees.h>
 
@@ -102,7 +102,7 @@ BinaryNode * BasicTree::prepred(Ix i) const
 //  Error reporting
 ////////////////////////////////////////////////////////////////////////////
 void BasicTree::error(const char method[]) const
-{  cerr << "Invalid operation: " << method << '\n';
+{  std::cerr << "Invalid operation: " << method << '\n';
    exit(1);
 }
 

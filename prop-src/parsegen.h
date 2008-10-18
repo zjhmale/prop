@@ -263,14 +263,14 @@ extern a_PrecRule * PRECrule (PrecMode x_1, int x_2, ProductionSymbols x_3);
 //  Pretty printing methods.
 //
 ///////////////////////////////////////////////////////////////////////////////
-extern ostream& operator << (ostream&, ProductionSymbol);
-extern ostream& operator << (ostream&, ProductionSymbols);
-extern ostream& operator << (ostream&, PrecRule);
-extern ostream& operator << (ostream&, PrecRules);
-extern ostream& operator << (ostream&, BNF);
-extern ostream& operator << (ostream&, BNFs);
-extern ostream& operator << (ostream&, GramExp);
-extern ostream& operator << (ostream&, GramExps);
+extern std::ostream& operator << (std::ostream&, ProductionSymbol);
+extern std::ostream& operator << (std::ostream&, ProductionSymbols);
+extern std::ostream& operator << (std::ostream&, PrecRule);
+extern std::ostream& operator << (std::ostream&, PrecRules);
+extern std::ostream& operator << (std::ostream&, BNF);
+extern std::ostream& operator << (std::ostream&, BNFs);
+extern std::ostream& operator << (std::ostream&, GramExp);
+extern std::ostream& operator << (std::ostream&, GramExps);
 
 ///////////////////////////////////////////////////////////////////////////////
 //

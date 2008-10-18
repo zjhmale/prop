@@ -45,7 +45,7 @@ void DatatypeHierarchy::generate_print_interface(CodeGen& C)
 	"%^//"
 	"%^%/"
 	"%^class PrettyOStream;"
-        "%^%Hextern ostream& operator<<(ostream&, %s%v);"
+        "%^%Hextern std::ostream& operator<<(std::ostream&, %s%v);"
 	"%^%Hextern PrettyOStream& operator<<(PrettyOStream&, %s%v);",
 	datatype_name, parameters,
 	parameters, datatype_name, parameters,
@@ -103,7 +103,7 @@ void DatatypeHierarchy::generate_print_implementation
    //
    // Generate the ostream based method
    //
-   C.pr("%^ostream& operator << (ostream& strm__, %t obj__)", ty, "");
+   C.pr("%^std::ostream& operator << (std::ostream& strm__, %t obj__)", ty, "");
 
    if (k == EXTERNAL_INSTANTIATION)
       C.pr("%^{  PrettyOStream S(strm__); S << obj__; return strm__; }\n\n");

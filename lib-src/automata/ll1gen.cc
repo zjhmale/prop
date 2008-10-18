@@ -22,7 +22,7 @@
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
 #include <AD/automata/ll1gen.h>   // LL(1) parser generator
 #include <AD/automata/follow.h>   // Follow set computation
@@ -96,6 +96,6 @@ void LL1Gen::compile(const Grammar& G)
 /////////////////////////////////////////////////////////////////////////
 // Code emitter 
 /////////////////////////////////////////////////////////////////////////
-ostream& LL1Gen::gen_code (ostream& out, const char name[]) const
+std::ostream& LL1Gen::gen_code (std::ostream& out, const char name[]) const
 {  return Super::gen_code(out,name);
 }

@@ -3,7 +3,7 @@
 //  These are the routines for code generation after partial evaluation
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include "trs.ph"
 #include "ir.ph"
 #include "ast.ph"
@@ -26,7 +26,7 @@ void TRS::clear_statistics()
 //  Method to print statistics
 //
 ///////////////////////////////////////////////////////////////////////////////
-void TRS::print_report(ostream& log) const
+void TRS::print_report(std::ostream& log) const
 {  print(log);
 
    log << "Number of specializations = " << number_of_specializations 
@@ -40,7 +40,7 @@ void TRS::print_report(ostream& log) const
 //  Method to print the specializations
 //
 ///////////////////////////////////////////////////////////////////////////////
-void TRS::print_specializations(ostream& log) const
+void TRS::print_specializations(std::ostream& log) const
 {  for (Rule r = 0; r < number_of_rules; r++)
    {  MatchRule rule = rule_map[r];
       for (int i = 0; i < num_var_map[r]; i++)
