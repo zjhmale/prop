@@ -1,0 +1,209 @@
+///////////////////////////////////////////////////////////////////////////////
+//  Pretty printing generator.
+///////////////////////////////////////////////////////////////////////////////
+#include "ir.ph"
+#include "ast.ph"
+#include "type.h"
+#include "compiler.h"
+#include "datagen.h"
+
+///////////////////////////////////////////////////////////////////////////////
+//  Generate a pretty printer for a given type.
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_pretty_printer(Bool extern_def, Ty ty, Tys tys)
+{  match (deref_all(ty))
+   {  ty as TYCONty(DATATYPEtycon { id, unit, arg, terms, qualifiers ... }, _):
+      {  if (extern_def) {
+            pr ("%^%/%^// Pretty printer for type %T%^%/"
+                "%^ostream& operator << (ostream&, %t);" 
+                "%^ostream& pretty_print(ostream&, %t, int = 0, int = 0);\n\n",
+                ty, ty, "", ty, "");
+         } else {
+            pr ("%^%/%^// Pretty printer for type %T%^%/"
+                "%^ostream& pretty_print(ostream& _f_, %t, int _tab_, int _prec_)"
+                "%^{%+",
+            ty, ty, "_x_");
+
+            int arity = unit + arg;
+
+            if (arity > 1) pr ("%^switch (%U(_x_)) {%+", ty);
+
+            for (int i = 0; i < arity; i++)
+            {  match (terms[i])
+               {  term as ONEcons { ty, name, print_formats, cons_ty ... }:
+                  {  Ty t = ty == NOty ? NOty : apply_ty(cons_ty,tys);
+                     if (arity > 1) pr ("%^case %*: %+", term, true);
+                     if (print_formats != #[])
+                        gen_formated_printer(term, t, print_formats);
+                     else
+                        gen_default_printer(term, t);
+                     if (arity > 1) pr ("%^break;%-");
+                  }
+               |  _:
+               }
+            }
+         
+            if (arity > 1) pr ("%-%^}");
+            pr ("%^return _f_;%-"
+                "%^}\n\n");
+
+            pr ("%^ostream& operator << (ostream& _f_, %t)" 
+                "%^{ return pretty_print(_f_,_x_); }\n\n",
+                ty, "_x_");
+         }
+      }
+   |  _: // skip
+   }
+}
+///////////////////////////////////////////////////////////////////////////////
+//  Method to print one type component. 
+///////////////////////////////////////////////////////////////////////////////
+void make_printer (DatatypeCompiler& C, Ty ty, Exp e) 
+{  match (deref_all(ty))
+   {  TYCONty(ARRAYtycon (bound as ! NOexp),tys):
+      {  C.pr ("%^{ int _i_;%+"
+               "%^_f_ << '[';"
+               "%^for (_i_ = 0; _i_ < %e; _i_++) {%+", bound);
+         make_printer(C,tys->#1,INDEXexp(e,IDexp("_i_")));
+         C.pr ("%^if (_i_ < %e - 1) _f_ << \", \";", bound); 
+         C.pr ("%-"
+               "%^}"
+               "%^_f_ << ']';"
+               "%-%^}");
+      }
+   |  ty:
+      {  if (has_qual(QUALprintable, ty)) {
+            C.pr("%^pretty_print(_f_, %e, _tab_, _prec_);", e);
+         } else {
+            C.pr("%^_f_ << %e;", e); 
+         }
+      }
+   } 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//  Generate a pretty printer according to the format string.
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_formated_printer(Cons term, Ty ty, PrintFormats fmt)
+{  Tys ty_list;
+   Ids lab_list = #[];
+
+   match (deref_all(ty))
+   {  NOty:                              { ty_list = #[]; }
+   |  TYCONty(TUPLEtycon, tys):          { ty_list = tys; }
+   |  TYCONty(RECORDtycon(labs,_), tys): { ty_list = tys; lab_list = labs; }
+   |  ty:                                { ty_list = #[ ty ]; }
+   }
+
+   int arity = length(ty_list);
+   Tys tys   = ty_list;
+   Ids labs  = lab_list;
+   int index = 1;
+
+   Exp e = select(IDexp("_x_"), term);
+
+   for_each (PrintFormat, f, fmt)
+   {  match (f)
+      {  PFint i: // print the ith element 
+         {  if (lab_list != #[])
+               error("%Lformat #%i used on constructor %s%T\n", 
+                     i, term->name, ty);
+            int j; Tys t;
+            for (t = ty_list, j = 1; t; t = t->#2, j++)
+               if (j == i) {
+                  make_printer(*this, t->#1, DOTexp(e,index_of(i))); break;
+               }
+            if (t == #[]) 
+               error("%Lcomponent #%i not found in constructor %s%T\n", 
+                     i, term->name, ty);
+         }
+      |  PFlabel l: // print label l
+         {  if (lab_list == #[])
+               error("%Lformat #%s used on non-record constructor %s%T\n", 
+                     l, term->name, ty);
+            Ids ls; Tys t;
+            for (ls = lab_list, t = ty_list; ls && t; t = t->#2, ls = ls->#2)
+               if (ls->#1 == l) {
+                  make_printer(*this, t->#1, DOTexp(e,l)); break;
+               }
+            if (t == #[]) 
+               error("%Lcomponent %s not found in constructor %s%T\n", 
+                     l, term->name, ty);
+         }
+      |  PFstring s:    {  pr ("%^_f_ << %s;", s); }
+      |  PFspecial '_': 
+         {  if (tys == #[]) { 
+               error ("%Lillegal format '_' on constructor %s%T\n", 
+                      term->name, ty);
+            } else { 
+               Exp exp;
+               if (arity == 1 && labs == #[]) exp = e;
+               else if (labs) exp = DOTexp(e,labs->#1);
+               else exp = DOTexp(e,index_of(index));
+               make_printer(*this, tys->#1, exp);
+               tys = tys->#2;
+               if (labs) labs = labs->#2;
+               index++;
+            }
+         }
+      |  PFspecial '{':
+         {  pr ("%^_tab_ += 3;"
+                "%^_f_ << '\\n';"
+                "%^PrettyPrinter::print_tabs(_f_,_tab_);");
+         }
+      |  PFspecial '}':
+         {  pr ("%^_tab_ -= 3;"
+                "%^_f_ << '\\n';"
+                "%^PrettyPrinter::print_tabs(_f_,_tab_);");
+         }
+      |  PFspecial '/': 
+         {  pr ("%^_f_ << '\\n';"
+                "%^PrettyPrinter::print_tabs(_f_,_tab_);");
+         }
+      |  PFspecial c:
+         {  error ("%Lillegal print format '%c' in constructor %s%T\n", 
+                   (int)c, term->name, ty); 
+         }
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//  Generate a pretty printer using the default format
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_default_printer(Cons term, Ty ty)
+{  if (term->name[0] == '"')
+      pr ("%^_f_ << %s;", term->name); 
+   else
+      pr ("%^_f_ << \"%s\";", term->name); 
+   Exp e = select(IDexp("_x_"), term);
+   if (is_array_constructor(term->name)) 
+      ty = TYCONty(ARRAYtycon(ARROWexp(IDexp("_x_"),"len()")), #[ty]);
+   match (deref_all(ty))
+   {  NOty:  // skip 
+   |  TYCONty(TUPLEtycon, tys):          
+      {  pr ("%^_f_ << '(';");
+         int i = 1;
+         for(Tys t = tys; t; t = t->#2)
+         {  make_printer(*this, t->#1, DOTexp(e,index_of(i)));
+            if (t->#2) pr ("%^_f_ << \", \";");
+            i++;
+         }
+         pr ("%^_f_ << ')';");
+      }
+   |  TYCONty(RECORDtycon(labs,_), tys): 
+      {  pr ("%^_f_ << '{';");
+         Ids l; Tys t;
+         for(l = labs, t = tys; t; l = l->#2, t = t->#2)
+         {  pr ("%^_f_ << \"%s = \";", l->#1);
+            make_printer(*this, t->#1, DOTexp(e,l->#1));
+            if (t->#2) pr ("%^_f_ << \", \";");
+         }
+         pr ("%^_f_ << '}';");
+      }
+   |  ty: {  pr ("%^_f_ << '(';"); 
+             make_printer(*this, ty, e); 
+             pr ("%^_f_ << ')';"); 
+          }
+   }
+}

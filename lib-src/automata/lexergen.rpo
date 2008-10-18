@@ -1,0 +1,18 @@
+M lexergen.cc
+D /home/leunga/src/prop-2.3.6/lib-src/automata
+A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
+O value__t11DCHashTable2ZP10FastBitSetZUsPv
+O lookup__Ct11DCHashTable2ZP10FastBitSetZUsRCP10FastBitSet
+O grow__t8VarArray1Zsi
+O hasKey__Ct8VarArray1Zsi
+O __vc__t8VarArray1Zsi
+O grow__t8VarArray1ZP10FastBitSeti
+O hasKey__Ct8VarArray1ZP10FastBitSeti
+O __vc__t8VarArray1ZP10FastBitSeti
+O insert__t11DCHashTable2ZP10FastBitSetZUsRCP10FastBitSetRCUs
+O __t8VarArray1Zsiii
+O _._t8VarArray1Zs
+O __t8VarArray1ZP10FastBitSetiii
+O _._t8VarArray1ZP10FastBitSet
+O __t11DCHashTable2ZP10FastBitSetZUsidd
+O _._t11DCHashTable2ZP10FastBitSetZUs

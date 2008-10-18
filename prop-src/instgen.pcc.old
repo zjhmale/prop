@@ -1,0 +1,402 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file handles datatype instantiation processing.
+//
+///////////////////////////////////////////////////////////////////////////////
+#include "ir.ph"
+#include "ast.ph"
+#include "datagen.h"
+#include "type.h"
+#include "hashtab.h"
+#include "options.h"
+#include <AD/strings/quark.h>
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Equality and hashing on cons/tys pairs
+//
+///////////////////////////////////////////////////////////////////////////////
+unsigned int id_tys_hash(HashTable::Key a)
+{  Pair<Id,Tys> key = (Pair<Id,Tys>)a;
+   return (unsigned int)key->fst + tys_hash(key->snd);
+}
+Bool id_tys_equal(HashTable::Key a, HashTable::Key b)
+{  Pair<Id,Tys> x = (Pair<Id,Tys>)a;
+   Pair<Id,Tys> y = (Pair<Id,Tys>)b;
+   return x->fst == y->fst && tys_equal(x->snd,y->snd);
+}
+
+unsigned int pid_hash(Pid pid)
+{  match (pid)
+   {  PERSISTid id:  { return string_hash(id); }
+   |  PERSISTnone:   { return 1235; }
+   }
+}
+
+Bool pid_equal(Pid a, Pid b)
+{  match (a) and (b)
+   {  PERSISTid  a, PERSISTid  b: { return string_equal(a,b); }
+   |  _,            _:            { return false; }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Global hashtables to store mapping from types to persistent Id's
+//  and vice versa.
+//
+///////////////////////////////////////////////////////////////////////////////
+HashTable type_pid_map(id_tys_hash, id_tys_equal);
+HashTable pid_type_map(pid_hash, pid_equal);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Enter a new persistent id entry
+//
+///////////////////////////////////////////////////////////////////////////////
+void update_persistent(Id id, Tys tys, Pid pid)
+{  Pair<Id,Tys> key = pair(id,tys);
+   HashTable::Entry * e1 = type_pid_map.lookup((HashTable::Key)key);
+   HashTable::Entry * e2 = pid_type_map.lookup((HashTable::Key)pid);
+   if (e1)
+   {  error ("%Lpersistence redefined for type %s%P\n",id,tys);
+   }
+   if (e2)
+   {  Pair<Id,Tys> previous = (Pair<Id,Tys>)(e2->v);
+      error ("%Lpersistence pid %Q already allocated for type %s%P\n",
+             pid, previous->fst, previous->snd);
+   }
+   if (e1 == 0 && e2 == 0)
+   {  type_pid_map.insert(key,(HashTable::Value)pid);
+      pid_type_map.insert((HashTable::Key)pid,key);
+   } 
+
+   // add persistent qualifier to the constructor's type
+   match (lookup_ty(id))
+   {  DATATYPEty ({ qualifiers ... },_): { qualifiers |= QUALpersistent; }
+   |  _: { error("%Ltype %s%P is not a datatype\n",id,tys); }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Lookup a new persistent id entry
+//
+///////////////////////////////////////////////////////////////////////////////
+Pid lookup_persistent(Id id, Tys tys)
+{  Pair<Id,Tys> key = pair(id,tys);
+   HashTable::Entry * e1 = type_pid_map.lookup((HashTable::Key)key);
+   if (e1)
+   {  return value_of(Pid, type_pid_map, e1); }    
+   else
+   {  error ("%Lpersist object id is undefined for %s%P\n",id,tys);
+      return PERSISTnone; 
+   } 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate datatype instantiate code.
+//
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::instantiate_datatypes(Bool extern_def, Tys tys)
+{  
+   for_each(Ty, ty, tys)
+   {  match (ty)
+      {  TYCONty (IDtycon id, args):
+         {  match (lookup_ty(id))
+            {  TYCONty(tycon as DATATYPEtycon 
+                       { id, tyvars, polyty, qualifiers, opt, unit, arg, 
+                         inherit, terms ... },_):
+               {  if ((qualifiers & QUALview) == 0) 
+                     instantiate_datatype
+                       (extern_def, id, tyvars, args, unit, arg, 
+                        qualifiers, opt, polyty,inherit, terms);
+               }
+            |  NOty: { error ("%Ltype %T is undefined\n", ty); }
+            |  _: { error("%Ltype %T is not a datatype\n", ty); }
+            }
+         }
+      |  _: { error ("%Ltype %T is undefined\n", ty); }
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Instantiate one datatype
+//
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::instantiate_datatype
+   (Bool extern_def, Id id, TyVars tyvars, Tys tys, int unit, 
+    int arg, int qual, int opt, Ty polyty, Inherits inherits, Cons terms[])
+{  int arity = unit + arg;
+
+   // Generate inference interface.
+   if (qual & QUALprintable)
+      gen_pretty_printer(extern_def, deref_all(TYCONty(IDtycon(id),tys)), tys);
+
+   // Generate inference interface.
+   if ((qual & QUALrelation) && ! extern_def) {
+      pr ("%^%/%^// Relation class %s interface%^%/"
+          "%^Fact::RelTag a_%s::relation_tag = 0;"
+          "%^static InitialiseFact %s_dummy__(a_%s::relation_tag);"
+          "%^Fact::RelTag a_%s::get_tag() const { return a_%s::relation_tag; }\n\n",
+          id, id, id, id, id, id);
+   }
+
+   // Generate garbage collection tracing methods.
+   // Generate persistence read/write methods.
+   Bool has_gc = false;
+   Bool has_persistence = false;
+
+   if (!(opt & OPTsubclassless) && arg > 0) {
+      if (qual & QUALcollectable) 
+      {  has_gc = gen_gc_trace(extern_def, 
+                    id, tyvars, tys, #[], NOty, polyty, opt, inherits, has_gc); 
+      }
+      if (qual & QUALpersistent)
+      {  has_persistence =
+               gen_persistence(extern_def, id, tyvars, tys, 0, NOty, 
+                               polyty, opt, inherits, has_persistence); 
+      }
+   }
+
+   if (!extern_def && options.save_space 
+       && ! (opt & OPTsubclassless) && tys == #[])
+      gen_class_destructor(id,#[],0,NOty,qual,opt,false);
+
+   for (int i = 0; i < arity; i++)
+   {  match (terms[i])
+      {  ONEcons { name, cons_ty, ty = ty as ! NOty, opt = my_opt, 
+                   qual = cons_qual,
+                   alg_ty = TYCONty(DATATYPEtycon { tyvars ... }, _) ... }:
+         {  Ty arg_ty = apply_ty(cons_ty, tys);
+            if (qual & QUALcollectable)
+               gen_gc_trace(extern_def, id, tyvars, tys, name, arg_ty, 
+                            polyty, opt, inherits, has_gc); 
+            if (qual & QUALpersistent)
+               gen_persistence(extern_def, id, tyvars, tys, name, arg_ty, 
+                               polyty, opt, inherits, has_persistence); 
+            if (! extern_def && options.save_space && tyvars == #[]) {
+               Bool save = print_default_value;
+               print_default_value = false;
+               gen_class_constructor(id,#[],name,unit,arg,opt,arg_ty,false,cons_qual);
+               gen_datatype_constructor(id,#[],name,unit,arg,opt|my_opt,arg_ty,false,cons_qual);
+               gen_class_destructor(id,#[],name,ty,qual,opt|my_opt,false);
+               print_default_value = save;
+            }
+         }
+      |  _: /* skip */
+      }
+   } 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the GC tracing method for one subclass
+//
+///////////////////////////////////////////////////////////////////////////////
+Bool DatatypeCompiler::gen_gc_trace
+   (Bool extern_def, Id id, TyVars tyvars, Tys tys, Id name, 
+    Ty ty, Ty alg_ty, int opt, Inherits inherits, Bool has_gc)
+{  
+   if (extern_def && tys == #[]) return false; 
+
+   Bool is_base = (name == 0) || (opt & OPTsubclassless);
+   if (is_base)
+      pr ("%^%/%^// GC tracing method for base class of %s%P%^%/", id, tys);
+   else
+      pr ("%^%/%^// GC tracing method for %s%P::%S %T%^%/", id, tys, name, ty);
+   pr ("%^void %s_%S%P::trace(GC * _gc_)%s\n", 
+       (is_base ? "a" : id), (is_base ? id : name), tys,(extern_def ? ";" : ""));
+
+   if (extern_def) return false;
+
+   pr ("%^{%+");
+   // Generate code for to call trace methods of superclasses.
+   if (is_base)
+   {  for_each (Inherit, i, inherits)
+      {  match (i)
+         { { super_class, qualifiers ... }:
+           {  if ((qualifiers & QUALcollectable) || is_gc_ty(super_class))
+              {  Ty super_ty = apply_ty(mkpolyty(super_class,tyvars), tys); 
+                 pr ("%^%t::trace(_gc_);", super_ty, "");
+                 has_gc = true;
+              }
+           }
+         }
+      }
+   } 
+
+   // Generate code for to invoke trace on each collectable component
+   if (name != 0) 
+   {  Bool is_array_con = is_array_constructor(name);
+      if (has_gc) pr("%^a_%s%P::trace(_gc_);",id,tys);
+      if (is_array_con) ty = TYCONty(ARRAYtycon(IDexp("len_")),#[ty]);
+      match (ty)
+      {  TYCONty(TUPLEtycon, tys):       
+         {  int i = 1;
+            for_each(Ty, t, tys) { gen_trace(t, index_of(i)); i++; }
+         }
+      |  TYCONty(RECORDtycon (labs,_), tys):
+         {  Ids l; Tys t;
+            for(l = labs, t = tys; l; l = l->#2, t = t->#2)
+               gen_trace(t->#1,l->#1);
+         }
+      |  ty: {  gen_trace(ty,name); }
+      }
+   }
+   pr ("%-%^}\n\n");
+
+   return has_gc;
+} 
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Generate tracing code for one component.
+//
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_trace (Ty ty, Id exp)
+{  pr ("%^");
+   match (deref(ty))
+   {  ARRAYty(ty,bound) | bound != NOexp:
+      {  if (is_gc_ty(ty)) 
+            pr ("{  int _i_;%+"
+                   "%^for (_i_ = (%e) - 1; _i_ >= 0; --_i_)%+"
+                      "%^%S[_i_] = (%t)_gc_->trace(%S[_i_]);"
+                   "%-%-%^}",
+                bound, exp, ty, "", exp);
+      }
+   |  ty: {  if (is_gc_ty(ty)) 
+             {  if (is_pointer_ty(ty))
+                   pr("%S = (%t)_gc_->trace(%S); ", exp, ty, "", exp); 
+                else
+                   pr("%S.trace(_gc_); ", exp); 
+             }
+          }
+   }
+   pr ("// %T\n", deref_all(ty));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the persistence read/write methods for one subclass
+//
+///////////////////////////////////////////////////////////////////////////////
+Bool DatatypeCompiler::gen_persistence
+   (Bool extern_def, Id id, TyVars tyvars, Tys tys, Id name, 
+    Ty ty, Ty alg_ty, int opt, Inherits inherits, Bool has_persistence)
+{  
+   if (extern_def) return false; 
+
+   Bool is_base = (name == 0) || (opt & OPTsubclassless);
+   if (is_base)
+      pr ("%^%/%^// Persistence read/write methods for base class of %s%P%^%/", 
+          id, tys);
+   else
+      pr ("%^%/%^// Persistence read/write methods for %s%P::%S %T%^%/", 
+          id, tys, name, ty);
+
+   Id prefix = is_base ? "a" : id;
+   Id suffix = is_base ? id : name;
+
+   Pid pid = lookup_persistent(id, tys);
+   Id  object_type = temp_vars.new_label();
+   pr ("%^static PObjectType %s(%Q \"(%s%P::%s)\");" 
+       "%^const PObjectType& %s_%S%P::persist_type_id() const { return %s; }",
+       object_type, pid, id, tys, (name ? name : "base_class"),
+       prefix, suffix, tys, object_type
+      );
+
+   // base class cannot have its own object factory
+   if (! is_base)
+      pr ("%^static PObjectFactory< %s_%S%P > %s(%s);\n",
+          prefix, suffix, tys, temp_vars.new_label(), object_type);
+
+   pr ("%^Pistream& %s_%S%P::persist_read  (Pistream& _f_)\n",
+       prefix, suffix, tys, inherits);
+   has_persistence =
+      gen_persist_IO_body(id,tyvars,tys,name,ty,">>",inherits,has_persistence); 
+   pr ("%^Postream& %s_%S%P::persist_write (Postream& _f_) const\n",
+       prefix, suffix, tys, inherits);
+   has_persistence =
+      gen_persist_IO_body(id,tyvars,tys,name,ty,"<<",inherits,has_persistence); 
+   return has_persistence;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the persistence read/write method body.
+//
+///////////////////////////////////////////////////////////////////////////////
+Bool DatatypeCompiler::gen_persist_IO_body
+   (Id id, TyVars tyvars, Tys tys, Id name, Ty ty, Id io, Inherits inherits, 
+    Bool has_persistence)
+{  Id read_or_write = io[0] == '>' ? "read" : "write";
+   pr ("%^{%+");
+   if (name != 0)
+   {  if (is_array_constructor(name)) 
+         ty = TYCONty(ARRAYtycon(IDexp("len_")),#[ty]);
+      if (has_persistence)
+         pr ("%^a_%s%P::persist_%s(_f_);", id, tys, read_or_write);
+      match (deref ty)
+      {  TYCONty(TUPLEtycon, tys):       
+         {  int i = 1;
+            for_each(Ty, t, tys) { gen_persist_IO(t, index_of(i), io); i++; }
+         }
+      |  TYCONty(RECORDtycon (labs,_), tys):
+         {  Ids l; Tys t;
+            for(l = labs, t = tys; l; l = l->#2, t = t->#2)
+               gen_persist_IO(t->#1,l->#1,io);
+         }
+      |  ty: { gen_persist_IO(ty,name,io); }
+      }
+   } else { 
+      // generate base class persistence calls.
+      for_each(Inherit, i, inherits)
+      {  match (i)
+         { { super_class, qualifiers ... }:
+           {  if ((qualifiers & QUALpersistent) || 
+                  has_qual(QUALpersistent,super_class))
+              {  Ty super_ty = apply_ty(mkpolyty(super_class,tyvars), tys); 
+                 pr ("%^%t::persist_%s(_f_);", super_ty, "", read_or_write);
+                 has_persistence = true;
+              }
+           }
+         }
+      }
+   }
+
+   pr ("%-%^}\n\n");
+   return has_persistence;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate a persistence read/write call.
+//
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_persist_IO(Ty ty, Id exp, Id io)
+{  Bool is_reading = io[0] == '>';
+
+   match (deref_all(ty))
+   {  ARRAYty(ty,bound) | bound != NOexp:
+      {  pr ("%^{  int _i_;%+"
+                "%^for (_i_ = (%e) - 1; _i_ >= 0; --_i_)%+", 
+                bound
+            );
+        if (is_reading && is_datatype(ty))
+           pr("%^%S[_i_] = (%t)read_object(_f_); ", exp, ty, ""); 
+        else 
+           pr("%^_f_ %s %S[_i_]; ", io, exp); 
+        pr ("%-%-%^}");
+      }
+   |  ty: {  if (is_reading && is_datatype(ty))
+                pr("%^%S = (%t)read_object(_f_); ", exp, ty, ""); 
+             else 
+                pr("%^_f_ %s %S; ", io, exp); 
+          }
+   }
+   pr ("// %T\n", deref_all(ty));
+}

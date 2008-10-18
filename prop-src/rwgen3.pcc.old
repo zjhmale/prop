@@ -1,0 +1,433 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file implements the dynamic tree parser algorithm, which is
+//  used to parse a tree grammar with associated reduction cost functions.
+//
+///////////////////////////////////////////////////////////////////////////////
+#include <iostream.h>
+#include "funmap.ph"
+#include "ir.ph"
+#include "ast.ph"
+#include "matchcom.ph"
+#include "type.h"
+#include "hashtab.h"
+#include "rwgen.h"
+#include "options.h"
+#include "list.h"
+
+extern Id redex_name(Ty);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Top level method to generate a dynamic tree parser.
+//  We use a simple dynamic programming algorithm.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_dynamic_rewriter (FunctorMap& F)
+{  
+   generate_state_record(F);        // generate the state record definition
+   generate_accept_rules_tables(F); // generate the accept rule tables
+   generate_closures(F);            // generate the closure routines
+   generate_dynamic_labelers(F);    // generate the labeler functions
+   generate_reducers(F);            // generate the reducer functions
+   // Generate report
+   if (PropOptions::generate_report) F.print_report(open_logfile());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the state record.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::generate_state_record (FunctorMap& F)
+{  pr("\n"
+      "%^%/"
+      "%^// State record for rewrite class %s"
+      "%^%/"
+      "%^struct %s_StateRec {\n"
+      "%^   TreeTables::Cost cost[%i]; // cost for each non-terminal"
+      "%^   struct { // accept rule number",
+      F.class_name, F.class_name, F.nonterm_map.size()+1
+     );
+
+   foreach_entry (e, F.nonterm_rules_bits)
+   {  Id  lhs  = Id(e->k);
+      int bits = int(e->v);
+      pr("%^      unsigned int _%S : %i;", lhs, bits);
+   }
+
+   pr("%^   } rule;"
+      "%^};\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the accept rule tables.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::generate_accept_rules_tables (FunctorMap& F)
+{  pr("%^%/"
+      "%^// Accept rules tables for rewrite class %s"
+      "%^%/",
+      F.class_name
+     );
+
+   foreach_entry (e, F.nonterm_rules)
+   {  Id         lhs   = Id(e->k);
+      MatchRules rules = MatchRules(e->v);
+      int max_rule     = 0;
+
+      match while (rules)
+      {  #[ one ... rest ]:
+         {  if (max_rule < one->rule_number) max_rule = one->rule_number;
+            rules = rest;
+         }
+      }
+
+      Id storage_class = max_rule < 128 ? "char" : "short";
+
+      pr ("%^const %s %s_%S_accept[] = { -1, ", 
+          storage_class, F.class_name, lhs);
+
+      rules = MatchRules(e->v);
+      match while (rules)
+      {  #[ one ... rest ]:
+         {  pr ("%i%s", one->rule_number, (rest != #[] ? ", " : ""));
+            rules = rest;
+         }
+      }
+      pr (" };\n\n");
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the closure routines for each non-terminal
+//  which appears the rhs of a chain rule.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::generate_closures (FunctorMap& F)
+{  pr("%^%/"
+      "%^// Closure methods for rewrite class %s"
+      "%^%/",
+      F.class_name
+     );
+
+   // Generate the headers first
+   {  foreach_entry (e, F.chain_rules)
+      {  Id         rhs   = Id(e->k);
+         MatchRules rules = MatchRules(e->v);
+         Ty         ty    = rules->#1->ty; // type of states.
+         pr ("%^static void %s_%S_closure(%t,int cost);\n",
+             F.class_name, rhs, ty, "redex"
+            );
+      }
+   }
+
+   pr ("\n");
+
+   // Then generate the definitions.
+   {  foreach_entry (e, F.chain_rules)
+      {  Id         rhs   = Id(e->k);
+         MatchRules rules = MatchRules(e->v);
+         gen_closure(F,rhs,rules);
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the closure routine for one non-terminal.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_closure (FunctorMap& F, Id rhs, MatchRules rules)
+{  Ty ty = rules->#1->ty; // type of states.
+   pr ("%^static void %s_%S_closure(%t,int cost)\n"  
+       "%^{%+"
+       "%^%s_StateRec * _state_rec = (%s_StateRec *)(%s->get_state_rec());",
+        F.class_name, rhs, ty, "redex", F.class_name,
+        F.class_name, redex_name(ty)
+      );
+   int rule_no = 1; 
+   rules = rev(rules);
+   match while (rules)
+   {  #[ MATCHrule(lhs,pat,guard,cost,_) ... rest ]:
+      {  Exp cost_exp;
+         match (cost)
+         {  NOcost:        { cost_exp = LITERALexp(INTlit(0)); }
+         |  INTcost i:     { cost_exp = LITERALexp(INTlit(i)); }
+         |  EXPcost (e,_): 
+            {  // Avoid recomputation of cost
+               Id v = vars.new_label();
+               pr ("%^const int %s = %e;", v, e); 
+               cost_exp = IDexp(v); 
+            }
+         }
+         int nonterm_number = int(F.var_map[lhs]);
+        
+         if (nonterm_number > 0)
+         {  pr ("%^if (cost + %e < _state_rec->cost[%i])"
+                "%^{  _state_rec->cost[%i] = cost + %e;"   
+                "%^   _state_rec->rule._%S = %i;",
+                cost_exp, nonterm_number, nonterm_number, cost_exp, lhs, rule_no
+               );
+
+            // Chain rules
+            if (F.chain_rules.contains(lhs))
+            {  pr ("%^   %s_%S_closure(redex,cost + %e);",
+                   F.class_name, lhs, cost_exp);
+            }
+
+            pr ("%^}");
+         }
+         rule_no++;
+         rules = rest;
+      }
+   }
+
+   pr ("%-%^}\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the dynamic labelers
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::generate_dynamic_labelers (FunctorMap& F)
+{  
+   ////////////////////////////////////////////////////////////////////////////
+   //  Generate a dynamic labeler for each datatype
+   ////////////////////////////////////////////////////////////////////////////
+   foreach_entry (e, F.type_map)
+   {  Ty ty = Ty(F.type_map.key(e));
+      debug_msg("[Rewrite class %s: generating dynamic labeler for datatype %T\n",
+                F.class_name, ty);
+      gen_dynamic_datatype_labeler(F, ty);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate a labeler routine for one datatype.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_dynamic_datatype_labeler(FunctorMap& F, Ty ty)
+{  
+   ///////////////////////////////////////////////////////////////////////////
+   // Generate the protocol of this labeler routine
+   ///////////////////////////////////////////////////////////////////////////
+   pr ("%^void %s::labeler (%t)"
+       "%^{%+"
+          "%^int cost;",
+       F.class_name, ty, "redex");
+ 
+   ///////////////////////////////////////////////////////////////////////////
+   // Name of the redex inside this routine. 
+   ///////////////////////////////////////////////////////////////////////////
+   Id redex = redex_name(ty);
+
+   ///////////////////////////////////////////////////////////////////////////
+   //
+   // Allocate and initialize a state record.
+   //
+   ///////////////////////////////////////////////////////////////////////////
+   pr ("%^%s_StateRec * _state_rec = (%s_StateRec *)mem[sizeof(%s_StateRec)];"
+       "%^%s->set_state_rec(_state_rec);"
+       "%^_state_rec->cost[0] = 0;",
+       F.class_name, F.class_name, F.class_name, redex);
+   for (int i = 1; i <= F.nonterm_map.size(); i++)
+   {  pr("%^_state_rec->cost[%i] = ", i);
+   }
+   pr ("%i;\n", TreeTables::infinite_cost);
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Generate code for bottomup traversal on the datatype
+   ///////////////////////////////////////////////////////////////////////////
+   gen_dynamic_traversals(F, ty);
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Update the state record.
+   ///////////////////////////////////////////////////////////////////////////
+
+   ///////////////////////////////////////////////////////////////////////////
+   // End of this routine
+   ///////////////////////////////////////////////////////////////////////////
+   pr ("%^%-%^}\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate code for dynamic traversals of one datatype.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_dynamic_traversals(FunctorMap& F, Ty ty)
+{  MatchRules rules = MatchRules(F.rule_map[ty]);
+   MatchExps  exps  = #[ MATCHexp(IDexp("redex"),0) ];
+   rules = append(rules, #[ MATCHrule(0,WILDpat(),NOexp,NOcost,#[]) ]);
+   gen_match_stmt(exps, rules, MATCHnotrace + MATCHwithtreecost);
+/*
+   match (deref_all(ty))
+   {  DATATYPEty( { unit, arg, terms ... }, _):
+      {  int  arity = unit + arg;  // arity of this datatype
+         if (arg == 0)  // all unit functors
+         {  gen_dynamic_traversals(F, unit, terms, ty); } 
+         else if (unit == 0)  // all argument functors
+         {  gen_dynamic_traversals(F, arg, terms, ty); }
+         else 
+         {  pr("%^if (%s(redex)) {%+", (unit > 1 ? "boxed" : ""));
+            gen_dynamic_traversals(F, arg, terms + unit, ty); 
+            pr("%-%^} else {%+");
+            gen_dynamic_traversals(F, unit, terms, ty); 
+            pr("%-%^}");
+         }
+      }
+   |  _: // skip, can't happen if things are ok.
+   }
+*/
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate code for dynamic traversals of one datatype,
+//  using a switch statement.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_dynamic_traversals
+   (FunctorMap& F, int arity, Cons terms[], Ty ty)
+{  Bool is_boxed = terms[0]->ty != NOty; // are we dealing with boxed terms?
+   Id redex    = is_boxed ? redex_name(ty) : "(int)redex";
+   Id untagger = is_boxed ? "->untag()" : "";
+
+   if (arity == 1) 
+   {  ////////////////////////////////////////////////////////////////////////
+      //  (1 branch) No ifs or switches
+      ////////////////////////////////////////////////////////////////////////
+      gen_one_dynamic_traversal(F, terms[0], ty);
+   } else if (arity == 2) 
+   {  ////////////////////////////////////////////////////////////////////////
+      //  (2 branches) Generate an if
+      ////////////////////////////////////////////////////////////////////////
+      pr("%^if (%s%s) {%+", redex, untagger);
+      gen_one_dynamic_traversal(F, terms[1], ty);
+      pr("%-%^} else {%+"); 
+      gen_one_dynamic_traversal(F, terms[0], ty);
+      pr("%-%^}"); 
+   } else   
+   {  ////////////////////////////////////////////////////////////////////////
+      // (n-branches) Generate a switch
+      ////////////////////////////////////////////////////////////////////////
+      pr("%^switch(%s%s) {%+",redex,untagger);
+      for (int i = 0; i < arity; i++)
+      {  pr(i == arity - 1 ? "%^default: { %+" : "%^case %*: { %+",
+            terms[i], #[], false); 
+         gen_one_dynamic_traversal(F, terms[i], ty);
+         pr("%?} break;%-");
+      }
+      pr("%-%^}");
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate a traversal routine for one term in a datatype.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_one_dynamic_traversal
+   (FunctorMap& F, Cons term, Ty ty)
+{  if (is_array_constructor(term->name))
+   {  ////////////////////////////////////////////////////////////////////////
+      // Generate array code
+      ////////////////////////////////////////////////////////////////////////
+      bug("RewritingCompiler::gen_one_dynamic_traversal");
+   } else
+   {  gen_component_dynamic_traversal(F, term, ty);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate code to traverse a component of a term.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_component_dynamic_traversal
+   (FunctorMap& F, Cons term, Ty ty)
+{  Ty  arg_ty = component_ty(ty, term);  // argument type of the term.
+   int arity  = arity_of(arg_ty);        // arity of this type.
+   Bool relevant[256];
+   Bool is_record = false;
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Generate code to call the labeler on subcomponents.
+   ///////////////////////////////////////////////////////////////////////////
+   match (arg_ty)
+   {  NOty:    
+   |  TUPLEty tys:             
+      { gen_tuple_component_dynamic_traversal(F,term,arity,tys); }
+   |  RECORDty(labels,_,tys):  
+      { gen_record_component_dynamic_traversal(F,term,arity,relevant,labels,tys); 
+        is_record = true;
+      }
+   |  _: { gen_single_component_dynamic_traversal(F,term,arg_ty); }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate traversal code on one single component of a datatype
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_single_component_dynamic_traversal
+  (FunctorMap& F, Cons term, Ty arg_ty)
+{  Exp e = select(IDexp("redex"),term);
+   if (is_array_constructor(term->name))
+   {  if (F.is_known_type(arg_ty)) // generate traversal code for vectors
+      {  bug("RewritingCompiler::gen_single_component_dynamic_traversal");
+      } else                       // type is unknown.
+      {  
+      }
+   } else
+   {  if (F.is_known_type(arg_ty))
+      {  pr("%^labeler(%e);\n", e); }
+      else 
+      {  pr("%^// %T\n", arg_ty); }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate traversal code on the tuple component of a datatype
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_tuple_component_dynamic_traversal
+  (FunctorMap& F, Cons term, int arity, Tys tys)
+{  Tys ts; int i;
+   Exp e = select(IDexp("redex"),term);
+   for (i = 0, ts = tys; i < arity && ts; i++, ts = ts->#2)
+   {  Ty ty = ts->#1;
+      if (F.is_known_type(ty))
+         pr("%^labeler(%e);\n", DOTexp(e,index_of(i+1)));
+      else 
+         pr("%^// %T\n", ty);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate traversal code on the record component of a datatype
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_record_component_dynamic_traversal
+   (FunctorMap& F, Cons term, int arity, Bool relevant[], Ids labels, Tys tys)
+{  Tys ts; Ids ids; int i;
+   Exp e = select(IDexp("redex"),term);
+   for (ids = labels, ts = tys, i = 0; ids && ts; ids=ids->#2, ts=ts->#2, i++)
+   {  Ty ty = ts->#1;
+      if (F.is_known_type(ty))
+      {  relevant[i] = true; 
+         pr("%^labeler(%e);\n", DOTexp(e,ids->#1));
+      } else 
+      {  relevant[i] = false; 
+         pr("%^// %T\n",ty); 
+      }
+   }
+}

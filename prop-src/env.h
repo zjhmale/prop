@@ -1,0 +1,46 @@
+///////////////////////////////////////////////////////////////////////////////
+//  This file is generated automatically using Prop (version 2.3.6),
+//  last updated on Nov 2, 1999.
+//  The original source file is "env.ph".
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "env.ph"
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file describes the environment class 
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef environment_h
+#define environment_h
+
+#include "basics.h"
+#include "ir.h"
+#include "hashtab.h"
+
+class Env {
+   void operator = (const Env&);
+   HashTable env;
+public:
+   Env();
+   Env(const Env&);
+  ~Env();
+
+   Ty   operator () (Id) const;
+   void bind (Id, Ty);
+};
+
+#endif
+#line 26 "env.ph"
+/*
+------------------------------- Statistics -------------------------------
+Merge matching rules         = yes
+Number of DFA nodes merged   = 0
+Number of ifs generated      = 0
+Number of switches generated = 0
+Number of labels             = 0
+Number of gotos              = 0
+Adaptive matching            = enabled
+Fast string matching         = disabled
+Inline downcasts             = enabled
+--------------------------------------------------------------------------
+*/

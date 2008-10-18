@@ -1,0 +1,996 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file implements the tree rewriting/tree parsing compiler.
+//  This is used to implement the rewrite class/rewrite constructs of Prop.
+//
+///////////////////////////////////////////////////////////////////////////////
+#include <iostream.h>
+#include <strstream.h>
+#include <AD/automata/treegram.ph>
+#include <AD/automata/treegen.h>
+#include <AD/rewrite/burs_gen.h>
+#include <AD/strings/quark.h>
+#include "funmap.ph"
+#include "ir.ph"
+#include "ast.ph"
+#include "matchcom.ph"
+#include "type.h"
+#include "hashtab.h"
+#include "datagen.h"
+#include "config.h"
+#include "rwgen.h"
+#include "options.h"
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Constructor and destructor of the rewriting compiler.
+//
+///////////////////////////////////////////////////////////////////////////////
+RewritingCompiler::RewritingCompiler(ostream& f)
+   : CodeGen(f), MatchCompiler(f), rewriters(#[]) {}
+RewritingCompiler::~RewritingCompiler() {}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Import some type definitions from the tree grammar and hash table
+//  classes.
+//
+///////////////////////////////////////////////////////////////////////////////
+typedef TreeGrammar::TreeProduction TreeProduction;
+typedef TreeGrammar::Cost           TreeCost;
+typedef HashTable::Key              Key;
+typedef HashTable::Value            Value;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the inference for a rewrite class.
+//
+///////////////////////////////////////////////////////////////////////////////
+void DatatypeCompiler::gen_rewrite_class
+   (Id class_name, Protocols protocols, TyQual qual)
+{  Bool is_app = qual & QUALapplicative;
+   pr ("%-%^private:%+"
+       "%^%s(const %s&);               // no copy constructor"
+       "%^void operator = (const %s&); // no assignment"
+       "%-%^public:%+"
+       "%^struct %s_StateRec * stack__, * stack_top__;",
+       class_name, class_name, class_name, class_name
+      );
+
+   pr ("%-%^public:%+"
+       "%^%s reduce(int, int&, int);"
+       "%^%s reduce(char, int&, int);"
+       "%^%s reduce(const char *, int&, int);"
+       "%^%s reduce(Quark, int&, int);"
+       "%^%s reduce(double, int&, int);"
+       "%n#ifdef PROP_BOOL_IS_IMPLEMENTED"
+       "%^%s reduce(bool, int&, int);"
+       "%n#endif",
+       (is_app ? "int         " : "void"),
+       (is_app ? "char        " : "void"),
+       (is_app ? "const char *" : "void"),
+       (is_app ? "Quark       " : "void"),
+       (is_app ? "double      " : "void"),
+       (is_app ? "bool        " : "void")
+      );
+
+   Bool gen_traversal = qual & QUALtreeparser;
+
+   {  for_each (Protocol, p, protocols)
+      {  match (p)
+         {  PROTOCOL { ty, syn = ! NOty ... }: 
+            {  gen_traversal = true; 
+            } 
+         |  _:
+         }
+      }
+   }      
+
+   {  for_each (Protocol, p, protocols)
+      {  match (p)
+         {  PROTOCOL { ty, syn ... }:
+            {  Ty t = is_app ? ty : mkrefty(ty);
+               Ty r = is_app ? ty : void_ty;
+               pr("%^       %t reduce(%t, int&, int);"
+                  "%^inline virtual %t operator () (%t) { int s; %sreduce(redex,s,0); }",
+                   r, "", t, "redex", 
+                   r, "", t, "redex",
+                   (is_app ? "return " : "")
+                 ); 
+               if (gen_traversal) {
+                  pr("%^       %t traverse(%t);", 
+                     (syn == NOty ? void_ty : syn), "", ty, "redex");
+               }
+            }
+         }
+      }
+   }
+
+   pr ("%-%^private:%+");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate literals matching code.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_bottomup_literal
+   ( Id             rewrite_class,  // name of the rewrite class
+     TyQual         qual,           // type qualifiers
+     Ty             ty,             // type of literal
+     FunctorMap&    F               // functor map
+   )
+{  Bool is_app = qual & QUALapplicative;
+   pr ("%^inline %t %s::reduce(%t, int& s__, int r__)" 
+       "%^{%+",
+       (is_app ? ty : void_ty), "",
+       rewrite_class, ty, "redex");
+
+   Exp selector     = IDexp("redex");
+   MatchExps  exps  = #[ MATCHexp(selector,0) ];
+   MatchRules rules = #[];
+
+   // Translate patterns into matching rules.
+   foreach_entry (e, F.literal_map) 
+   {  Literal l = (Literal)F.literal_map.key(e);
+      if (type_of(l) == ty)
+      {  Functor f = (Functor)F.literal_map.value(e);
+         Pat pat   = LITERALpat(l);
+         pat->selector = selector;
+         MatchRule r = MATCHrule(0,pat,NOexp,NOcost,
+                          #[ SETSTATEdecl(F.tree_gen->go(f)) ]);
+         
+         if (rules == #[]) 
+            rules = 
+              #[ MATCHrule(0,WILDpat(), NOexp, NOcost, #[SETSTATEdecl(0)])];
+         rules = #[ r ... rules ];
+      }
+   }
+
+   // Compile the matching code.
+   if (rules != #[])  gen_match_stmt(exps,rules,MATCHnotrace);
+   else               pr ("%^s__ = 0;");
+
+   if (is_app) pr ("%^return redex;");
+   pr ("%-%^}\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the bottom up traversal code for one constructor.
+//
+///////////////////////////////////////////////////////////////////////////////
+static void gen_one_traversal
+   (RewritingCompiler& C, FunctorMap& F, Id id, 
+    TyQual qual, Functor f, Cons cons, int arity, Ty datatype_ty) 
+{  Bool is_app = qual & QUALapplicative;
+   const TreeAutomaton& treeGen = *F.tree_gen;
+   Bool is_array_con = is_array_constructor(cons->name);
+   Ty ty = component_ty(datatype_ty, cons);
+   Exp e = select(IDexp("redex"),cons);
+   Bool relevant[256];
+   Bool is_record = false;
+
+   // generate temporaries
+   int n = arity < 0 ? arity_of(ty) : arity;
+   {  for (int j = 0; j < n; j++) C.pr("%^int s%i__;\n",j);  }
+
+   // Optimize out singletons
+   Bool is_singleton = true;
+   {  for (int i = n - 1; i >= 0; i--)
+         if (treeGen.index_range(f,i) > 1) is_singleton = false;
+   }
+
+   // Generate code to traversal the components and tally up the 
+   // costs of the subcomponents.
+   if (is_app) C.pr("%^redex = %S%+", cons->name);
+   match (ty)
+   {  NOty: { if (is_app) C.pr ("%-;\n"); }
+   |  TYCONty(TUPLEtycon, tys):
+      {  int i; Tys ts;
+         if (is_app) C.pr("(");
+         for(i = 0, ts = tys; i < n && ts; i++, ts = ts->_2)
+         {  if (F.is_known_type(ts->_1))
+            {  C.pr ("%^reduce(%e, s%i__, r__)%s\n", 
+                     DOTexp(e,index_of(i+1)), i, 
+                     (is_app ? (i != n - 1 ? "," : "") : ";")
+                    ); 
+            } else {
+               if (is_app)
+                  C.pr ("%^(s%i__ = 0, %e)%s // %T\n", 
+                        i, DOTexp(e,index_of(i+1)),
+                        (i != n - 1 ? "," : ""), ts->_1);
+               else
+                  C.pr ("%^s%i__ = 0; // %T\n", i, ts->_1);
+            }
+         }
+         if (is_app) C.pr("%-%^);\n");
+      }
+   |  TYCONty(RECORDtycon (labs,_), tys):
+      {  int i; Tys ts; Ids l;
+         int n = length(tys);
+         is_record = true;
+         if (is_app) C.pr("(");
+         for (l = labs, ts = tys, i = 0; l && ts; l = l->_2, ts = ts->_2, i++)
+         {  if (F.is_known_type(ts->_1))
+            {  C.pr ("%^reduce(%e, s%i__, r__)%s\n", DOTexp(e,l->_1), i,
+                     (is_app ? (i != n - 1 ? "," : "") : ";")); 
+               relevant[i] = true;
+            } else
+            {  if (is_app)
+                  C.pr ("%^(s%i__ = 0, %e)%s // %T\n", 
+                        i, DOTexp(e,l->_1),
+                        (i != n - 1 ? "," : ""), ts->_1);
+               else
+                  C.pr ("%^s%i__ = 0; // %T\n", i, ts->_1);
+               relevant[i] = false;
+            }
+         }
+         if (is_app) C.pr("%-%^);\n");
+      }
+   |  _: 
+      {  if (is_app) C.pr("(");
+         if (is_array_con)
+         {  if (F.is_known_type(ty))
+            {  for (int i = 0; i < arity; i++)
+               {  C.pr ("%^reduce(%e(%i), s%i__, r__)%s\n",
+                        DOTexp(e,"at"), i, i,
+                        (is_app ? (i != n - 1 ? "," : "") : ";")); 
+               }
+            } else
+            {  for (int i = 0; i < arity; i++)
+               {  C.pr ("%^(s_%i__ = 0, %e(%i))%s// %T\n",
+                        i, DOTexp(e,"at"), i,
+                        (is_app ? (i != n - 1 ? "," : "") : ";"), ty); 
+               }
+            }
+         } else
+         {  if (F.is_known_type(ty))
+            {  C.pr ("%^reduce(%e, s0__, r__)%s\n", e, (is_app ? "" : ";"));    
+            } else { 
+               if (is_app)
+                  C.pr ("%^(s0__ = 0, %e) // %T\n", e, ty);
+               else
+                  C.pr ("%^s0__ = 0; // %T\n", ty);
+            }
+         }
+         if (is_app) C.pr("%-%^);\n");
+      }
+   }
+
+   // Generate code to compute the new state.
+   if (treeGen.arity_of(f) == 0 && ty != NOty) C.pr ("%?s__ = 0;");
+   else if (is_singleton) C.pr ("%?s__ = %i;", treeGen.go(f));
+   else {
+      C.pr ("%^s__ = %s_theta_%i", id, f);
+      for (int i = 0, j = 0; i < n; i++)
+      {  if (is_record && ! relevant[i]) continue;
+         if (treeGen.index_range(f,i) == 1)
+            C.pr ("[0]");
+         else if (F.use_compression)
+            C.pr ("[%s_check[%i + s%i__] == %i ? %s_next[%i + s%i__] : 0]",
+                  id, treeGen.compressed_offset(f,j), j,
+                  treeGen.compressed_index(f,j), 
+                  id, treeGen.compressed_offset(f,j), j);
+         else
+            C.pr ("[%s_mu_%i_%i[s%i__]]", id, f, j, j);
+         j++;
+      } 
+      C.pr("; ");
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the bottom up traversal code.
+//
+///////////////////////////////////////////////////////////////////////////////
+static void gen_traversal
+   (RewritingCompiler& C, FunctorMap& F, Id id, 
+    TyQual qual, Functor f, Cons cons, Ty this_ty) 
+{  if (is_array_constructor(cons->name))
+   {  Exp vec_exp   = select(IDexp("redex"),cons);
+      Exp len_exp   = DOTexp(vec_exp,"len()");
+      Exp array_exp = DOTexp(vec_exp,"at");
+      Bool is_app = qual & QUALapplicative;
+
+      // switch on the length of the vector
+      C.pr("%^switch (%e) {%+\n", len_exp);
+
+      // generate traversals with specific lengths
+      foreach_entry (i, F.vector_map)
+      {  VectorId vec_id = (VectorId)F.vector_map.key(i);
+         Functor  fnct   = (Functor)F.vector_map.value(i);
+         if (vec_id->cons == cons && ty_equal(vec_id->ty, this_ty))
+         {  C.pr("%^case %i: {%+", vec_id->arity);
+            gen_one_traversal(C,F,id,qual,fnct,cons,vec_id->arity,this_ty);
+            C.pr("%-%^} break;");
+         }
+      }
+
+      // generate traversals of other lengths
+      C.pr("%^default: {%+");
+      C.pr ("%^int s0__;");
+      if (is_app) 
+         C.pr("%^%t args_[256];", this_ty, "");
+      C.pr("%^for(int _i_ = 0; _i_ < %e; _i_++)"
+           "%^{  %sreduce(%e(_i_), s0__, r__); }\n", 
+           len_exp, (is_app ? "args_[_i_] = " : ""), array_exp);
+      if (is_app) 
+         C.pr("%^redex = %S(%e,args_);\n", mangle(cons->name), len_exp);
+      C.pr("%^s__ = 0;\n"
+           "%-%^}%-%^}");
+   } else 
+   {  gen_one_traversal(C,F,id,qual,f,cons,-1,this_ty);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate one set of traversals
+//
+///////////////////////////////////////////////////////////////////////////////
+void gen_traversals
+   (RewritingCompiler& C, FunctorMap& F, Id rewrite_class, Functor f, 
+    int n, Cons terms[], int opt, TyQual qual, Ty this_ty)
+{  Bool is_boxed = terms[0]->ty != NOty;
+   Id prefix, suffix;
+   if (opt & OPTtaggedpointer) { prefix = "untagp("; suffix = ")"; }
+   else if (is_boxed) { prefix = ""; suffix = "->untag()"; }
+   else { prefix = suffix = ""; }
+   if (n == 1) {
+      gen_traversal(C, F, rewrite_class, qual, f, terms[0], this_ty);
+   } else if (n == 2) {
+      C.pr ("%^if (%sredex%s) {%+", prefix, suffix);
+      gen_traversal(C, F, rewrite_class, qual, f+1, terms[1], this_ty);
+      C.pr ("%-%^} else {%+");
+      gen_traversal(C, F, rewrite_class, qual, f, terms[0], this_ty);
+      C.pr ("%-%^}"); 
+   } else {
+      C.pr ("%^switch ((int)%sredex%s) {%+", prefix, suffix);
+      for (int i = 0; i < n; i++) 
+      {  C.pr ((i == n - 1 ? "%^default: { %+" : "%^case %*: { %+"), 
+               terms[i], #[], false); 
+         gen_traversal(C, F, rewrite_class, qual, f + i, terms[i], this_ty);
+         C.pr ("} break;%-");
+      }
+      C.pr ("%-%^}");
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate action code for a datatype rewrite.
+//
+///////////////////////////////////////////////////////////////////////////////
+static void gen_action(RewritingCompiler& C, FunctorMap& F, Id id, Ty ty)
+{  
+   HashTable::Entry * e = F.rule_map.lookup(ty);
+   if (e) {
+      const TreeAutomaton& treeGen = *F.tree_gen;
+
+      // Check whether this subset of rules contains guards or
+      // cost expressions.
+      MatchRules rules = (MatchRules)F.rule_map.value(e);
+      Bool has_guard    = false;
+      Bool has_cost_exp = false;
+      {  for_each (MatchRule, r, rules)
+         {  match (r)
+            {  MATCHrule(_,_,guard,cost,_):
+               {  if (guard != NOexp) has_guard = true;
+                  match (cost)
+                  {  EXPcost _: { has_cost_exp = true; }
+                  |  _: // skip
+                  }
+               }
+            }
+         }
+      }
+
+      if (has_cost_exp || F.has_syn_attrib || F.gen_traversal)
+         C.pr("%^Rule rule__ = -1;");
+
+      if (has_cost_exp) {
+         // Case when there are cost minimization to perform.
+         C.pr ("%^const unsigned char * a__ = %s_accept[s__];"
+               "%^Cost cost__ = infinite_cost, tmp_cost__;"
+               "%^do {%+",
+               id);
+         
+         // Generate guard and cost minimization code.
+         for_each (MatchRule, r, rules)
+         {  match (r)
+            {  MATCHrule(_,_,guard,cost,action):
+               {  int rule_no = r->rule_number;
+                  C.pr ("%^if (a__[%i] & %i)%+%^", 
+                        (rule_no / 8), 1 << (rule_no & 7));
+                  if (guard != NOexp) C.pr("if (%e) ", guard);
+                  match (cost)
+                  {  NOcost:        // if no cost is used, assume cost of zero  
+                     { C.pr("{ cost__ = 0; rule__ = %i; }", rule_no); }
+                  |  INTcost i:     // a constant integer cost
+                     { C.pr("if (%i < cost__)"
+                            "%+%^{ cost__ = %i; rule__ = %i; }%-",
+                             i, i, rule_no); }
+                  |  EXPcost (e,_): // a cost expression
+                     { C.pr("if ((tmp_cost__ = %e) < cost__)"
+                            "%+%^{ cost__ = tmp_cost__; rule__ = %i; }%-",
+                             e, rule_no); }
+                  } 
+                  C.pr("%-");
+               }
+            }
+         }
+
+         // Update the new cost
+         C.pr ("%-%^} while (0);");
+
+         if (! F.gen_traversal)  
+         {  C.pr ("%^switch (rule__) {%+");
+
+            // Gererate all the actions.
+            {  for_each (MatchRule, r, rules)
+               {  match (r)
+                  {  MATCHrule(_,_,_,_,action):
+                     { C.pr ("%^case %i: {%+%&%-%?} break;", r->rule_number, action); }
+                  }
+               }
+            }
+            C.pr ("%-%^}");
+         }
+
+      } else {
+         // Case when all the costs are zero.
+
+         // If we have a guard then generate code that performs
+         // state to accept rule decoding at runtime.
+         // Otherwise, perform the decoding at compile time.
+         if (has_guard) {
+            C.pr("%^const Rule * o__ = %s_accept_vector + %s_accept_base[s__];"
+                 "%-%^accept__:%+"
+                 "%^switch (*o__) {%+", id, id);
+         } else if (F.gen_traversal) {
+            C.pr("%^rule__ = %s_accept1[s__];",id);
+         } else {
+            C.pr("%^switch (s__) {%+");
+         }
+
+         //  Now emit all the action code.
+         if (! F.gen_traversal || has_guard) 
+         {  for_each (MatchRule, r, rules)
+            {  match (r)
+               {  MATCHrule(_,_,guard,_,action):
+                  {  if (has_guard) {
+                        C.pr("%^case %i: ", r->rule_number);
+                     } else {
+                        int rule_no = r->rule_number;
+                        Bool used = false;
+                        for (int s = treeGen.number_of_states() - 1; s >= 0; s--)
+                           if (treeGen.accept1_rule(s) == rule_no)
+                           {  C.pr ("%^case %i: ", s); used = true; }
+                        if (! used) continue; 
+                        }
+                     if (guard != NOexp) C.pr ("if (%e)%^", guard);
+                     if (F.gen_traversal)  
+                        C.pr ("rule__ = %i;", r->rule_number); 
+                     else
+                        C.pr ("%+{%&}%-", action); 
+                     if (guard != NOexp) 
+                         C.pr ("%^else { ++o__; goto accept__; }");
+                     C.pr (" break;");
+                  }
+               }
+            }
+            C.pr("%-%^}");
+         }
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate datatype rewriting code.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_bottomup_datatype
+   ( Id             rewrite_class,  // name of the rewrite class
+     TyQual         qual,           // type qualifiers
+     Ty             ty,             // type of datatype
+     FunctorMap&    F               // functor map
+   )
+{  Bool is_app = qual & QUALapplicative;
+   Ty arg_ty = is_app ? ty : mkrefty( ty );
+   Ty ret_ty = is_app ? ty : void_ty;
+   pr ("%^%t %s::reduce(%t, int& s__, int r__)" 
+       "%^{"
+       "%^replacement__:%+",
+       ret_ty, "", rewrite_class, arg_ty, "redex");
+
+   Bool cache_state = 
+      (Used::replacement || F.has_syn_attrib || F.gen_traversal) && 
+       has_qual(QUALrewritable,ty) && 
+       boxed_variants(ty) > 0;
+
+   Id redex;
+
+   match (ty)
+   {  TYCONty(DATATYPEtycon { opt ... }, _) | opt & OPTtaggedpointer: 
+         { redex = "derefp(redex)"; }
+   |  _: { redex = "redex"; }
+   }
+
+   // generate code to cut short replacement. 
+   if (cache_state)
+      pr ("%^if (r__ && boxed(redex) && %s->has_rewrite_state())"
+          "%^{ s__ = %s->get_rewrite_state(); return%s; }", 
+          redex, redex, (is_app ? " redex" : ""));
+
+   // if we have cost or synthesized attribute then allocate a new
+   // state record.
+   if (F.iso_tree)
+      pr ("%^%s_StateRec * t__ = "
+          "%^   (%s_StateRec *)mem[sizeof(%s_StateRec)];",
+          F.class_name, F.class_name, F.class_name);
+
+   Functor f = (Functor)F.type_map[ty];
+
+   // Generate code for bottom up traversal and state computation.
+   match (ty)
+   {  TYCONty(DATATYPEtycon { unit, arg, terms, opt ... }, _):
+      {  int arity = unit + arg;
+         Bool fast_encoding = false;
+         int first_state = F.tree_gen->go(f);
+         if (arg == 0) {
+            int j;
+            for (j = arity - 1; j >= 0; j--)
+               if (first_state + j != F.tree_gen->go(f+j)) break;
+            fast_encoding = j < 0;
+         }
+
+         if (fast_encoding) {
+            pr ("%^s__ = redex + %i;", F.tree_gen->go(f));
+         } else {
+            if (arg == 0) {
+               gen_traversals(*this, F, rewrite_class, f, unit, terms, opt, qual, ty);
+            } else if (unit == 0) {
+               gen_traversals(*this, F, rewrite_class, f, arg, terms, opt, qual, ty);
+            } else {
+               pr ("%^if (%s(redex)) {%+", (unit > 1 ? "boxed" : ""));
+               gen_traversals(*this, F, rewrite_class, f + unit, arg, terms + unit, opt, qual, ty);
+               pr ("%-%^} else {%+");
+               gen_traversals(*this, F, rewrite_class, f, unit, terms, opt, qual, ty);
+               pr ("%-%^}");
+            } 
+         }
+      }
+   |  _:  // skip 
+   }
+
+   // Generate code for rewriting actions
+   gen_action(*this, F, rewrite_class, ty);
+
+   // if (F.has_cost) pr ("%^t__->cost = cost__;");
+
+   // Generate code to cache the current state.
+   if (cache_state) { 
+       pr ("%^if (boxed(redex)) {%+"
+           "%^%s->set_rewrite_state(s__);", redex);
+       if (F.gen_traversal) pr ("%^%s->set_rewrite_rule(rule__);", redex);
+       pr ("%-%^}");
+   }
+
+   if (is_app) pr ("%^return redex;"); 
+   pr ("%-%^}\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate the tree automaton tables.
+//
+///////////////////////////////////////////////////////////////////////////////
+void generate_tables
+   (Id id, RewritingCompiler& C, const TreeGrammar& G, FunctorMap& F) 
+{  ostream& out = C.pr("");
+
+   if (F.gen_traversal) {
+      // Emit the accept state tables.
+      F.tree_gen->gen_accept1(out,id) << '\n';
+   }
+
+   if (F.has_cost_exp) {
+      // Emit the bitmap table if we have cost expressions.
+      F.tree_gen->gen_bitmap_accept(out,id) << '\n';
+   }
+   if (F.has_guard) {
+      // Emit the base/check accept state table also if we have guards.
+      F.tree_gen->gen_accept(out,id) << '\n';
+   }
+ 
+   // Elided in the new accept table scheme
+   // if (F.has_guard) {
+   //    // Generate a function that looks for the next accept rule given
+   //    // the current state and the current rule.  This function is called
+   //    // when the current guard fails.
+   //    C.pr("%^static int %s_next_rule(register int s, register int r)"
+   //         "%^{  register const unsigned char * mask = %s_accept[s];"
+   //         "%^   while (++r < %i && (mask[r/8] & (1 << (r & 7))) == 0);"
+   //         "%^   return r;" 
+   //         "%^}\n\n",
+   //         id, id, F.N); 
+   // }
+   
+   // Emit the theta tables
+   {  for (Functor f = G.min_functor(); f <= G.max_functor(); f++) 
+      {  if (G.arity(f) > 0) {
+            C.pr ("%^static const TreeTables::State %s_theta_%i", id, f);
+            F.tree_gen->gen_delta(out,f);
+            C.pr ("\n\n");
+         }
+      }
+   }
+
+   if (F.use_compression) {
+      // Emit the compressed index map.
+      F.tree_gen->gen_compressed_index(out,id) << '\n';
+      // C.pr ("%^inline int %s_go (int s, int offset)"
+      //       "%^{ return %s_check[offset] == s ? %s_next[offset] : 0; }\n\n",
+      //       id, id, id);
+   } else { 
+      // Emit the index maps for each arity of each functor.
+      {  for (Functor f = G.min_functor(); f <= G.max_functor(); f++)
+            for (int i = 0; i < G.arity(f); i++)
+            {  C.pr ("%^static const TreeTables::State %s_mu_%i_%i", id, f, i);
+               F.tree_gen->gen_index(out,f,i);
+               C.pr ("\n\n");
+            }
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Generate the state record type.
+//
+///////////////////////////////////////////////////////////////////////////////
+static void gen_state_record
+   ( RewritingCompiler& C, FunctorMap& F, 
+     Id class_name, Protocols protocols, MatchRules rules)
+{
+   C.pr ("%^%/%^// State record for rewrite class %s%^%/"
+         "%^struct %s_StateRec {%+", class_name, class_name);
+
+   C.pr ("%^BURS::Rule  rule;  // reduction rule"
+         "%^BURS::State state; // current state",
+         class_name);
+
+   // Generate the cost vector
+   if (F.has_cost)
+   {  C.pr ("%^BURS::Cost cost__[%i];", F.type_map.size());
+   }
+  
+   // Map from rewrite type to type of synthesized attribute.
+   if (F.has_syn_attrib) {
+      HashTable syn_map (ty_hash, ty_equal);
+      {  for_each (Protocol, p, protocols)
+         {  match (p)
+            {  PROTOCOL { ty, syn = syn as ! NOty ... }: 
+               { syn_map.insert(ty, syn); } 
+            |  _: 
+            }
+         }
+      }
+
+      C.pr("%^union {%+");
+
+      // Generate the inherited attributes for each rule that needs
+      // an attribute.
+      {  int i = 0;
+         for_each (MatchRule, r, rules) 
+         {  Ty ty = r->ty;
+            HashTable::Entry * e = syn_map.lookup(ty);
+            if (e) {
+               Ty syn_ty = (Ty)syn_map.value(e);
+               C.pr ("%^%t;", syn_ty, index_of(i));
+            }
+            i++;
+         }
+      }
+      C.pr ("%^int dummy;"
+            "%-%^} u;");
+   }
+
+
+   if (F.has_cost)
+      C.pr ("%^%s_StateRec * kids[%i]; // children", class_name, F.max_arity);
+
+   C.pr ("%-%^};\n\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Generate a traversal function for one pattern.
+//
+///////////////////////////////////////////////////////////////////////////////
+int RewritingCompiler::gen_pattern_traversal(FunctorMap& F, Pat pat, int i)
+{  match (pat)
+   {  NOpat || LITERALpat _ || CONSpat _ || CONTEXTpat _ ||
+         LEXEMEpat _: // skip
+   |  ASpat(_,p,_,_): { i = gen_pattern_traversal(F,p,i); }
+   |  TYPEDpat(p,_):  { i = gen_pattern_traversal(F,p,i); }
+   |  MARKEDpat(_,p): { i = gen_pattern_traversal(F,p,i); }
+   |  GUARDpat(p,_):  { i = gen_pattern_traversal(F,p,i); }
+   |  APPpat (_,p):   { i = gen_pattern_traversal(F,p,i); }
+   |  IDpat _ || WILDpat _:
+      {  if (F.is_rewritable_type(pat->ty)) {
+            Protocol proto = (Protocol)F.protocols[pat->ty];
+            if (! has_qual(QUALrewritable,deref_all(pat->ty)))
+            {  error ("%Ldatatype %T must be rewritable\n", pat->ty);
+            }
+            match (proto)
+            {  PROTOCOL { syn = NOty ... }:
+               { pr("%^traverse(%e);", pat->selector); }
+            |  PROTOCOL { syn ... }:
+               { pr("%^%t _%i__ = traverse(%e);", syn, "", i, pat->selector); }
+            }
+         }
+         return i+1;
+      }
+   |  ARRAYpat(ps,_): { for_each(Pat, p, ps) i = gen_pattern_traversal(F,p,i);}
+   |  TUPLEpat ps: { for_each(Pat, p, ps) i = gen_pattern_traversal(F,p,i); }
+   |  EXTUPLEpat ps: { for_each(Pat, p, ps) i = gen_pattern_traversal(F,p,i); }
+   |  RECORDpat (labPs,_): 
+         { for_each (LabPat, p, labPs) i = gen_pattern_traversal(F,p.pat,i); }
+   |  LISTpat { head, tail ... }:
+      {  for_each (Pat, p, head) i = gen_pattern_traversal(F,p,i); 
+         i = gen_pattern_traversal(F,tail,i);
+      }
+   |  VECTORpat { array, elements, len ... }:
+      {  for_each (Pat, p, elements) i = gen_pattern_traversal(F,p,i); 
+         i = gen_pattern_traversal(F,array,i);
+         i = gen_pattern_traversal(F,len,i);
+      }
+   |  _:  { bug("RewritingCompiler::gen_pattern_traversal: %p", pat); }
+   }
+   return i;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Method to generate an attribute evaluation traversal routine for
+//  a datatype.  This is the second pass of the algorithm.  We assume
+//  that the tree has already been properly labeled.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_datatype_traversal (FunctorMap& F, Ty ty)
+{  HashTable::Entry * e = F.rule_map.lookup(ty);
+   if (e)
+   {  MatchRules rules = (MatchRules)F.rule_map.value(e);
+      Functor    f     = (Functor)F.type_map[ty];
+      Ty syn_ty;
+
+      // Check the protocol of this datatype
+      Protocol proto = (Protocol)F.protocols[ty];
+      match (proto)
+      {  PROTOCOL { syn = NOty ... }: { syn_ty = void_ty; }
+      |  PROTOCOL { syn ... }:        { syn_ty = syn; }
+      } 
+
+      // The name and protocol of this traversal function
+      pr("%^%t %s::traverse(%t)"
+         "%^{%+",
+         syn_ty, "", F.class_name, ty, "redex"
+        );
+
+      if (syn_ty != void_ty) pr ("%^%t;", syn_ty, "__");
+
+      // The name and protocol of this traversal function
+      match (ty)
+      {  TYCONty(DATATYPEtycon { unit = 0, arg, opt ... }, _):
+         {  Id redex_var = (opt & OPTtaggedpointer) ? "derefp(redex)" : "redex";
+            pr("%^int r__ = %s->get_rewrite_rule();", redex_var); }
+      |  TYCONty(DATATYPEtycon { unit, arg, opt ... }, _):
+         {  Id table_name = vars.new_label();
+            Id redex_var = (opt & OPTtaggedpointer) ? "derefp(redex)" : "redex";
+            if (unit > 1)
+            {  pr("%^static const Rule %s[] = { ",table_name);
+               for (int i = 0; i < unit; i++)
+               {  pr ("%i", F.tree_gen->accept1_rule(F.tree_gen->go(f+i)));
+                  if (i != unit - 1) pr (", ");
+               }
+               pr (" };\n");
+               pr("%^int r__ = boxed(redex) ? %s->get_rewrite_rule() : %s[int(%s)];",
+                  redex_var, table_name, redex_var);
+            } else
+               pr("%^int r__ = boxed(redex) ? %s->get_rewrite_rule() : %i;",
+                  redex_var, F.tree_gen->accept1_rule(F.tree_gen->go(f)));
+         }
+      |  _: { bug("RewritingCompiler::gen_datatype_traversal()"); }
+      }
+
+      // The rule actions
+      pr ("%^switch (r__) {%+");
+
+      for_each(MatchRule, r, rules)
+      {  match (r)
+         {  MATCHrule(_,pat,_,_,action):
+            {  pr ("%^case %i: {%+", r->rule_number); 
+               gen_pattern_traversal(F,pat,0);
+               pr ("%^%&} break;%-", action); 
+            }
+         }
+      }
+
+      // Epilogue 
+      pr("%-%^}");
+      if (syn_ty != void_ty) pr ("%^return __;");
+      pr("%-%^}\n\n");
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Top level method to compile a set of rewrite rules.
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_rewrite(Id rewrite_class, MatchRules rules)
+{  
+   MemPoolMark marker = mem_pool.getMark(); // get a memory pool marker
+   int         N      = length(rules);      // number of rules
+   FunctorMap  F(N,rewrite_class);          // the functor encoding map.
+   int    last_errors = errors;
+   Protocols protocols = lookup_rewrite_class(rewrite_class);
+
+   // Encodes and enters all protocols.
+   {  for_each (Protocol, p, protocols) 
+      {  match (p)
+         {  PROTOCOL { ty, syn ... }: 
+            {  F.encode(ty); F.protocols.insert(ty,p); 
+               if (syn != NOty) F.has_syn_attrib = true;
+            } 
+         }
+      }
+   }
+
+   // instrument code 
+   if (PropOptions::trace) instrument_trace(rules);
+
+   // Type checking, then partition rules by type and encode the patterns.
+   F.partition_rules (rules);
+
+   // Checks for missing protocols.
+   foreach_entry (e, F.type_map)
+   {  Ty ty = (Ty)F.type_map.key(e);
+      if (! F.protocols.contains(ty)) 
+         error ("%Lmissing type %T in the protocols of rewrite class %s\n",
+                ty, rewrite_class);
+   }
+
+   if (errors == last_errors)
+   {  
+      // Tree grammar
+      TreeGrammar G;
+      TreeProduction * productions    
+         = (TreeProduction *)mem_pool.c_alloc(sizeof(TreeProduction) * N);
+      Id * functor_names  
+         = (Id *)mem_pool.c_alloc(sizeof(Id) * F.functors);
+      Id * variable_names 
+         = (Id *)mem_pool.c_alloc(sizeof(Id) * (F.variables + N + 4));
+      TyQual qual = TyQual(rewrite_qual.lookup(rewrite_class)->v);
+      F.gen_traversal = (qual & QUALtreeparser) || F.has_syn_attrib;
+
+      // translate patterns into terms
+      {  int i = 0;
+         for_each (MatchRule, r, rules)
+         {  match (r) 
+            {  MATCHrule(lhs,pat,guard,cost,_): 
+               {  int rule_no = lhs ? Variable(F.var_map.lookup(lhs)->v) : 0;
+                  int cst;
+                  match (cost)  // extract cost
+                  {  NOcost:     { cst = TreeTables::zero_cost; }
+                  |  INTcost c:  { cst = c; 
+                                   if (c != 0) F.has_cost = true;
+                                 }
+                  |  EXPcost _:  { cst = TreeTables::zero_cost; 
+                                   F.has_cost_exp = true;
+                                 }
+                  }
+                  productions[i] = TreeProduction(rule_no,F.trans(pat),cst); 
+                  if (guard != NOexp) F.has_guard = true;
+                  i++;
+               } 
+            }
+         }
+      }
+
+      F.compute_names (functor_names, variable_names);
+
+      // compile the tree grammar
+      G.compile (N, productions, functor_names, variable_names,
+                 0, F.functors - 1, 0);
+
+      if (qual & QUALtopdown)
+         gen_topdown (rewrite_class,rules,N,protocols,F,qual,
+                      G,functor_names,variable_names);
+      else
+         gen_bottomup(rewrite_class,rules,N,protocols,F,qual,
+                      G,functor_names,variable_names);
+   }
+   mem_pool.setMark(marker);  // reset the memory pool to reclaim memory
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//   Generate code for bottom-up rewriting. 
+//
+///////////////////////////////////////////////////////////////////////////////
+void RewritingCompiler::gen_bottomup( Id           rewrite_class, 
+                                      MatchRules   rules,
+                                      int          N,
+                                      Protocols    protocols,
+                                      FunctorMap&  F,
+                                      TyQual       qual,
+                                      TreeGrammar& G,
+                                      Id           functor_names[],
+                                      Id           variable_names[]
+                                    )
+{ 
+   // Create a new memory pool
+   MemPool my_pool(4096);
+
+   // allocate a new tree automata compiler 
+   debug_msg("[Compiling %i rewriting rules for class %s]\n", 
+          N, rewrite_class);
+   if (PropOptions::burs || F.has_cost)
+      F.tree_gen = new BURS_Gen (my_pool);
+   else
+      F.tree_gen = new TreeGen (my_pool);
+
+   // compile the tree automata
+   F.tree_gen->compile (G);
+   debug_msg("[Compressing index maps for class %s]\n", rewrite_class);
+   F.tree_gen->compile_compression_index();
+   debug_msg("[Done]\n");
+
+   // check for compression rate
+   double shrinkage = F.tree_gen->compression_rate();
+   if (shrinkage <= 0.3 || F.tree_gen->number_of_states() <= 40) {  
+      F.use_compression = false; 
+   } 
+
+   // Generate the state record type.
+   gen_state_record(*this, F, rewrite_class, protocols, rules);
+
+   // generate the tables 
+   generate_tables(rewrite_class, *this, G, F);
+
+   // Choose whether to build an isomorphic parse tree or
+   // using the semantic value stack (or neither)
+   if (F.has_cost)       { F.iso_tree = true; } 
+   if (F.has_syn_attrib) { F.use_stack = true; }
+   print_semantic_stack = F.use_stack;
+
+   // generate the matching code for literals
+   gen_bottomup_literal(rewrite_class, qual, integer_ty, F);
+   gen_bottomup_literal(rewrite_class, qual, character_ty, F);
+   gen_bottomup_literal(rewrite_class, qual, real_ty, F);
+   gen_bottomup_literal(rewrite_class, qual, string_ty, F);
+   gen_bottomup_literal(rewrite_class, qual, quark_ty, F);
+   pr ("%n#ifdef PROP_BOOL_IS_IMPLEMENTED\n");
+   gen_bottomup_literal(rewrite_class, qual, bool_ty, F);
+   pr ("#endif\n\n");
+
+   // generate the matching code for datatypes
+   {  foreach_entry(e, F.type_map)
+      {  Ty ty = (Ty)F.type_map.key(e);
+         gen_bottomup_datatype(rewrite_class, qual, ty, F);
+         if (F.gen_traversal)
+            gen_datatype_traversal(F, ty);
+      }
+   }
+
+   // print report if necessary
+   if (PropOptions::generate_report) F.print_report(open_logfile());
+
+   // Clean up
+   delete F.tree_gen;
+}

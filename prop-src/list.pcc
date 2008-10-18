@@ -1,0 +1,73 @@
+###ifdef __GNUG__
+###pragma implementation "listimpl.h"
+###endif
+
+#include "basics.ph"
+#include "listimpl.h"
+#include "ast.h"
+#include "ir.h"
+#include "parsegen.h"
+//#include "logicgen.h"
+//#include "constraint.h"
+
+#define NO_TEMPLATE_KEYWORD
+#ifndef NO_TEMPLATE_KEYWORD
+
+template int length(List<Exp>);
+template int length(List<Ty>);
+template int length(List<Pat>);
+template int length(List<Id>);
+template int length(List<Inherit>);
+template int length(List<ProductionSymbol>);
+template int length(List<List<ProductionSymbol> >);
+template int length(List<LabPat>);
+template int length(List<TermDef>);
+template int length(List<DatatypeDef>);
+template int length(List<MatchExp>);
+template int length(List<InferenceRule>);
+template int length(List<MatchRule>);
+
+template List<Id> append(List<Id>, List<Id>);
+template List<Decl> append(List<Decl>, List<Decl>);
+template List<Inherit> append(List<Inherit>, List<Inherit>);
+template List<TermDef> append(List<TermDef>, List<TermDef>);
+
+template List<MatchRule> rev (List<MatchRule>);
+template List<Exp> rev (List<Exp>);
+template List<.[Id, Ty]> rev (List<.[Id, Ty]>);
+template List<.[Id, Pat]> rev (List<.[Id, Pat]>);
+//template List<.[Id, Pats, Determinism]> rev (List<.[Id, Pats, Determinism]>);
+//template List<ConstraintRule> rev (List<ConstraintRule>);
+
+#else
+
+static void dummy()
+{
+length((List<Exp>)#[]);
+length((List<Ty>)#[]);
+length((List<Pat>)#[]);
+length((List<Id>)#[]);
+length((List<Inherit>)#[]);
+length((List<ProductionSymbol>)#[]);
+length((List<List<ProductionSymbol> >)#[]);
+length((List<LabPat>)#[]);
+length((List<TermDef>)#[]);
+length((List<DatatypeDef>)#[]);
+length((List<MatchExp>)#[]);
+length((List<InferenceRule>)#[]);
+length((List<MatchRule>)#[]);
+
+append((List<Id>)#[],      (List<Id>)#[]);
+append((List<Decl>)#[],    (List<Decl>)#[]);
+append((List<Inherit>)#[], (List<Inherit>)#[]);
+append((List<TermDef>)#[], (List<TermDef>)#[]);
+
+rev ((List<MatchRule>)#[]);
+rev ((List<Exp>)#[]);
+rev ((List<ProductionSymbol>)#[]);
+rev ((List<.[Id, Ty]>)#[]);
+rev ((List<.[Id, Pat]>)#[]);
+//rev ((List<ConstraintRule>)#[]);
+//rev ((List<.[Id, Pats, Determinism]>)#[]);
+}
+#endif

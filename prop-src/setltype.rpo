@@ -1,0 +1,11 @@
+M setltype.cc
+D /home/leunga/src/prop-2.3.6/prop-src
+A '-c' '-I../include' '-O6' '-pedantic' '-frepo'
+O __t6Tuple22ZPt6a_List1ZPCcZPt6a_List1ZP4a_TyRCPt6a_List1ZPCcRCPt6a_List1ZP4a_Ty
+O mkTuple2__H2ZPt6a_List1ZPCcZPt6a_List1ZP4a_Ty_RCX01RCX11_t6Tuple22ZX01ZX11
+O __t6a_List1ZPCcPCcPt6a_List1ZPCc
+O list_1___H1ZPCc_X01Pt6a_List1ZX01_Pt6a_List1ZX01
+O __t6a_List1ZP4a_TyP4a_TyPt6a_List1ZP4a_Ty
+O list_1___H1ZP4a_Ty_X01Pt6a_List1ZX01_Pt6a_List1ZX01
+O __t6a_List1ZP4a_TyP4a_Ty
+O list_1___H1ZP4a_Ty_X01_Pt6a_List1ZX01

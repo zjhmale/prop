@@ -1,0 +1,130 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file decribes the functor map data structure, which is 
+//  used internally during rewriting compilation.
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef functor_map_h
+#define functor_map_h
+#include <AD/automata/treegram.h>
+#include "ir.h"
+#include "type.h"
+#include "hashtab.h"
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Import some type definitions from the tree grammar and hash table
+//  classes.
+//
+///////////////////////////////////////////////////////////////////////////////
+class ostream;
+class TreeAutomaton;
+typedef TreeGrammar::Functor        Functor;
+typedef TreeGrammar::Variable       Variable;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Vector Id 
+//
+///////////////////////////////////////////////////////////////////////////////
+datatype VectorId : MEM = vector_id { cons : Cons, ty : Ty, arity : int };
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Functor mapping table.
+//
+///////////////////////////////////////////////////////////////////////////////
+class FunctorMap {
+   FunctorMap(const FunctorMap&);      // no copy constructor
+   void operator = (const FunctorMap&);  // no assignment
+public:
+   ////////////////////////////////////////////////////////////////////////////
+   //  Internals
+   ////////////////////////////////////////////////////////////////////////////
+   HashTable       literal_map; // mapping from literals to Functors
+   HashTable       type_map;    // mapping from types to Functors
+   HashTable       vector_map;  // mapping from vector constructors to Functors
+   HashTable       var_map;     // mapping from non-terminals to Functors
+   HashTable       rule_map;    // mapping from types to rule lists
+   HashTable       protocols;   // mapping from type to type
+   HashTable       nonterm_map; // mapping from (lhs) nonterminal to type
+   TreeGrammar::Functor         functors;    // number of functors
+   TreeGrammar::Variable        variables;   // number of variables
+   TreeAutomaton * tree_gen;    // the tree generator
+   Bool        use_compression; // should we use index compression?
+   Bool        has_guard;       // the set of rules contain guards?
+   Bool        has_cost;        // the set of rules contain costs?
+   Bool        has_cost_exp;    // the set of rules contain cost exprs?
+   Bool        has_syn_attrib;  // do we have synthesized attributes?
+   Bool        use_stack;       // should we use the attribute stack?
+   Bool        iso_tree;        // should we build an isomorphic tree?      
+   Bool        gen_traversal;   // should we generate a second traversal pass
+   int         N;               // number of rules
+   int         max_arity;       // maximum arity of patterns.
+   Id          class_name;      // name of rewrite class
+   Id *        functor_names;   // names of functors
+   Id *        variable_names;  // names of variables
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Constructor 
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   FunctorMap(int n, Id name);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Check whether a type known to the compiler?
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   Bool is_known_type      (Ty);    
+   Bool is_rewritable_type (Ty);    
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Encoding methods
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   void FunctorMap::encode (Ty);  // encode a type 
+   void FunctorMap::encode (Pat); // encode a pattern
+   void FunctorMap::encode (Id);  // encode a non-terminal
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Translation methods
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   TreeTerm trans(Pat);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Method to partition a set of rules according to the types of the
+   //  top level pattern, also encode the pattern in the process.
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   void partition_rules (MatchRules);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Method to compute the functor and variable names
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   void compute_names (Id fun_names[], Id var_names[]);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //
+   //  Method to print a report detailing the functor/variable encoding,
+   //  the tree grammar and the generated table size
+   //
+   ////////////////////////////////////////////////////////////////////////////
+   void print_report(ostream&);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Rewrite class environments
+//
+///////////////////////////////////////////////////////////////////////////////
+extern HashTable rewrite_env, rewrite_qual;
+
+#endif

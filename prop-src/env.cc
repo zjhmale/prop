@@ -1,0 +1,54 @@
+///////////////////////////////////////////////////////////////////////////////
+//  This file is generated automatically using Prop (version 2.3.6),
+//  last updated on Nov 2, 1999.
+//  The original source file is "env.pcc".
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "env.pcc"
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Environment  
+//
+///////////////////////////////////////////////////////////////////////////////
+#include "env.h"
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Constructor and destructor
+//
+///////////////////////////////////////////////////////////////////////////////
+Env::Env() : env(string_hash,string_equal) {}
+Env::Env(const Env& E) : env(string_hash,string_equal) 
+{  foreach_entry(i,E.env) env.insert(i->k,i->v); }
+Env::~Env() {}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Type lookup
+//
+///////////////////////////////////////////////////////////////////////////////
+Ty Env::operator () (Id id) const 
+{  HashTable::Entry * e = env.lookup(id);
+   if (e) return (Ty)(e->v); else return NOty; 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Insert a new entry to the environment
+//
+///////////////////////////////////////////////////////////////////////////////
+void Env::bind(Id id, Ty ty) {  env.insert(id,ty); }
+#line 34 "env.pcc"
+/*
+------------------------------- Statistics -------------------------------
+Merge matching rules         = yes
+Number of DFA nodes merged   = 0
+Number of ifs generated      = 0
+Number of switches generated = 0
+Number of labels             = 0
+Number of gotos              = 0
+Adaptive matching            = enabled
+Fast string matching         = disabled
+Inline downcasts             = enabled
+--------------------------------------------------------------------------
+*/

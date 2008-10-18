@@ -1,0 +1,8 @@
+M firstset2.cc
+D /home/leunga/src/prop-2.3.6/lib-src/automata
+A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
+O _._t10LHashTable2ZP24CachedFirstSetProductionZQ214CachedFirstSet16FirstAndNullable
+O __t10LHashTable2ZP24CachedFirstSetProductionZQ214CachedFirstSet16FirstAndNullableidd
+O insert__t10LHashTable2ZP24CachedFirstSetProductionZQ214CachedFirstSet16FirstAndNullableRCP24CachedFirstSetProductionRCQ214CachedFirstSet16FirstAndNullable
+O value__Ct10LHashTable2ZP24CachedFirstSetProductionZQ214CachedFirstSet16FirstAndNullablePv
+O lookup__Ct10LHashTable2ZP24CachedFirstSetProductionZQ214CachedFirstSet16FirstAndNullableRCP24CachedFirstSetProduction

@@ -1,0 +1,88 @@
+///////////////////////////////////////////////////////////////////////////////
+//  The Datatype compiler
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_compiler_h
+#define datatype_compiler_h
+
+#include "codegen.h"
+#include "labelgen.h"
+#include "ir.h"
+#include "ast.h"
+
+class DatatypeCompiler : virtual public CodeGen {
+   DatatypeCompiler(const DatatypeCompiler&);  // no copy constructor
+   void operator = (const DatatypeCompiler&);  // no assignment
+public:
+   ////////////////////////////////////////////////////////////////////////////
+   //  Constructor and destructor
+   ////////////////////////////////////////////////////////////////////////////
+            DatatypeCompiler(TyOpt opt, int embedded_tags);
+   virtual ~DatatypeCompiler();
+
+   void preprocess_def (DatatypeDef);
+
+private:
+
+   TyOpt optimizations;     // optimizations in place
+   int   max_embedded_tags; // maximum tags that can be embedded into the
+                            // lower bits of a pointer. 
+   int   max_embedded_bits;
+   LabelGen temp_vars;
+
+protected:
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for mapping datatypes into C++ classes. 
+   ////////////////////////////////////////////////////////////////////////////
+   void gen_datatype                 (DatatypeDefs, ViewDefs, LawDefs, TyDefs);
+   void gen_forward_def              (DatatypeDef);
+   void gen_forward_class_def        (Id, TyVars, TyQual);
+   void gen_type_def                 (TyDef);
+   void gen_unit_constructors        (Id, int, Cons [], Bool, Bool = false);
+   void gen_class_hierarchy          (DatatypeDef);
+   void gen_forward_arg_constructors (Id, TyVars, int, int, TyOpt, Cons []);
+   Bool gen_base_class               (Id, TyVars, int, int, TyOpt, Cons [], 
+                                      Inherits, TyQual, Decls);
+   void pr_subclass                  (Bool&, Id);
+   void gen_subclass                 (Id, TyVars, int, int, TyOpt, TyQual, Cons);
+   void gen_class_interface          (Id, TyVars, Id, TyQual, TyOpt, TyQual);
+   void gen_class_constructor        (Id, TyVars, Id, int, int, TyOpt, Ty, Bool, TyQual);
+   void gen_class_destructor         (Id, TyVars, Id, Ty, TyQual, TyOpt, Bool);
+   void gen_datatype_constructor     (Id, TyVars, Id, int, int, TyOpt, Ty, Bool, TyQual);
+   void gen_untagging_functions      (Id, TyVars, int, int, TyQual, TyOpt);
+   void gen_downcasting_functions    (Id, TyVars, int, Cons [], TyQual);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for generating datatype laws
+   ////////////////////////////////////////////////////////////////////////////
+   void gen_law_defs    (LawDefs);
+   void gen_law_inverse (Id, Ids, Exp, Ty);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for generating datatype instantiation code.
+   ////////////////////////////////////////////////////////////////////////////
+   void instantiate_datatypes (Bool, Tys);
+   void instantiate_datatype  (Bool, Id, TyVars,
+	    Tys, int, int, int, int, Ty, Inherits, Cons []);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for generating garbage collection code.
+   ////////////////////////////////////////////////////////////////////////////
+   Bool gen_gc_trace (Bool, Id, TyVars, Tys, Id, Ty, Ty, int, Inherits, Bool);
+   void gen_trace    (Ty, Id); 
+   
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for generating pretty printing code.
+   ////////////////////////////////////////////////////////////////////////////
+   void gen_pretty_printer    (Bool, Ty, Tys);
+   void gen_formated_printer  (Cons, Ty, PrintFormats);
+   void gen_default_printer   (Cons, Ty);
+
+   ////////////////////////////////////////////////////////////////////////////
+   //  Methods for generating persistence stream reading/writing code.
+   ////////////////////////////////////////////////////////////////////////////
+   Bool gen_persistence(Bool, Id, TyVars, Tys, Id, Ty, Ty, int, Inherits, Bool);
+   Bool gen_persist_IO_body (Id, TyVars, Tys, Id, Ty, Id, Inherits, Bool);
+   void gen_persist_IO      (Ty, Id, Id);
+};
+
+#endif

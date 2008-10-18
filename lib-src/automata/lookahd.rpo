@@ -1,0 +1,25 @@
+M lookahd.cc
+D /home/leunga/src/prop-2.3.6/lib-src/automata
+A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
+O size__Ct10LHashTable2ZPiZs
+O size__Ct10LHashTable2ZUlZP6BitSet
+O value__Ct10LHashTable2ZUlZP6BitSetPv
+O value__t10LHashTable2ZPiZsPv
+O lookup__Ct10LHashTable2ZPiZsRCPi
+O __vc__t10LHashTable2ZPiZsRCPi
+O clear__t10LHashTable2ZUlZi
+O insert__t10LHashTable2ZPiZsRCPiRCs
+O lookup__Ct10LHashTable2ZUlZiRCUl
+O contains__Ct10LHashTable2ZUlZiRCUl
+O insert__t10LHashTable2ZUlZiRCUlRCi
+O insert__t10LHashTable2ZUlZP6BitSetRCUlRCP6BitSet
+O __t10LHashTable2ZUlZiidd
+O _._t10LHashTable2ZUlZi
+O value__t10LHashTable2ZUlZP6BitSetPv
+O lookup__Ct10LHashTable2ZUlZP6BitSetRCUl
+O _._t10LHashTable2ZPiZs
+O __t10LHashTable2ZPiZsidd
+O _._t10LHashTable2ZUlZP6BitSet
+O __t10LHashTable2ZUlZP6BitSetidd
+O __t6smanip1ZUlPFR3iosUl_R3iosUl
+O __t6smanip1ZiPFR3iosi_R3iosi

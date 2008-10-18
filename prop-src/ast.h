@@ -1,0 +1,1834 @@
+///////////////////////////////////////////////////////////////////////////////
+//  This file is generated automatically using Prop (version 2.3.6),
+//  last updated on Nov 2, 1999.
+//  The original source file is "ast.ph".
+///////////////////////////////////////////////////////////////////////////////
+
+#line 1 "ast.ph"
+///////////////////////////////////////////////////////////////////////////////
+//
+//  This file contains the abstract syntax tree definitions for the
+//  Prop language.  For simplicity, C++ statements are currently not
+//  handled directly in the AST.
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef abstract_syntax_tree_h
+#define abstract_syntax_tree_h
+
+#include "basics.h"
+#include "ir.h"
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Options to the pattern matching compiler. 
+//
+///////////////////////////////////////////////////////////////////////////////
+enum { MATCHnone            = 0,     // no option (select first matching rule)
+       MATCHall             = 1<<0,  // select all matching rules
+       MATCHwhile           = 1<<1,  // loop back
+       MATCHnocheck         = 1<<2,  // no checking  
+       MATCHwithcost        = 1<<3,  // with cost minimization
+       MATCHwithintcost     = 1<<4,  // with integer costs
+       MATCHwithexpcost     = 1<<5,  // with expression costs
+       MATCHwithtreecost    = 1<<6,  // use cumulative cost
+       MATCHrefutable       = 1<<7,  // pattern is refutable
+       MATCHscanner         = 1<<8,  // lexical scanner
+       MATCHcaseinsensitive = 1<<9,  // insensitive case during string matching
+       MATCHlexemepat       = 1<<10, // with lexeme pattern
+       MATCHnotrace         = 1<<11, // no tracing
+       MATCHunification     = 1<<12  // unification mode
+     };
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Forward type declarations.
+//  These are defined in other places.
+//
+///////////////////////////////////////////////////////////////////////////////
+#line 41 "ast.ph"
+#line 53 "ast.ph"
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Ty
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Ty_defined
+#define datatype_Ty_defined
+   class a_Ty;
+   typedef a_Ty * Ty;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Pat
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Pat_defined
+#define datatype_Pat_defined
+   class a_Pat;
+   typedef a_Pat * Pat;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Cons
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Cons_defined
+#define datatype_Cons_defined
+   class a_Cons;
+   typedef a_Cons * Cons;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Literal
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Literal_defined
+#define datatype_Literal_defined
+   class a_Literal;
+   typedef a_Literal * Literal;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for GramExp
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_GramExp_defined
+#define datatype_GramExp_defined
+   class a_GramExp;
+   typedef a_GramExp * GramExp;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for FieldDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_FieldDef_defined
+#define datatype_FieldDef_defined
+   class a_FieldDef;
+   typedef a_FieldDef * FieldDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for FieldLaw
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_FieldLaw_defined
+#define datatype_FieldLaw_defined
+   class a_FieldLaw;
+   typedef a_FieldLaw * FieldLaw;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Stmt
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Stmt_defined
+#define datatype_Stmt_defined
+   class a_Stmt;
+   typedef a_Stmt * Stmt;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Def
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Def_defined
+#define datatype_Def_defined
+   class a_Def;
+   typedef a_Def * Def;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Cost
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Cost_defined
+#define datatype_Cost_defined
+   class a_Cost;
+   typedef a_Cost * Cost;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for ConstraintSet
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_ConstraintSet_defined
+#define datatype_ConstraintSet_defined
+   class a_ConstraintSet;
+   typedef a_ConstraintSet * ConstraintSet;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for GraphRewritingRule
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_GraphRewritingRule_defined
+#define datatype_GraphRewritingRule_defined
+   class a_GraphRewritingRule;
+   typedef a_GraphRewritingRule * GraphRewritingRule;
+#endif
+
+#line 53 "ast.ph"
+#line 53 "ast.ph"
+
+
+class ClassDefinition;
+class RewriteIndexing;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Information on a match rule.
+//
+///////////////////////////////////////////////////////////////////////////////
+class MatchRuleInfo : public Loc
+{  MatchRuleInfo   (const MatchRuleInfo&);  // no copy constructor
+   void operator = (const MatchRuleInfo&);  // no assignment
+public:
+   Bool used;           // is the rule being used?
+   Ty   ty;             // type of pattern
+   int  rule_number;    // rule number
+   Bool negated;        // negation in inference? 
+   Bool rewriting;      // A rewriting pattern?
+   Bool is_chain_rule;  // Chain rule?
+   enum RewritingMode 
+   {  BEFORE, PREORDER, POSTORDER, TOPDOWN, BOTTOMUP, LAST_REWRITING_MODE
+   } mode;              // rewriting mode
+   enum 
+   {  NO_OPTIONS = 0, CUTREWRITE = 1, REPLACEMENT = 2, FAILREWRITE = 4 };
+   typedef int RewritingOption;
+   RewritingOption option;
+
+   MatchRuleInfo();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Expressions.
+//
+///////////////////////////////////////////////////////////////////////////////
+#line 89 "ast.ph"
+#line 399 "ast.ph"
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Exp
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Exp_defined
+#define datatype_Exp_defined
+   class a_Exp;
+   typedef a_Exp * Exp;
+#endif
+
+#  define NOexp (Exp)0
+
+enum SETLOp {
+   ARBop = 0, DOMop = 1, RANop = 2, 
+   CARDop = 3, WITHop = 4, WITHASSIGNop = 5, 
+   LESSop = 6, LESSASSIGNop = 7
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Generator
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Generator_defined
+#define datatype_Generator_defined
+   class a_Generator;
+   typedef a_Generator * Generator;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for MatchExp
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_MatchExp_defined
+#define datatype_MatchExp_defined
+   class a_MatchExp;
+   typedef a_MatchExp * MatchExp;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for MatchRule
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_MatchRule_defined
+#define datatype_MatchRule_defined
+   class a_MatchRule;
+   typedef a_MatchRule * MatchRule;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Decl
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Decl_defined
+#define datatype_Decl_defined
+   class a_Decl;
+   typedef a_Decl * Decl;
+#endif
+
+#  define NOdecl (Decl)0
+
+enum EntryDirection {
+   LEFTdirection = 0, RIGHTdirection = 1
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Protocol
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Protocol_defined
+#define datatype_Protocol_defined
+   class a_Protocol;
+   typedef a_Protocol * Protocol;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for DatatypeDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_DatatypeDef_defined
+#define datatype_DatatypeDef_defined
+   class a_DatatypeDef;
+   typedef a_DatatypeDef * DatatypeDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for TermDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_TermDef_defined
+#define datatype_TermDef_defined
+   class a_TermDef;
+   typedef a_TermDef * TermDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for ViewDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_ViewDef_defined
+#define datatype_ViewDef_defined
+   class a_ViewDef;
+   typedef a_ViewDef * ViewDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for LawDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_LawDef_defined
+#define datatype_LawDef_defined
+   class a_LawDef;
+   typedef a_LawDef * LawDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for TyDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_TyDef_defined
+#define datatype_TyDef_defined
+   class a_TyDef;
+   typedef a_TyDef * TyDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for FunDef
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_FunDef_defined
+#define datatype_FunDef_defined
+   class a_FunDef;
+   typedef a_FunDef * FunDef;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for QualId
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_QualId_defined
+#define datatype_QualId_defined
+   class a_QualId;
+   typedef a_QualId * QualId;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for InferenceRule
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_InferenceRule_defined
+#define datatype_InferenceRule_defined
+   class a_InferenceRule;
+   typedef a_InferenceRule * InferenceRule;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Forward class definition for Conclusion
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef datatype_Conclusion_defined
+#define datatype_Conclusion_defined
+   class a_Conclusion;
+   typedef a_Conclusion * Conclusion;
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type MatchExps
+///////////////////////////////////////////////////////////////////////////////
+#line 375 "ast.ph"
+typedef a_List<MatchExp> *  MatchExps;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type MatchRules
+///////////////////////////////////////////////////////////////////////////////
+#line 376 "ast.ph"
+typedef a_List<MatchRule> *  MatchRules;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type Decls
+///////////////////////////////////////////////////////////////////////////////
+#line 377 "ast.ph"
+typedef a_List<Decl> *  Decls;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type DatatypeDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 378 "ast.ph"
+typedef a_List<DatatypeDef> *  DatatypeDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type ViewDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 379 "ast.ph"
+typedef a_List<ViewDef> *  ViewDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type LawDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 380 "ast.ph"
+typedef a_List<LawDef> *  LawDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type TyDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 381 "ast.ph"
+typedef a_List<TyDef> *  TyDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type TermDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 382 "ast.ph"
+typedef a_List<TermDef> *  TermDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type FunDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 383 "ast.ph"
+typedef a_List<FunDef> *  FunDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type Protocols
+///////////////////////////////////////////////////////////////////////////////
+#line 384 "ast.ph"
+typedef a_List<Protocol> *  Protocols;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type LabExp
+///////////////////////////////////////////////////////////////////////////////
+#line 385 "ast.ph"
+typedef struct { Id label; Exp exp;  } LabExp;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type LabMatchRule
+///////////////////////////////////////////////////////////////////////////////
+#line 386 "ast.ph"
+typedef struct { QualId id; MatchRule rule; Ty return_ty;  } LabMatchRule;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type LabMatchRules
+///////////////////////////////////////////////////////////////////////////////
+#line 387 "ast.ph"
+typedef struct { QualId id; MatchRules rules; Ty return_ty;  } LabMatchRules;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type Exps
+///////////////////////////////////////////////////////////////////////////////
+#line 388 "ast.ph"
+typedef a_List<Exp> *  Exps;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type LabExps
+///////////////////////////////////////////////////////////////////////////////
+#line 389 "ast.ph"
+typedef a_List<LabExp> *  LabExps;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type InferenceRules
+///////////////////////////////////////////////////////////////////////////////
+#line 390 "ast.ph"
+typedef a_List<InferenceRule> *  InferenceRules;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type Conclusions
+///////////////////////////////////////////////////////////////////////////////
+#line 391 "ast.ph"
+typedef a_List<Conclusion> *  Conclusions;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type GraphRewritingRules
+///////////////////////////////////////////////////////////////////////////////
+#line 392 "ast.ph"
+typedef a_List<GraphRewritingRule> *  GraphRewritingRules;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type FieldDefs
+///////////////////////////////////////////////////////////////////////////////
+#line 393 "ast.ph"
+typedef a_List<FieldDef> *  FieldDefs;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type FieldLaws
+///////////////////////////////////////////////////////////////////////////////
+#line 394 "ast.ph"
+typedef a_List<FieldLaw> *  FieldLaws;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type ChildNo
+///////////////////////////////////////////////////////////////////////////////
+#line 395 "ast.ph"
+typedef int ChildNo;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type RuleNo
+///////////////////////////////////////////////////////////////////////////////
+#line 396 "ast.ph"
+typedef int RuleNo;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type MatchOptions
+///////////////////////////////////////////////////////////////////////////////
+#line 397 "ast.ph"
+typedef int MatchOptions;
+
+///////////////////////////////////////////////////////////////////////////////
+// Definition of type RewriteIndexings
+///////////////////////////////////////////////////////////////////////////////
+#line 398 "ast.ph"
+typedef a_List<RewriteIndexing *> *  RewriteIndexings;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Base class for datatype Exp
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_Exp : public MEM {
+public:
+   enum Tag_Exp {
+      tag_LITERALexp = 0, tag_IDexp = 1, tag_RELexp = 2, 
+      tag_DOTexp = 3, tag_SELECTORexp = 4, tag_DEREFexp = 5, 
+      tag_ARROWexp = 6, tag_INDEXexp = 7, tag_BINOPexp = 8, 
+      tag_PREFIXexp = 9, tag_POSTFIXexp = 10, tag_APPexp = 11, 
+      tag_ASSIGNexp = 12, tag_IFexp = 13, tag_TUPLEexp = 14, 
+      tag_EXTUPLEexp = 15, tag_RECORDexp = 16, tag_LISTexp = 17, 
+      tag_VECTORexp = 18, tag_CONSexp = 19, tag_CASTexp = 20, 
+      tag_QUALexp = 21, tag_EQexp = 22, tag_UNIFYexp = 23, 
+      tag_LTexp = 24, tag_HASHexp = 25, tag_THISCOSTexp = 26, 
+      tag_COSTexp = 27, tag_THISSYNexp = 28, tag_SYNexp = 29, 
+      tag_SENDexp = 30, tag_SETLexp = 31, tag_LISTCOMPexp = 32, 
+      tag_FORALLexp = 33, tag_EXISTSexp = 34, tag_MARKEDexp = 35
+   };
+
+public:
+   const Tag_Exp tag__; // variant tag
+protected:
+   inline a_Exp(Tag_Exp t__) : tag__(t__) {}
+public:
+#line 155 "ast.ph"
+   
+   Ty ty;
+   
+#line 157 "ast.ph"
+};
+inline int boxed(const a_Exp * x) { return x != 0; }
+inline int untag(const a_Exp * x) { return x ? (x->tag__+1) : 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::LITERALexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_LITERALexp : public a_Exp {
+public:
+#line 96 "ast.ph"
+   Literal LITERALexp; 
+   Exp_LITERALexp (Literal x_LITERALexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::IDexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_IDexp : public a_Exp {
+public:
+#line 97 "ast.ph"
+   Id IDexp; 
+   Exp_IDexp (Id x_IDexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::RELexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_RELexp : public a_Exp {
+public:
+#line 98 "ast.ph"
+   int RELexp; 
+   Exp_RELexp (int x_RELexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::DOTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_DOTexp : public a_Exp {
+public:
+#line 99 "ast.ph"
+   Exp _1; Id _2; 
+   Exp_DOTexp (Exp x_1, Id x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::SELECTORexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_SELECTORexp : public a_Exp {
+public:
+#line 100 "ast.ph"
+   Exp _1; Cons _2; Ty _3; 
+   Exp_SELECTORexp (Exp x_1, Cons x_2, Ty x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::DEREFexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_DEREFexp : public a_Exp {
+public:
+#line 101 "ast.ph"
+   Exp DEREFexp; 
+   Exp_DEREFexp (Exp x_DEREFexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::ARROWexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_ARROWexp : public a_Exp {
+public:
+#line 102 "ast.ph"
+   Exp _1; Id _2; 
+   Exp_ARROWexp (Exp x_1, Id x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::INDEXexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_INDEXexp : public a_Exp {
+public:
+#line 103 "ast.ph"
+   Exp _1; Exp _2; 
+   Exp_INDEXexp (Exp x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::BINOPexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_BINOPexp : public a_Exp {
+public:
+#line 104 "ast.ph"
+   Id _1; Exp _2; Exp _3; 
+   Exp_BINOPexp (Id x_1, Exp x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::PREFIXexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_PREFIXexp : public a_Exp {
+public:
+#line 105 "ast.ph"
+   Id _1; Exp _2; 
+   Exp_PREFIXexp (Id x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::POSTFIXexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_POSTFIXexp : public a_Exp {
+public:
+#line 106 "ast.ph"
+   Id _1; Exp _2; 
+   Exp_POSTFIXexp (Id x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::APPexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_APPexp : public a_Exp {
+public:
+#line 107 "ast.ph"
+   Exp _1; Exp _2; 
+   Exp_APPexp (Exp x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::ASSIGNexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_ASSIGNexp : public a_Exp {
+public:
+#line 108 "ast.ph"
+   Exp _1; Exp _2; 
+   Exp_ASSIGNexp (Exp x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::IFexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_IFexp : public a_Exp {
+public:
+#line 109 "ast.ph"
+   Exp _1; Exp _2; Exp _3; 
+   Exp_IFexp (Exp x_1, Exp x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::TUPLEexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_TUPLEexp : public a_Exp {
+public:
+#line 110 "ast.ph"
+   a_List<Exp> *  TUPLEexp; 
+   Exp_TUPLEexp (a_List<Exp> *  x_TUPLEexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::EXTUPLEexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_EXTUPLEexp : public a_Exp {
+public:
+#line 111 "ast.ph"
+   a_List<Exp> *  EXTUPLEexp; 
+   Exp_EXTUPLEexp (a_List<Exp> *  x_EXTUPLEexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::RECORDexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_RECORDexp : public a_Exp {
+public:
+#line 112 "ast.ph"
+   a_List<LabExp> *  RECORDexp; 
+   Exp_RECORDexp (a_List<LabExp> *  x_RECORDexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::LISTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_LISTexp : public a_Exp {
+public:
+#line 113 "ast.ph"
+   Cons _1; Cons _2; a_List<Exp> *  _3; Exp _4; 
+   Exp_LISTexp (Cons x_1, Cons x_2, a_List<Exp> *  x_3, Exp x_4);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::VECTORexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_VECTORexp : public a_Exp {
+public:
+#line 114 "ast.ph"
+   Cons _1; a_List<Exp> *  _2; 
+   Exp_VECTORexp (Cons x_1, a_List<Exp> *  x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::CONSexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_CONSexp : public a_Exp {
+public:
+#line 115 "ast.ph"
+   Cons _1; a_List<Exp> *  _2; Exp _3; 
+   Exp_CONSexp (Cons x_1, a_List<Exp> *  x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::CASTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_CASTexp : public a_Exp {
+public:
+#line 116 "ast.ph"
+   Ty _1; Exp _2; 
+   Exp_CASTexp (Ty x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::QUALexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_QUALexp : public a_Exp {
+public:
+#line 117 "ast.ph"
+   Ty _1; Id _2; 
+   Exp_QUALexp (Ty x_1, Id x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::EQexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_EQexp : public a_Exp {
+public:
+#line 125 "ast.ph"
+   Ty _1; Exp _2; Exp _3; 
+   Exp_EQexp (Ty x_1, Exp x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::UNIFYexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_UNIFYexp : public a_Exp {
+public:
+#line 126 "ast.ph"
+   Ty _1; Exp _2; Exp _3; 
+   Exp_UNIFYexp (Ty x_1, Exp x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::LTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_LTexp : public a_Exp {
+public:
+#line 127 "ast.ph"
+   Ty _1; Exp _2; Exp _3; 
+   Exp_LTexp (Ty x_1, Exp x_2, Exp x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::HASHexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_HASHexp : public a_Exp {
+public:
+#line 128 "ast.ph"
+   Ty _1; Exp _2; 
+   Exp_HASHexp (Ty x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::THISCOSTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_THISCOSTexp : public a_Exp {
+public:
+#line 129 "ast.ph"
+   
+   Exp_THISCOSTexp ();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::COSTexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_COSTexp : public a_Exp {
+public:
+#line 130 "ast.ph"
+   ChildNo COSTexp; 
+   Exp_COSTexp (ChildNo x_COSTexp);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::THISSYNexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_THISSYNexp : public a_Exp {
+public:
+#line 131 "ast.ph"
+   RuleNo _1; Ty _2; Bool _3; 
+   Exp_THISSYNexp (RuleNo x_1, Ty x_2, Bool x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::SYNexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_SYNexp : public a_Exp {
+public:
+#line 132 "ast.ph"
+   ChildNo _1; RuleNo _2; Ty _3; Bool _4; 
+   Exp_SYNexp (ChildNo x_1, RuleNo x_2, Ty x_3, Bool x_4);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::SENDexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_SENDexp : public a_Exp {
+public:
+#line 133 "ast.ph"
+   Id _1; a_List<Exp> *  _2; 
+   Exp_SENDexp (Id x_1, a_List<Exp> *  x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::SETLexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_SETLexp : public a_Exp {
+public:
+#line 140 "ast.ph"
+   SETLOp _1; Exps _2; 
+   Exp_SETLexp (SETLOp x_1, Exps x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::LISTCOMPexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_LISTCOMPexp : public a_Exp {
+public:
+#line 141 "ast.ph"
+   Exp exp; a_List<Generator> *  generators; Exp guard; 
+   Exp_LISTCOMPexp (Exp x_exp, a_List<Generator> *  x_generators, Exp x_guard);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::FORALLexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_FORALLexp : public a_Exp {
+public:
+#line 145 "ast.ph"
+   Id _1; Exp _2; 
+   Exp_FORALLexp (Id x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::EXISTSexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_EXISTSexp : public a_Exp {
+public:
+#line 146 "ast.ph"
+   Id _1; Exp _2; 
+   Exp_EXISTSexp (Id x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Exp::MARKEDexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class Exp_MARKEDexp : public a_Exp {
+public:
+#line 153 "ast.ph"
+   Loc _1; Exp _2; 
+   Exp_MARKEDexp (Loc x_1, Exp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for Exp
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_Exp * LITERALexp (Literal x_LITERALexp);
+extern a_Exp * IDexp (Id x_IDexp);
+extern a_Exp * RELexp (int x_RELexp);
+extern a_Exp * DOTexp (Exp x_1, Id x_2);
+extern a_Exp * SELECTORexp (Exp x_1, Cons x_2, Ty x_3);
+extern a_Exp * DEREFexp (Exp x_DEREFexp);
+extern a_Exp * ARROWexp (Exp x_1, Id x_2);
+extern a_Exp * INDEXexp (Exp x_1, Exp x_2);
+extern a_Exp * BINOPexp (Id x_1, Exp x_2, Exp x_3);
+extern a_Exp * PREFIXexp (Id x_1, Exp x_2);
+extern a_Exp * POSTFIXexp (Id x_1, Exp x_2);
+extern a_Exp * APPexp (Exp x_1, Exp x_2);
+extern a_Exp * ASSIGNexp (Exp x_1, Exp x_2);
+extern a_Exp * IFexp (Exp x_1, Exp x_2, Exp x_3);
+extern a_Exp * TUPLEexp (a_List<Exp> *  x_TUPLEexp);
+extern a_Exp * EXTUPLEexp (a_List<Exp> *  x_EXTUPLEexp);
+extern a_Exp * RECORDexp (a_List<LabExp> *  x_RECORDexp);
+extern a_Exp * LISTexp (Cons x_1, Cons x_2, a_List<Exp> *  x_3, Exp x_4);
+extern a_Exp * VECTORexp (Cons x_1, a_List<Exp> *  x_2);
+extern a_Exp * CONSexp (Cons x_1, a_List<Exp> *  x_2, Exp x_3);
+extern a_Exp * CASTexp (Ty x_1, Exp x_2);
+extern a_Exp * QUALexp (Ty x_1, Id x_2);
+extern a_Exp * EQexp (Ty x_1, Exp x_2, Exp x_3);
+extern a_Exp * UNIFYexp (Ty x_1, Exp x_2, Exp x_3);
+extern a_Exp * LTexp (Ty x_1, Exp x_2, Exp x_3);
+extern a_Exp * HASHexp (Ty x_1, Exp x_2);
+extern a_Exp * THISCOSTexp ();
+extern a_Exp * COSTexp (ChildNo x_COSTexp);
+extern a_Exp * THISSYNexp (RuleNo x_1, Ty x_2, Bool x_3);
+extern a_Exp * SYNexp (ChildNo x_1, RuleNo x_2, Ty x_3, Bool x_4);
+extern a_Exp * SENDexp (Id x_1, a_List<Exp> *  x_2);
+extern a_Exp * SETLexp (SETLOp x_1, Exps x_2);
+extern a_Exp * LISTCOMPexp (Exp x_exp, a_List<Generator> *  x_generators, Exp x_guard);
+extern a_Exp * FORALLexp (Id x_1, Exp x_2);
+extern a_Exp * EXISTSexp (Id x_1, Exp x_2);
+extern a_Exp * MARKEDexp (Loc x_1, Exp x_2);
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Generator::GENERATOR
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_Generator : public Loc {
+public:
+#line 179 "ast.ph"
+   Pat pat; Exp guard; Exp exp; 
+   a_Generator (Pat x_pat, Exp x_guard, Exp x_exp);
+};
+inline int boxed(const a_Generator *) { return 1; }
+inline int untag(const a_Generator *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for Generator
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_Generator * GENERATOR (Pat x_pat, Exp x_guard, Exp x_exp);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor MatchExp::MATCHexp
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_MatchExp : public Loc {
+public:
+#line 190 "ast.ph"
+   Exp _1; Id _2; 
+   a_MatchExp (Exp x_1, Id x_2);
+};
+inline int boxed(const a_MatchExp *) { return 1; }
+inline int untag(const a_MatchExp *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for MatchExp
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_MatchExp * MATCHexp (Exp x_1, Id x_2);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor MatchRule::MATCHrule
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_MatchRule : public MatchRuleInfo {
+public:
+#line 197 "ast.ph"
+   Id _1; Pat _2; Exp _3; Cost _4; a_List<Decl> *  _5; 
+   a_MatchRule (Id x_1, Pat x_2, Exp x_3, Cost x_4, a_List<Decl> *  x_5);
+};
+inline int boxed(const a_MatchRule *) { return 1; }
+inline int untag(const a_MatchRule *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for MatchRule
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_MatchRule * MATCHrule (Id x_1, Pat x_2, Exp x_3, Cost x_4, a_List<Decl> *  x_5);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Base class for datatype Decl
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_Decl : public MEM {
+public:
+   enum Tag_Decl {
+      tag_OPAQUEdecl = 0, tag_DATATYPEdecl = 1, tag_INSTANTIATEdecl = 2, 
+      tag_CLASSDEFdecl = 3, tag_INFERENCEdecl = 4, tag_REWRITEdecl = 5, 
+      tag_REWRITINGdecl = 6, tag_REPLACEMENTdecl = 7, tag_CUTREWRITEdecl = 8, 
+      tag_FAILREWRITEdecl = 9, tag_INJECTdecl = 10, tag_GOTOdecl = 11, 
+      tag_SETSTATEdecl = 12, tag_CONSTRAINTdecl = 13, tag_SYNTAXdecl = 14, 
+      tag_ATTRIBUTEGRAMMARdecl = 15, tag_FUNdecl = 16, tag_MATCHdecl = 17, 
+      tag_BITFIELDdecl = 18, tag_SETLSTMTdecl = 19, tag_SETLDEFdecl = 20, 
+      tag_GRAPHREWRITEdecl = 21, tag_DATAFLOWdecl = 22, tag_CLASSOFdecl = 23, 
+      tag_TYPEEXPdecl = 24, tag_EXPdecl = 25, tag_MARKEDdecl = 26
+   };
+
+public:
+   const Tag_Decl tag__; // variant tag
+protected:
+   inline a_Decl(Tag_Decl t__) : tag__(t__) {}
+public:
+};
+inline int boxed(const a_Decl * x) { return x != 0; }
+inline int untag(const a_Decl * x) { return x ? (x->tag__+1) : 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::OPAQUEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_OPAQUEdecl : public a_Decl {
+public:
+#line 208 "ast.ph"
+   char const * OPAQUEdecl; 
+   Decl_OPAQUEdecl (char const * x_OPAQUEdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::DATATYPEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_DATATYPEdecl : public a_Decl {
+public:
+#line 211 "ast.ph"
+   DatatypeDefs _1; ViewDefs _2; LawDefs _3; TyDefs _4; 
+   Decl_DATATYPEdecl (DatatypeDefs x_1, ViewDefs x_2, LawDefs x_3, TyDefs x_4);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::INSTANTIATEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_INSTANTIATEdecl : public a_Decl {
+public:
+#line 212 "ast.ph"
+   Bool _1; Tys _2; 
+   Decl_INSTANTIATEdecl (Bool x_1, Tys x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::CLASSDEFdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_CLASSDEFdecl : public a_Decl {
+public:
+#line 215 "ast.ph"
+   ClassDefinition * CLASSDEFdecl; 
+   Decl_CLASSDEFdecl (ClassDefinition * x_CLASSDEFdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::INFERENCEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_INFERENCEdecl : public a_Decl {
+public:
+#line 218 "ast.ph"
+   Id _1; InferenceRules _2; 
+   Decl_INFERENCEdecl (Id x_1, InferenceRules x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::REWRITEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_REWRITEdecl : public a_Decl {
+public:
+#line 221 "ast.ph"
+   Id _1; RewriteIndexings _2; MatchRules _3; 
+   Decl_REWRITEdecl (Id x_1, RewriteIndexings x_2, MatchRules x_3);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::REWRITINGdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_REWRITINGdecl : public a_Decl {
+public:
+#line 222 "ast.ph"
+   Protocols _1; Exp _2; Exp _3; RewriteIndexings _4; MatchRules _5; TyQual _6; 
+   Decl_REWRITINGdecl (Protocols x_1, Exp x_2, Exp x_3, RewriteIndexings x_4, MatchRules x_5, TyQual x_6);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::REPLACEMENTdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_REPLACEMENTdecl : public a_Decl {
+public:
+#line 224 "ast.ph"
+   Exp _1; MatchRuleInfo::RewritingMode _2; 
+   Decl_REPLACEMENTdecl (Exp x_1, MatchRuleInfo::RewritingMode x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::CUTREWRITEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_CUTREWRITEdecl : public a_Decl {
+public:
+#line 225 "ast.ph"
+   Exp _1; MatchRuleInfo::RewritingMode _2; 
+   Decl_CUTREWRITEdecl (Exp x_1, MatchRuleInfo::RewritingMode x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::FAILREWRITEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_FAILREWRITEdecl : public a_Decl {
+public:
+#line 226 "ast.ph"
+   MatchRuleInfo::RewritingMode FAILREWRITEdecl; 
+   Decl_FAILREWRITEdecl (MatchRuleInfo::RewritingMode x_FAILREWRITEdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::INJECTdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_INJECTdecl : public a_Decl {
+public:
+#line 227 "ast.ph"
+   int node_number; EntryDirection direction; 
+   Decl_INJECTdecl (int x_node_number, EntryDirection x_direction);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::GOTOdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_GOTOdecl : public a_Decl {
+public:
+#line 230 "ast.ph"
+   Id GOTOdecl; 
+   Decl_GOTOdecl (Id x_GOTOdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::SETSTATEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_SETSTATEdecl : public a_Decl {
+public:
+#line 231 "ast.ph"
+   int SETSTATEdecl; 
+   Decl_SETSTATEdecl (int x_SETSTATEdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::CONSTRAINTdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_CONSTRAINTdecl : public a_Decl {
+public:
+#line 234 "ast.ph"
+   Id _1; ConstraintSet _2; 
+   Decl_CONSTRAINTdecl (Id x_1, ConstraintSet x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::SYNTAXdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_SYNTAXdecl : public a_Decl {
+public:
+#line 237 "ast.ph"
+   Id _1; GramExp _2; 
+   Decl_SYNTAXdecl (Id x_1, GramExp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::ATTRIBUTEGRAMMARdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_ATTRIBUTEGRAMMARdecl : public a_Decl {
+public:
+#line 238 "ast.ph"
+   Id _1; GramExp _2; 
+   Decl_ATTRIBUTEGRAMMARdecl (Id x_1, GramExp x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::FUNdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_FUNdecl : public a_Decl {
+public:
+#line 241 "ast.ph"
+   FunDefs FUNdecl; 
+   Decl_FUNdecl (FunDefs x_FUNdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::MATCHdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_MATCHdecl : public a_Decl {
+public:
+#line 242 "ast.ph"
+   MatchExps _1; MatchRules _2; MatchOptions _3; Ty _4; 
+   Decl_MATCHdecl (MatchExps x_1, MatchRules x_2, MatchOptions x_3, Ty x_4);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::BITFIELDdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_BITFIELDdecl : public a_Decl {
+public:
+#line 245 "ast.ph"
+   Id name; int width; FieldDefs field_names; FieldLaws laws; 
+   Decl_BITFIELDdecl (Id x_name, int x_width, FieldDefs x_field_names, FieldLaws x_laws);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::SETLSTMTdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_SETLSTMTdecl : public a_Decl {
+public:
+#line 252 "ast.ph"
+   Stmt SETLSTMTdecl; 
+   Decl_SETLSTMTdecl (Stmt x_SETLSTMTdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::SETLDEFdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_SETLDEFdecl : public a_Decl {
+public:
+#line 253 "ast.ph"
+   Def SETLDEFdecl; 
+   Decl_SETLDEFdecl (Def x_SETLDEFdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::GRAPHREWRITEdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_GRAPHREWRITEdecl : public a_Decl {
+public:
+#line 256 "ast.ph"
+   Id name; LabTys args; GraphRewritingRules rules; 
+   Decl_GRAPHREWRITEdecl (Id x_name, LabTys x_args, GraphRewritingRules x_rules);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::DATAFLOWdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_DATAFLOWdecl : public a_Decl {
+public:
+#line 262 "ast.ph"
+   Id name; 
+   Decl_DATAFLOWdecl (Id x_name);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::CLASSOFdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_CLASSOFdecl : public a_Decl {
+public:
+#line 265 "ast.ph"
+   Id CLASSOFdecl; 
+   Decl_CLASSOFdecl (Id x_CLASSOFdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::TYPEEXPdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_TYPEEXPdecl : public a_Decl {
+public:
+#line 266 "ast.ph"
+   Ty TYPEEXPdecl; 
+   Decl_TYPEEXPdecl (Ty x_TYPEEXPdecl);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::EXPdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_EXPdecl : public a_Decl {
+public:
+#line 267 "ast.ph"
+   Exp exp; char const * prefix; char const * suffix; 
+   Decl_EXPdecl (Exp x_exp, char const * x_prefix = 0, char const * x_suffix = 0);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Decl::MARKEDdecl
+//
+///////////////////////////////////////////////////////////////////////////////
+class Decl_MARKEDdecl : public a_Decl {
+public:
+#line 273 "ast.ph"
+   Loc _1; Decl _2; 
+   Decl_MARKEDdecl (Loc x_1, Decl x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for Decl
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_Decl * OPAQUEdecl (char const * x_OPAQUEdecl);
+extern a_Decl * DATATYPEdecl (DatatypeDefs x_1, ViewDefs x_2, LawDefs x_3, TyDefs x_4);
+extern a_Decl * INSTANTIATEdecl (Bool x_1, Tys x_2);
+extern a_Decl * CLASSDEFdecl (ClassDefinition * x_CLASSDEFdecl);
+extern a_Decl * INFERENCEdecl (Id x_1, InferenceRules x_2);
+extern a_Decl * REWRITEdecl (Id x_1, RewriteIndexings x_2, MatchRules x_3);
+extern a_Decl * REWRITINGdecl (Protocols x_1, Exp x_2, Exp x_3, RewriteIndexings x_4, MatchRules x_5, TyQual x_6);
+extern a_Decl * REPLACEMENTdecl (Exp x_1, MatchRuleInfo::RewritingMode x_2);
+extern a_Decl * CUTREWRITEdecl (Exp x_1, MatchRuleInfo::RewritingMode x_2);
+extern a_Decl * FAILREWRITEdecl (MatchRuleInfo::RewritingMode x_FAILREWRITEdecl);
+extern a_Decl * INJECTdecl (int x_node_number, EntryDirection x_direction);
+extern a_Decl * GOTOdecl (Id x_GOTOdecl);
+extern a_Decl * SETSTATEdecl (int x_SETSTATEdecl);
+extern a_Decl * CONSTRAINTdecl (Id x_1, ConstraintSet x_2);
+extern a_Decl * SYNTAXdecl (Id x_1, GramExp x_2);
+extern a_Decl * ATTRIBUTEGRAMMARdecl (Id x_1, GramExp x_2);
+extern a_Decl * FUNdecl (FunDefs x_FUNdecl);
+extern a_Decl * MATCHdecl (MatchExps x_1, MatchRules x_2, MatchOptions x_3, Ty x_4);
+extern a_Decl * BITFIELDdecl (Id x_name, int x_width, FieldDefs x_field_names, FieldLaws x_laws);
+extern a_Decl * SETLSTMTdecl (Stmt x_SETLSTMTdecl);
+extern a_Decl * SETLDEFdecl (Def x_SETLDEFdecl);
+extern a_Decl * GRAPHREWRITEdecl (Id x_name, LabTys x_args, GraphRewritingRules x_rules);
+extern a_Decl * DATAFLOWdecl (Id x_name);
+extern a_Decl * CLASSOFdecl (Id x_CLASSOFdecl);
+extern a_Decl * TYPEEXPdecl (Ty x_TYPEEXPdecl);
+extern a_Decl * EXPdecl (Exp x_exp, char const * x_prefix = 0, char const * x_suffix = 0);
+extern a_Decl * MARKEDdecl (Loc x_1, Decl x_2);
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Protocol::PROTOCOL
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_Protocol : public Loc {
+public:
+#line 288 "ast.ph"
+   Ty ty; Ty inh; Ty syn; 
+   a_Protocol (Ty x_ty, Ty x_inh, Ty x_syn);
+};
+inline int boxed(const a_Protocol *) { return 1; }
+inline int untag(const a_Protocol *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for Protocol
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_Protocol * PROTOCOL (Ty x_ty, Ty x_inh, Ty x_syn);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor DatatypeDef::DATATYPEdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_DatatypeDef : public Loc {
+public:
+#line 295 "ast.ph"
+   Id _1; TyVars _2; Inherits _3; TyQual _4; TermDefs _5; Decls _6; 
+   a_DatatypeDef (Id x_1, TyVars x_2, Inherits x_3, TyQual x_4, TermDefs x_5, Decls x_6);
+};
+inline int boxed(const a_DatatypeDef *) { return 1; }
+inline int untag(const a_DatatypeDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for DatatypeDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_DatatypeDef * DATATYPEdef (Id x_1, TyVars x_2, Inherits x_3, TyQual x_4, TermDefs x_5, Decls x_6);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor TermDef::TERMdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_TermDef : public Loc {
+public:
+#line 303 "ast.ph"
+   Id id; Ty ty; Decls decls; Inherits inherits; Pat pat; PrintFormats print_formats; TyOpt opt; TyQual qual; Exp view_predicate; 
+   a_TermDef (Id x_id, Ty x_ty, Decls x_decls = nil_1_, Inherits x_inherits = nil_1_, Pat x_pat = NOpat, PrintFormats x_print_formats = nil_1_, TyOpt x_opt = OPTnone, TyQual x_qual = QUALnone, Exp x_view_predicate = NOexp);
+};
+inline int boxed(const a_TermDef *) { return 1; }
+inline int untag(const a_TermDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for TermDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_TermDef * TERMdef (Id x_id, Ty x_ty, Decls x_decls = nil_1_, Inherits x_inherits = nil_1_, Pat x_pat = NOpat, PrintFormats x_print_formats = nil_1_, TyOpt x_opt = OPTnone, TyQual x_qual = QUALnone, Exp x_view_predicate = NOexp);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor ViewDef::VIEWdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_ViewDef : public Loc {
+public:
+#line 320 "ast.ph"
+   Pat _1; Exp _2; a_List<LabExp> *  _3; 
+   a_ViewDef (Pat x_1, Exp x_2, a_List<LabExp> *  x_3);
+};
+inline int boxed(const a_ViewDef *) { return 1; }
+inline int untag(const a_ViewDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for ViewDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_ViewDef * VIEWdef (Pat x_1, Exp x_2, a_List<LabExp> *  x_3);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor LawDef::LAWdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_LawDef : public Loc {
+public:
+#line 327 "ast.ph"
+   Id id; Ids args; Exp guard; Pat pat; Bool invert; Ty ty; 
+   a_LawDef (Id x_id, Ids x_args, Exp x_guard, Pat x_pat, Bool x_invert, Ty x_ty = NOty);
+};
+inline int boxed(const a_LawDef *) { return 1; }
+inline int untag(const a_LawDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for LawDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_LawDef * LAWdef (Id x_id, Ids x_args, Exp x_guard, Pat x_pat, Bool x_invert, Ty x_ty = NOty);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor TyDef::TYdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_TyDef : public Loc {
+public:
+#line 341 "ast.ph"
+   Id _1; TyVars _2; Ty _3; Bool _4; 
+   a_TyDef (Id x_1, TyVars x_2, Ty x_3, Bool x_4);
+};
+inline int boxed(const a_TyDef *) { return 1; }
+inline int untag(const a_TyDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for TyDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_TyDef * TYdef (Id x_1, TyVars x_2, Ty x_3, Bool x_4);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor FunDef::FUNdef
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_FunDef : public Loc {
+public:
+#line 348 "ast.ph"
+   QualId _1; Ty _2; Ty _3; MatchRules _4; 
+   a_FunDef (QualId x_1, Ty x_2, Ty x_3, MatchRules x_4);
+};
+inline int boxed(const a_FunDef *) { return 1; }
+inline int untag(const a_FunDef *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for FunDef
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_FunDef * FUNdef (QualId x_1, Ty x_2, Ty x_3, MatchRules x_4);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Base class for datatype QualId
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_QualId : public MEM {
+public:
+   enum Tag_QualId {
+      tag_NESTEDid = 0, tag_SIMPLEid = 1
+   };
+
+public:
+};
+inline int boxed(const a_QualId *) { return 1; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Embbeded tag extraction functions
+//
+///////////////////////////////////////////////////////////////////////////////
+inline int untagp(const a_QualId * x)
+   { return (unsigned long)x & 3; }
+inline a_QualId * derefp(const a_QualId * x)
+   { return (a_QualId*)((unsigned long)x & ~3); }
+inline int untag(const a_QualId * x) { return untagp(x); }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor QualId::NESTEDid
+//
+///////////////////////////////////////////////////////////////////////////////
+class QualId_NESTEDid : public a_QualId {
+public:
+#line 355 "ast.ph"
+   Ty _1; QualId _2; 
+   QualId_NESTEDid (Ty x_1, QualId x_2);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor QualId::SIMPLEid
+//
+///////////////////////////////////////////////////////////////////////////////
+class QualId_SIMPLEid : public a_QualId {
+public:
+#line 356 "ast.ph"
+   Id SIMPLEid; 
+   QualId_SIMPLEid (Id x_SIMPLEid);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for QualId
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_QualId * NESTEDid (Ty x_1, QualId x_2);
+extern a_QualId * SIMPLEid (Id x_SIMPLEid);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor InferenceRule::INFERENCErule
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_InferenceRule : public Loc {
+public:
+#line 363 "ast.ph"
+   MatchRules _1; Exp _2; Conclusions _3; 
+   a_InferenceRule (MatchRules x_1, Exp x_2, Conclusions x_3);
+};
+inline int boxed(const a_InferenceRule *) { return 1; }
+inline int untag(const a_InferenceRule *) { return 0; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for InferenceRule
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_InferenceRule * INFERENCErule (MatchRules x_1, Exp x_2, Conclusions x_3);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Base class for datatype Conclusion
+//
+///////////////////////////////////////////////////////////////////////////////
+class a_Conclusion : public Loc {
+public:
+   enum Tag_Conclusion {
+      tag_ASSERTaction = 0, tag_RETRACTaction = 1, tag_STMTaction = 2
+   };
+
+public:
+};
+inline int boxed(const a_Conclusion *) { return 1; }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Embbeded tag extraction functions
+//
+///////////////////////////////////////////////////////////////////////////////
+inline int untagp(const a_Conclusion * x)
+   { return (unsigned long)x & 3; }
+inline a_Conclusion * derefp(const a_Conclusion * x)
+   { return (a_Conclusion*)((unsigned long)x & ~3); }
+inline int untag(const a_Conclusion * x) { return untagp(x); }
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Conclusion::ASSERTaction
+//
+///////////////////////////////////////////////////////////////////////////////
+class Conclusion_ASSERTaction : public a_Conclusion {
+public:
+#line 366 "ast.ph"
+   Exp ASSERTaction; 
+   Conclusion_ASSERTaction (Exp x_ASSERTaction);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Conclusion::RETRACTaction
+//
+///////////////////////////////////////////////////////////////////////////////
+class Conclusion_RETRACTaction : public a_Conclusion {
+public:
+#line 367 "ast.ph"
+   Exp RETRACTaction; 
+   Conclusion_RETRACTaction (Exp x_RETRACTaction);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Class for datatype constructor Conclusion::STMTaction
+//
+///////////////////////////////////////////////////////////////////////////////
+class Conclusion_STMTaction : public a_Conclusion {
+public:
+#line 368 "ast.ph"
+   Decls STMTaction; 
+   Conclusion_STMTaction (Decls x_STMTaction);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Datatype constructor functions for Conclusion
+//
+///////////////////////////////////////////////////////////////////////////////
+extern a_Conclusion * ASSERTaction (Exp x_ASSERTaction);
+extern a_Conclusion * RETRACTaction (Exp x_RETRACTaction);
+extern a_Conclusion * STMTaction (Decls x_STMTaction);
+
+#line 399 "ast.ph"
+#line 399 "ast.ph"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  AST manipulation methods.
+//
+///////////////////////////////////////////////////////////////////////////////
+extern Exp component_exp(Exps, int);
+extern Exp component_exp(Exps, Id);
+extern Exp component_exp(LabExps, Id);
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Pretty printing methods.
+//
+///////////////////////////////////////////////////////////////////////////////
+extern ostream& operator << (ostream&, Exp);
+extern ostream& operator << (ostream&, 
+#line 416 "ast.ph"
+a_List<Exp> *  
+#line 416 "ast.ph"
+);
+extern ostream& operator << (ostream&, LabExp);
+extern ostream& operator << (ostream&, a_List<LabExp> *  
+#line 418 "ast.ph"
+);
+extern ostream& operator << (ostream&, Cost);
+extern ostream& operator << (ostream&, MatchRule);
+extern ostream& operator << (ostream&, QualId);
+
+#endif
+/*
+------------------------------- Statistics -------------------------------
+Merge matching rules         = yes
+Number of DFA nodes merged   = 0
+Number of ifs generated      = 0
+Number of switches generated = 0
+Number of labels             = 0
+Number of gotos              = 0
+Adaptive matching            = enabled
+Fast string matching         = disabled
+Inline downcasts             = enabled
+--------------------------------------------------------------------------
+*/
