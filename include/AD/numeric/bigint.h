@@ -30,7 +30,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>  // Generic definitions
 
 class BigInt {

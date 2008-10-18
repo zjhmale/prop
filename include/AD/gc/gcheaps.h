@@ -25,7 +25,7 @@
 #ifndef garbage_collection_spaces_h
 #define garbage_collection_spaces_h
 
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>  // generic definitions
 #include <AD/gc/gcconfig.h>      // system configurations
 #include <AD/gc/gcintern.h>      // internal data structures

@@ -30,7 +30,7 @@
 // for tree matching.  
 //////////////////////////////////////////////////////////////////////////
 
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>
 #include <AD/memory/mempool.h>
 #include <AD/automata/treeauto.h>

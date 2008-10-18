@@ -33,7 +33,7 @@
 //  The indices should be centered around 0.
 ///////////////////////////////////////////////////////////////////////////
 
-#include <new.h>
+#include <new>
 #include <string.h>
 #include <AD/generic/generic.h>   // Generic definitions
 

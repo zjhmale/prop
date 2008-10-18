@@ -26,7 +26,7 @@
 #define BURS_item_set_h
 
 #include <iostream>
-#include <new.h>
+#include <new>
 #include <AD/rewrite/b_item.h>  // Item set
 #include <AD/memory/mem.h>      // Memory manager
 #include <AD/contain/bitset.h>  // Bit sets

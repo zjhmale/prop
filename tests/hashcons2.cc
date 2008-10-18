@@ -13,7 +13,7 @@
 //  in Prop.
 //
 #include <iostream.h>
-#include <new.h>
+#include <new>
 
 int balance = 0;
 

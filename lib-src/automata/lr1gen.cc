@@ -30,7 +30,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
-#include <new.h>
+#include <new>
 #include <AD/automata/lr1gen.h>     // LR(1) parser generator
 #include <AD/automata/item.h>       // LR items
 #include <AD/automata/lr0.h>        // LR(0) finite state machine

@@ -25,7 +25,7 @@
 #ifndef persistent_arrays_h
 #define persistent_arrays_h
 
-#include <new.h>
+#include <new>
 #include <AD/persist/pstream.h>
 
 //////////////////////////////////////////////////////////////////////////////

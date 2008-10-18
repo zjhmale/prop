@@ -29,7 +29,7 @@
 //  This trick is borrowed from the LEDA library. 
 //////////////////////////////////////////////////////////////////////////////
 
-#include <new.h>
+#include <new>
 
 #define Max_free_list_cell_size 1023 // we keep free lists up to 1023 bytes.
 

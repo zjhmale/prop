@@ -8,7 +8,7 @@
 #ifndef basic_definitions_h
 #define basic_definitions_h
 
-#include <new.h>
+#include <new>
 #include <stdarg.h>
 #include <AD/generic/generic.h>    // generic definitions from the library
 #include <AD/memory/mempool.h>     // memory pool

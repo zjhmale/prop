@@ -25,7 +25,7 @@
 #ifndef simple_singly_linked_lists_h
 #define simple_singly_linked_lists_h
 
-#include <new.h>
+#include <new>
 #include <AD/memory/mem.h>
 
 template <class T>

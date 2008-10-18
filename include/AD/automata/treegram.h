@@ -33,7 +33,7 @@
 #define tree_grammar_h
 
 #include <iostream>
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>   // generic definitions
 #include <AD/automata/treetab.h>  // tree grammar tables
 #include <AD/memory/mem.h>        // memory managers

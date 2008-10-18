@@ -25,7 +25,7 @@
 #ifndef parse_item_h
 #define parse_item_h
 
-#include <new.h>
+#include <new>
 #include <AD/generic/ordering.h>
 #include <AD/automata/grammar.h>
 #include <AD/automata/operprec.h>

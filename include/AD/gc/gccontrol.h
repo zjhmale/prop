@@ -25,7 +25,7 @@
 #ifndef gc_controller_h
 #define gc_controller_h
 
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>
 
 class GCController {

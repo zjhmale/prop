@@ -25,7 +25,7 @@
 #ifndef first_set_computation_h
 #define first_set_computation_h
 
-#include <new.h>
+#include <new>
 #include <AD/automata/nullable.h>
 #include <AD/contain/bitset.h>
 #include <AD/contain/slnklist.h>

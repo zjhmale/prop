@@ -24,7 +24,7 @@
 #ifndef logical_term_h
 #define logical_term_h
 
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>
 #include <AD/csp/trail.h>
 

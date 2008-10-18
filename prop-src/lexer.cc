@@ -14,7 +14,7 @@
 //  This is the implementation of the Prop lexical scanner.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <new.h>
+#include <new>
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>

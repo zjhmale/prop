@@ -11,7 +11,7 @@
 //  Simple example to test reference counting.
 //
 
-#include <new.h>
+#include <new>
 #include <iostream.h>
 
 int balance = 0;

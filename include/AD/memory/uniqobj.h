@@ -30,7 +30,7 @@
 #ifndef hash_consing_h
 #define hash_consing_h
 
-#include <new.h>
+#include <new>
 #include <AD/generic/ordering.h>    // hashing and comparison
 
 template <class T>

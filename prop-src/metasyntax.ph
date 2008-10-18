@@ -6,7 +6,7 @@
 #ifndef meta_syntax_h
 #define meta_syntax_h
 
-#include <new.h>
+#include <new>
 #include "parsegen.ph"
 ///////////////////////////////////////////////////////////////////////////////
 //

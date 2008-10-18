@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <new.h>
+#include <new>
 #include <AD/automata/item.h>
 
 int LRItem::ncount (const Grammar& G) const

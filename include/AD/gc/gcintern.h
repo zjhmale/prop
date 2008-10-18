@@ -25,7 +25,7 @@
 #ifndef garbage_collector_internals_h
 #define garbage_collector_internals_h
 
-#include <new.h>
+#include <new>
 
 //////////////////////////////////////////////////////////////////////////////
 //  Some opaque forward definitions

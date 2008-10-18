@@ -2,7 +2,7 @@
 //  Simple example to garbage collection.
 //
 
-#include <new.h>
+#include <new>
 #include <iostream.h>
 #include <AD/gc/markswp.h>
 

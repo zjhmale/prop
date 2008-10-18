@@ -2,7 +2,7 @@
 //  Testing reference counting with the rewriting features.
 //  This test is created by modifying rewriting.pcc in this directory
 //
-#include <new.h>
+#include <new>
 #include <iostream.h>
 
 int balance = 0;

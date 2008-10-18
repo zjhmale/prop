@@ -26,7 +26,7 @@
 #define regular_tree_grammar_h
 
 #include <iostream>
-#include <new.h>
+#include <new>
 #include <AD/generic/generic.h>
 #include <AD/automata/treetab.h>
 #include <AD/memory/mem.h>

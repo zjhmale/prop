@@ -30,7 +30,7 @@
 //  merged with class IntSet.  Oh well...  
 //////////////////////////////////////////////////////////////////////////////
 
-#include <new.h>
+#include <new>
 #include <iostream>
 #include <AD/generic/generic.h>
 #include <AD/memory/mem.h>

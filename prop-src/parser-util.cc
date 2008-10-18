@@ -20,7 +20,7 @@ static const Quark _p_a_r_s_e_rcn_u_t_i_lco_c_c_Q2("$");
 //  This file implements the utility routines for the parser.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <new.h>
+#include <new>
 #include <iostream>
 #include <AD/pretty/postream.h>
 #include <strstream>

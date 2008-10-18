@@ -105,7 +105,7 @@
 #endif
 
 #ifdef PROP_VECTOR_USED
-#  include <new.h>
+#  include <new>
    //  Template for calling the constructor
    //  (without allocating any memory)
    template <class T>

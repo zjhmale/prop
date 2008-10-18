@@ -33,7 +33,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <new.h>
+#include <new>
 #include <AD/automata/item.h>    // LR Items
 #include <AD/automata/lr0.h>     // LR(0) finite state machine
 #include <AD/contain/bitset.h>   // bitsets

@@ -25,7 +25,7 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
-#include <new.h>
+#include <new>
 #include <AD/automata/lexergen.h> // Lexical scanner generator
 #include <AD/automata/nfa.h>      // NFAs
 #include <AD/automata/nfa_node.h> // NFA nodes

@@ -34,7 +34,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
-#include <new.h>
+#include <new>
 #include <ctype.h>
 #include <AD/generic/generic.h>
 #include <AD/numeric/bigint.h>

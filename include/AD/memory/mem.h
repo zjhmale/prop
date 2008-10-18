@@ -25,7 +25,7 @@
 #ifndef memory_manager_base_class_h
 #define memory_manager_base_class_h
 
-#include <new.h>
+#include <new>
 #include <stdlib.h>
 #include <AD/generic/generic.h>
 

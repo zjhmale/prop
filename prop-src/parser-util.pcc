@@ -3,7 +3,7 @@
 //  This file implements the utility routines for the parser.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <new.h>
+#include <new>
 #include <iostream>
 #include <AD/pretty/postream.h>
 #include <strstream.h>
