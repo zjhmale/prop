@@ -101,7 +101,7 @@ class ReteConflictSet {
    void operator = (const ReteConflictSet&); // no assignment
 
 protected:
-   friend Rete;
+   friend class Rete;
 
    //////////////////////////////////////////////////////////////////////
    // Internal members

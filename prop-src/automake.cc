@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include "basics.h"
 
-Bool out_of_date (const char * filename, struct _stat& target)
+Bool out_of_date (const char * filename, struct stat& target)
 {
-   struct _stat source;
-   if (_stat(filename, &source))
+   struct stat source;
+   if (stat(filename, &source))
    {  perror(filename); return true; }
    double d = difftime(source.st_mtime,target.st_mtime);
    return d > 0.0;

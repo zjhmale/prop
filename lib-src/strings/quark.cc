@@ -177,4 +177,4 @@ unsigned int hash_nocase(const Quark& q)
 }
 
 int compare_nocase(const Quark& a, const Quark& b)
-{  return stricmp(a.string(),b.string()); }
+{  return strcasecmp(a.string(),b.string()); }

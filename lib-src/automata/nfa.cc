@@ -192,20 +192,20 @@ NFA_Node * NFA::construct
             {  root = 0; 
             } else if (root == 0)
             {  NFA_Node * join = mkepsilon(mem,0);
-               NFA_Node * or   = mkor(mem,root2,join);
+               NFA_Node * or_   = mkor(mem,root2,join);
                cont2->set_out(join);
-               new_cont = join; root = or;
+               new_cont = join; root = or_;
             } else if (root2 == 0)
             {  NFA_Node * join = mkepsilon(mem,0);
-               NFA_Node * or   = mkor(mem,root,join);
+               NFA_Node * or_   = mkor(mem,root,join);
                new_cont->set_out(join);
-               new_cont = join; root = or;
+               new_cont = join; root = or_;
             } else 
-            {  NFA_Node * or = mkor(mem,root,root2);
+            {  NFA_Node * or_ = mkor(mem,root,root2);
                NFA_Node * join = mkepsilon(mem,0);
                new_cont->set_out(join);
                cont2->set_out(join);
-               new_cont = join; root = or;
+               new_cont = join; root = or_;
             }
          }  return root;
          case '\0': 

@@ -8,7 +8,7 @@ VERSION	= 2.3.0
 
 RM	= rm -f	
 LIBRARY	= libprop.a
-CC	= g++
+CC	= g++-3.3
 COPTS   	= -O6 -pedantic -frepo
 PROP_COPTS	= $(COPTS)
 #LIBRARY_COPTS   = -O6 -pedantic -Wall -fexternal-templates

@@ -176,7 +176,7 @@ public:
    friend BigInt operator ^  (const BigInt&, const BigInt&);
    friend BigInt operator ^  (int, const BigInt&);
    friend BigInt operator ^  (const BigInt&, int);
-   friend BigInt not         (const BigInt&);
+   friend BigInt not_         (const BigInt&);
    friend unsigned int hash  (const BigInt&);
 
    ///////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ public:
 
    inline void abs ()      { if (D->sign == -1) D = neg(D,D); }
    inline void negate ()   { D = neg(D,D); }
-   inline void not()       { D = bitnot(D,D); }
+   inline void not_()       { D = bitnot(D,D); }
    inline void operator += (const BigInt& n) { D = addsub(D,D,n.D,false); }
    inline void operator -= (const BigInt& n) { D = addsub(D,D,n.D,true); }
    inline void operator *= (const BigInt& n) { D = mul(D,D,n.D); }
@@ -368,7 +368,7 @@ public:
    inline BigInt operator ^  (const BigInt& a, const BigInt& b) { return BigInt(andor(0,a.D,b.D,'^')); }
    inline BigInt operator ^  (long a, const BigInt& b)          { return BigInt(andor(0,b.D,a,'^')); }
    inline BigInt operator ^  (const BigInt& a, long b)          { return BigInt(andor(0,a.D,b,'^')); }
-   inline BigInt not         (const BigInt& a)  { return BigInt(bitnot(0,a.D)); }
+   inline BigInt not_         (const BigInt& a)  { return BigInt(bitnot(0,a.D)); }
 #endif
 
 #endif

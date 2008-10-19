@@ -859,7 +859,7 @@ a_BigInt * andor(a_BigInt * r, const a_BigInt * a, long b, char op)
 //////////////////////////////////////////////////////////////////////////////
 //  Bit one's complement
 //////////////////////////////////////////////////////////////////////////////
-a_BigInt * not(a_BigInt * r, const a_BigInt * a)
+a_BigInt * not_(a_BigInt * r, const a_BigInt * a)
 {  if (a->sign == 0) return make_zero(r);
    a_BigInt * result = alloc(r,a->len); 
    register const Digit * x, * limit;

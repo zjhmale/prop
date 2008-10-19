@@ -131,7 +131,7 @@ extern int end;
 #  define GC_DATA_END    (void*)(&end)
 #include <stdlib.h>
 #include <unistd.h>
-extern "C" void * sbrk(int);
+//extern "C" void * sbrk(int);
 #  define GC_GET_HEAP_BOTTOM sbrk(0)
 #  define GC_GET_HEAP_TOP    sbrk(0)
 #  define GC_CONFIGURED

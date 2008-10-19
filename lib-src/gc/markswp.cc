@@ -23,8 +23,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <strstream>
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
