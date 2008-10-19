@@ -103,13 +103,13 @@ echo "#endif" >>include/AD/config/config.h
 echo "include/AD/config/config.h created"
 
 
-replace="$iostream_lib"
+#replace="$iostream_lib"
 #echo "$replace"
 
 echo "Using the $ARCH configuration"
-for module in $modules ;
-do
-   module_name=`echo $module | sed -e 's/\//:/g'`
-   echo "sed -e $replace < configure-dir/Makefile.$module_name > $module/Makefile"
-   sed -e "$replace" < configure-dir/Makefile.$module_name > $module/Makefile
-done
+#for module in $modules ;
+#do
+#   module_name=`echo $module | sed -e 's/\//:/g'`
+#   echo "sed -e $replace < configure-dir/Makefile.$module_name > $module/Makefile"
+#   sed -e "$replace" < configure-dir/Makefile.$module_name > $module/Makefile
+#done
