@@ -1,3 +1,4 @@
 *.o
 *.a
 *.rpo
+prop-src/prop
