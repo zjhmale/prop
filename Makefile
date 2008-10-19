@@ -9,10 +9,10 @@ VERSION	= 2.3.0
 RM	= rm -f	
 LIBRARY	= libprop.a
 CC	= g++-3.3
-COPTS   	= -O6 -pedantic -frepo
+COPTS   	= -O6 -pedantic -frepo -g
 PROP_COPTS	= $(COPTS)
 #LIBRARY_COPTS   = -O6 -pedantic -Wall -fexternal-templates
-LIBRARY_COPTS   = -O6 -pedantic -Wall 
+LIBRARY_COPTS   = -O6 -pedantic -Wall -g
 LDOPTS  = #-lg++ 
 
 TARGET_BIN_DIR = /usr/local/bin
