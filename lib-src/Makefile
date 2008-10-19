@@ -30,7 +30,7 @@ MAKE		=	make
 #############################################################################
 AREAS		= algebra automata combinat compress contain \
 		  csp database datetime \
-		  encrypt gc generic graphics \
+		  encrypt generic graphics \
 		  graph graphtype hash io memory \
 		  numeric objc object objstore \
 		  persist pipes pretty prettypr \
