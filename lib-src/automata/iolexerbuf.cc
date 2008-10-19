@@ -50,8 +50,15 @@ void IOLexerBuffer::allocate_buffer(size_t n)
 size_t IOLexerBuffer::read_buffer(char * buf, size_t n)
 {  // Input one line at a time for interactive use.
    size_t len = input->get(buf, n - 1).gcount();
-   if (input->peek() == '\n') { buf[len++] = input->get(); }
+   if (0 == len) 
+   {
+     input->clear();
+   }
+//   std::cout << len << std::endl;
+//   std::cout << (int)input->peek() << " " << input->eof() <<  std::endl;
+   if (input->peek() == '\n') { /*std::cout << "peeked \\n" << std::endl; */ buf[len++] = input->get(); }
    buf[len] = '\0';
+//   std::cout << "returning " << len << std::endl;
    return len;
 }
 

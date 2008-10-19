@@ -43,6 +43,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 int PropParser::get_token()
 { 
+   //std::cout << "get_token " << lexbuf.text() << std::endl;
    for (;;) 
    {
       

@@ -283,7 +283,7 @@ list_1_(integer_ty,list_1_(mkptrty(QUALty(QUALconst,ty))))
 			  (*output) << MatchCompiler::untag(exp,ty);
                        }  break;
             case '*':  {  Cons cons = va_arg(arg,Cons);
-			  Bool normalized = va_arg(arg,Bool);
+			  Bool normalized = va_arg(arg,int);
 			  (*output) << MatchCompiler::tag_name_of(cons,
 			     normalized);
                        } break;
