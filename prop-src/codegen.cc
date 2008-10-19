@@ -179,7 +179,7 @@ std::ostream& CodeGen::outv(const char * fmt, va_list arg)
             case 'b':  {  Ty        ty       = va_arg (arg,Ty);
                           Id        name     = va_arg (arg,Id);
                           Id        id       = mangle(name);
-                          Parameter p        = va_arg (arg,Parameter);
+                          Parameter p        = (Parameter)va_arg (arg,int);
                           Bool      is_array = is_array_constructor(name);
                           if (is_array)
                           {  Ty body_ty = NOty;
