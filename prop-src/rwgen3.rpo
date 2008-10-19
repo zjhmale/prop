@@ -1,5 +1,0 @@
-M rwgen3.cc
-D /home/leunga/src/prop-2.3.6/prop-src
-A '-c' '-I../include' '-O6' '-pedantic' '-frepo'
-O __t6a_List1ZP10a_MatchExpP10a_MatchExp
-O list_1___H1ZP10a_MatchExp_X01_Pt6a_List1ZX01

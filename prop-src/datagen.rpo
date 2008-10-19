@@ -1,5 +1,0 @@
-M datagen.cc
-D /home/leunga/src/prop-2.3.6/prop-src
-A '-c' '-I../include' '-O6' '-pedantic' '-frepo'
-O __t6a_List1ZP9a_TermDefP9a_TermDefPt6a_List1ZP9a_TermDef
-O list_1___H1ZP9a_TermDef_X01Pt6a_List1ZX01_Pt6a_List1ZX01

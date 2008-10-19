@@ -1,5 +1,0 @@
-M persistgen.cc
-D /home/leunga/src/prop-2.3.6/prop-src
-A '-c' '-I../include' '-O6' '-pedantic' '-frepo'
-O __t6a_Pair2ZPCcZPt6a_List1ZP4a_TyPCcPt6a_List1ZP4a_Ty
-O pair__H2ZPCcZPt6a_List1ZP4a_Ty_X01X11_Pt6a_Pair2ZX01ZX11

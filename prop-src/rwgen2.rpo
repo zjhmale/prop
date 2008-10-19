@@ -1,7 +1,0 @@
-M rwgen2.cc
-D /home/leunga/src/prop-2.3.6/prop-src
-A '-c' '-I../include' '-O6' '-pedantic' '-frepo'
-O __t6a_List1ZP6a_DeclP6a_DeclPt6a_List1ZP6a_Decl
-O list_1___H1ZP6a_Decl_X01Pt6a_List1ZX01_Pt6a_List1ZX01
-O __t6a_List1ZP6a_DeclP6a_Decl
-O list_1___H1ZP6a_Decl_X01_Pt6a_List1ZX01
