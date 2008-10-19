@@ -96,8 +96,8 @@ OBJ =	$(C_SRC:.cc=.o)
 #  How to build prop
 #
 prop:	$(SRC) $(OBJ)
-	$(CC) $(OBJ) -o $@ $(LDFLAGS)
-	strip $@
+	$(CC) $(OBJ) -g -o $@ $(LDFLAGS)
+#	strip $@
 
 #
 #  Relink prop
