@@ -1,0 +1,6 @@
+datatype Exp = INT int        => _
+	     | ADD (Exp, Exp) => _ "+" _
+	     | SUB (Exp, Exp) => _ "-" _
+	     | MUL (Exp, Exp) => _ "*" _ 
+	     | DIV (Exp, Exp) => _ "/" _ 
+	     ;
