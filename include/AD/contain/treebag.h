@@ -1,24 +1,24 @@
 //////////////////////////////////////////////////////////////////////////////
 // NOTICE:
 //
-// ADLib, Prop and their related set of tools and documentation are in the 
-// public domain.   The author(s) of this software reserve no copyrights on 
+// ADLib, Prop and their related set of tools and documentation are in the
+// public domain.   The author(s) of this software reserve no copyrights on
 // the source code and any code generated using the tools.  You are encouraged
 // to use ADLib and Prop to develop software, in both academic and commercial
 // settings, and are free to incorporate any part of ADLib and Prop into
 // your programs.
 //
-// Although you are under no obligation to do so, we strongly recommend that 
+// Although you are under no obligation to do so, we strongly recommend that
 // you give away all software developed using our tools.
 //
-// We also ask that credit be given to us when ADLib and/or Prop are used in 
-// your programs, and that this notice be preserved intact in all the source 
+// We also ask that credit be given to us when ADLib and/or Prop are used in
+// your programs, and that this notice be preserved intact in all the source
 // code.
 //
-// This software is still under development and we welcome any suggestions 
+// This software is still under development and we welcome any suggestions
 // and help from the users.
 //
-// Allen Leung 
+// Allen Leung
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////
 // Bag (or Multisets) derived from trees
 ////////////////////////////////////////////////////////////////////////////
-#include <AD/contain/bag.h>  // Generic bags 
+#include <AD/contain/bag.h>  // Generic bags
 
 template<class T, class H>
    class TreeBag : public Bag<T> {
@@ -40,18 +40,18 @@ template<class T, class H>
       // Inherit types
       //////////////////////////////////////////////////////////////////////
       typedef Bag<T>         Super;
-      typedef Super::Element Element; 
+      typedef typename Super::Element Element;
 
       //////////////////////////////////////////////////////////////////////
       // Constructors and destructor
       //////////////////////////////////////////////////////////////////////
       TreeBag() {}
-      TreeBag(const TreeBag& b) : bag(b.bag) {} 
+      TreeBag(const TreeBag& b) : bag(b.bag) {}
       TreeBag(const Bag<T>& b) { *this = b; }
-     ~TreeBag() {}                                 
+     ~TreeBag() {}
 
       //////////////////////////////////////////////////////////////////////
-      // Assignment 
+      // Assignment
       //////////////////////////////////////////////////////////////////////
       // void operator = (const Bag<T>& b); // inherit
       void operator = (const TreeBag<T,H>& b) { *this = (Bag<T>&)b; }
@@ -69,7 +69,7 @@ template<class T, class H>
       inline int  capacity() const           { return bag.capacity(); }
       inline Ix   lookup(const T& e) const   { return bag.lookup(e); }
       inline Bool contains(const T& e) const { return bag.contains(e); }
-      inline int  count(const T& e) const   
+      inline int  count(const T& e) const
          { Ix i; return (i = bag.lookup(e)) ? 0 : bag.value(i); }
 
       //////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ template<class T, class H>
       //////////////////////////////////////////////////////////////////////
       //  Class name
       //////////////////////////////////////////////////////////////////////
-      const char * myName() const { return "TreeBag"; } 
+      const char * myName() const { return "TreeBag"; }
    };
 
 //////////////////////////////////////////////////////////////////////
@@ -103,9 +103,9 @@ template<class T, class H>
 //////////////////////////////////////////////////////////////////////
 template <class T, class H>
    Ix TreeBag<T, H>::insert(const T& e, int n)
-   {  Ix total = bag.lookup(e); 
+   {  Ix total = bag.lookup(e);
       if (total) bag.value(total) += n; else total = bag.insert(e,n);
-      tally += n; 
+      tally += n;
       return total;
    }
 

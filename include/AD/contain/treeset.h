@@ -1,24 +1,24 @@
 //////////////////////////////////////////////////////////////////////////////
 // NOTICE:
 //
-// ADLib, Prop and their related set of tools and documentation are in the 
-// public domain.   The author(s) of this software reserve no copyrights on 
+// ADLib, Prop and their related set of tools and documentation are in the
+// public domain.   The author(s) of this software reserve no copyrights on
 // the source code and any code generated using the tools.  You are encouraged
 // to use ADLib and Prop to develop software, in both academic and commercial
 // settings, and are free to incorporate any part of ADLib and Prop into
 // your programs.
 //
-// Although you are under no obligation to do so, we strongly recommend that 
+// Although you are under no obligation to do so, we strongly recommend that
 // you give away all software developed using our tools.
 //
-// We also ask that credit be given to us when ADLib and/or Prop are used in 
-// your programs, and that this notice be preserved intact in all the source 
+// We also ask that credit be given to us when ADLib and/or Prop are used in
+// your programs, and that this notice be preserved intact in all the source
 // code.
 //
-// This software is still under development and we welcome any suggestions 
+// This software is still under development and we welcome any suggestions
 // and help from the users.
 //
-// Allen Leung 
+// Allen Leung
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
@@ -29,13 +29,13 @@
 //  Class TreeSet<T> implements a set derived from a search tree
 /////////////////////////////////////////////////////////////////////////////
 
-#include <AD/contain/set.h>  // Sets 
+#include <AD/contain/set.h>  // Sets
 
 /////////////////////////////////////////////////////////////////////////////
-//  Class TreeSet<T,H> 
+//  Class TreeSet<T,H>
 /////////////////////////////////////////////////////////////////////////////
 template<class T, class H>
-   class TreeSet : public Set<T> { 
+   class TreeSet : public Set<T> {
 
       H set;   // a tree object
 
@@ -44,15 +44,15 @@ template<class T, class H>
       //  Inherit types
       ///////////////////////////////////////////////////////////////////////
       typedef Set<T>         Super;
-      typedef Super::Element Element;
+      typedef typename Super::Element Element;
 
       ///////////////////////////////////////////////////////////////////////
       //  Constructors and destructor
       ///////////////////////////////////////////////////////////////////////
-      TreeSet() {} 
-      TreeSet(const Collection<T>& C) { *this = C; } 
-      TreeSet(const TreeSet<T,H>& s)  { set = s; } 
-     ~TreeSet() {}                                 
+      TreeSet() {}
+      TreeSet(const Collection<T>& C) { *this = C; }
+      TreeSet(const TreeSet<T,H>& s)  { set = s; }
+     ~TreeSet() {}
 
       ///////////////////////////////////////////////////////////////////////
       // Assignment
@@ -63,7 +63,7 @@ template<class T, class H>
       ///////////////////////////////////////////////////////////////////////
       //  Selectors
       ///////////////////////////////////////////////////////////////////////
-      inline int  size()                const { return set.size(); }      
+      inline int  size()                const { return set.size(); }
       inline int  capacity()            const { return set.capacity(); }
       inline Bool is_empty()            const { return set.is_empty(); }
       inline Bool is_full()             const { return set.is_full(); }
@@ -83,7 +83,7 @@ template<class T, class H>
       ///////////////////////////////////////////////////////////////////////
       //  Iteration
       ///////////////////////////////////////////////////////////////////////
-      inline Ix       first()            const { return set.first(); } 
+      inline Ix       first()            const { return set.first(); }
       inline Ix       next(Ix i)         const { return set.next(i); }
       inline const T& operator () (Ix i) const { return (T&)set.key(i); }
       inline       T& operator () (Ix i)       { return (T&)set.key(i); }

@@ -1,24 +1,24 @@
 //////////////////////////////////////////////////////////////////////////////
 // NOTICE:
 //
-// ADLib, Prop and their related set of tools and documentation are in the 
-// public domain.   The author(s) of this software reserve no copyrights on 
+// ADLib, Prop and their related set of tools and documentation are in the
+// public domain.   The author(s) of this software reserve no copyrights on
 // the source code and any code generated using the tools.  You are encouraged
 // to use ADLib and Prop to develop software, in both academic and commercial
 // settings, and are free to incorporate any part of ADLib and Prop into
 // your programs.
 //
-// Although you are under no obligation to do so, we strongly recommend that 
+// Although you are under no obligation to do so, we strongly recommend that
 // you give away all software developed using our tools.
 //
-// We also ask that credit be given to us when ADLib and/or Prop are used in 
-// your programs, and that this notice be preserved intact in all the source 
+// We also ask that credit be given to us when ADLib and/or Prop are used in
+// your programs, and that this notice be preserved intact in all the source
 // code.
 //
-// This software is still under development and we welcome any suggestions 
+// This software is still under development and we welcome any suggestions
 // and help from the users.
 //
-// Allen Leung 
+// Allen Leung
 // 1994
 //////////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@
 #define tree_based_map_h
 
 ///////////////////////////////////////////////////////////////////////////
-//  Class TreeMap<K,V> is an associative table from type K to type V 
+//  Class TreeMap<K,V> is an associative table from type K to type V
 //  implemented as a search tree.
 ///////////////////////////////////////////////////////////////////////////
 
@@ -34,8 +34,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 //  Template for class TreeMap.
-//  Notice that for each type of keys a key comparison function 
-//  must be supplied.  
+//  Notice that for each type of keys a key comparison function
+//  must be supplied.
 //////////////////////////////////////////////////////////////////////////////
 template<class K, class V, class Tree>
    class TreeMap : public Map<K,V> {
@@ -47,9 +47,9 @@ template<class K, class V, class Tree>
       //  Inherit types
       ///////////////////////////////////////////////////////////////
       typedef Map<K,V>       Super;
-      typedef Super::Key     Key;
-      typedef Super::Value   Value;
-      typedef Super::Element Element;
+      typedef typename Super::Key     Key;
+      typedef typename Super::Value   Value;
+      typedef typename Super::Element Element;
 
       ///////////////////////////////////////////////////////////////
       //  Creator and destructors
@@ -57,7 +57,7 @@ template<class K, class V, class Tree>
       TreeMap() {}
       TreeMap(const TreeMap& t)  { tree = t; }
       TreeMap(const Map<K,V>& m) { *this = m; }
-     ~TreeMap() {} 
+     ~TreeMap() {}
 
       ///////////////////////////////////////////////////////////////
       //  Assignment and clear map
@@ -91,7 +91,7 @@ template<class K, class V, class Tree>
       /////////////////////////////////////////////////////////////////////////
       // Iteration
       /////////////////////////////////////////////////////////////////////////
-      inline Ix       first()     const { return tree.first(); } 
+      inline Ix       first()     const { return tree.first(); }
       inline Ix       next(Ix i)  const { return tree.next(i); }
       inline const K& key(Ix i)   const { return tree.key(i); }
       inline const V& value(Ix i) const { return tree.value(i); }
