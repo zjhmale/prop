@@ -2,9 +2,8 @@
 D := $(ad)/contain
 S := contain
 
-SRC += $(wildcard $S/*.cc)
-#basiccol.cc bytearry.cc charset.cc dlist.cc intset.cc intsets.cc \
-#	  slist.cc unionfnd.cc variset.cc bitset.cc fbitset.cc n_array.cc
+SRC += $(patsubst %.cc,$S/%.cc,basiccol.cc bytearry.cc charset.cc dlist.cc intset.cc intsets.cc \
+	  slist.cc unionfnd.cc variset.cc bitset.cc fbitset.cc n_array.cc)
 
 $S/basiccol.$(OBJ):	$S/basiccol.cc $(D)/basiccol.h $(ad)/generic/generic.h
 $S/bytearry.$(OBJ):	$S/bytearry.cc $(D)/bytearry.h $(ad)/generic/generic.h
