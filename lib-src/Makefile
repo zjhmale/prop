@@ -8,65 +8,91 @@
 #  The following parameters must be altered for each platform and compiler.
 #  The default is for g++ on Unix and MSDOG.
 #############################################################################
-ADLIB_PATH	=	../../include
-CC		=	g++
+ADLIB_PATH	:=	../include
+ad := $(ADLIB_PATH)/ad
+CC :=	cl
 #COPTS		=	-O2
 #  g++ 2.6.x
-COPTS		=	-O6 -fexternal-templates 
-#COPTS		=	-g -fexternal-templates 
+#COPTS		=	-O6 -fexternal-templates
+COPTS   = /EHsc /nologo
+#COPTS		=	-g -fexternal-templates
 CINCLUDE	=	-I$(ADLIB_PATH)
-AR		= 	ar rv
-RANLIB		= 	ranlib
-LIBRARY		= 	libprop.a
-MFILE		=	Makefile
+#AR		= 	ar rv
+#RANLIB		= 	ranlib
+LIBRARY		= 	libprop.lib
+#MFILE		=	Makefile
 RM		= 	/bin/rm
 PROP		=	../../bin/prop
 PROP_OPTS	=	-strict -report -I../../include
 
-MAKE		=	make
+OBJ := obj
 
 #############################################################################
 #  A list of all ADLib areas
 #############################################################################
-AREAS		= algebra automata combinat compress contain \
-		  csp database datetime \
-		  encrypt generic graphics \
-		  graph graphtype hash io memory \
-		  numeric objc object objstore \
-		  persist pipes pretty prettypr \
-		  process prop resource rete \
-		  rewrite shell stl strings symbolic \
-		  trees tries vlsi backend-tools visualize
+AREAS	:= automata contain \
+		  csp \
+		  generic \
+		  graph graphtype hash memory \
+		  numeric \
+		  persist pretty prettypr \
+		  prop rete \
+		  rewrite strings symbolic \
+		  trees tries backend-tools visualize
 
-all:	compile make_library 
+AREAS := contain
 
-make_library:	lib
+lib: $(LIBRARY)
 
-lib:		
+#look for include files in
+#each of the modules
+# CFLAGS += $(patsubst %,-I%,$(MODULES))
+#extra libraries if required
+LIBS :=
+#each module will add to this
+SRC :=
+#include the description for
+#each module
+include $(patsubst %, %/Makefile.mk,$(AREAS))
+#determine the object files
+OBJS := $(patsubst %.cc,%.$(OBJ),$(filter %.cc,$(SRC)))
+#link the program
+#prog: $(OBJ)
+#$(CC) -o $@ $(OBJ) $(LIBS)
+#include the C include
+#dependencies
+#include $(OBJ:.o=.d)
+#calculate C include
+
+%.$(OBJ):	%.cc
+	$(CC) /Fo$@ -c $(COPTS) $(CINCLUDE) $<
+
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $<
+
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $<
+
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $<
+
+d:
+	@echo $(SRC)
+	@echo $(OBJS)
+
+$(LIBRARY): $(OBJS)
 	$(RM) -f $(LIBRARY)
-	for dir in $(AREAS); do \
-	   if [ -d $$dir ]; then \
-	      ar crv $(LIBRARY) $$dir/*.o; \
-	   fi; \
-	done	
-	$(RANLIB) $(LIBRARY)
+	link /OUT:$(LIBRARY) $(OBJS)
 	@echo "Done"
 
-compile:	
-	for dir in $(AREAS); do \
-	   if [ -d $$dir ]; then \
-	      cd $$dir; \
-		make -f $(MFILE) CC="$(CC)" COPTS="$(COPTS)" \
-		CINCLUDE="$(CINCLUDE)" PROP="$(PROP)" \
-		PROP_OPTS="$(PROP_OPTS)" || exit 1; \
-		cd ..; \
-	   fi; \
-	done
+#%.cc:	%.pcc
+#	$(PROP) $(PROP_OPTS) $(CINCLUDE) $<
 
-spotless:
-	for dir in $(AREAS); do \
-	   if [ -d $$dir ]; then $(RM) -f $$dir/*.o; fi; \
-	done
+#%.h:	%.ph
+#	$(PROP) $(PROP_OPTS) $(CINCLUDE) $<
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+
+#spotless:
+#	for dir in $(AREAS); do \
+#	   if [ -d $$dir ]; then $(RM) -f $$dir/*.o; fi; \
+#	done

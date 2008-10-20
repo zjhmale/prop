@@ -2,16 +2,12 @@
 #  The following parameters must be altered for each platform and compiler.
 #  The default is for g++ on Unix and MSDOG.
 #############################################################################
-ADLIB_PATH	=	../../include
-CC		=	g++ 
-COPTS		=	-O6 
-CINCLUDE	=	-I$(ADLIB_PATH)
 
-ad		=	$(ADLIB_PATH)/AD
-D		=	$(ADLIB_PATH)/AD/automata
+D	:=	$(ad)/automata
+S := automata
 
-PROP		=	../../bin/prop
-PROP_OPTS	=	-s $(CINCLUDE)
+#PROP		=	../../bin/prop
+#PROP_OPTS	=	-s $(CINCLUDE)
 
 OBJS	= ac.$(OBJ) acgen.$(OBJ) bottomup.$(OBJ) lr0.$(OBJ) compdfa.$(OBJ) densedfa.$(OBJ)
 OBJS2	= gentable.$(OBJ) grammar.$(OBJ) lr1.$(OBJ) lalr1gen.$(OBJ)
@@ -23,21 +19,19 @@ OBJS7	= nullable.$(OBJ) firstset.$(OBJ) follow.$(OBJ) first_k.$(OBJ) follow_k.$(
 OBJS8	= nfa.$(OBJ) nfa_node.$(OBJ) nfa32.$(OBJ) lr1gen.$(OBJ) lrkgen.$(OBJ) gla.$(OBJ) lexerbuf.$(OBJ)
 OBJS9	= iolexerbuf.$(OBJ) iolexerstack.$(OBJ) item.$(OBJ) firstset2.$(OBJ) fastac.$(OBJ)
 
-all:	$(OBJS) $(OBJS2) $(OBJS3) $(OBJS4) \
-	$(OBJS5) $(OBJS6) $(OBJS7) $(OBJS8) $(OBJS9)
+SRC += $(wildcard $(S)/%.cc)
 
 #############################################################################
 #  Prop stuff
 #############################################################################
-SRC	= treegram.cc topdowng.cc treegen.cc 
+#SRC	= treegram.cc topdowng.cc treegen.cc
+#src:	$(SRC)
 
-src:	$(SRC)
-
-treegram.cc:	treegram.pcc $D/treegram.ph
-topdowng.cc:	topdowng.pcc $D/treegram.ph
+#treegram.cc:	treegram.pcc $D/treegram.ph
+#topdowng.cc:	topdowng.pcc $D/treegram.ph
 #treegen.cc:	treegen.pcc $D/treegram.ph
- 
-ac.$(OBJ):		ac.cc $D/ac.h $D/compdfa.h $(ad)/generic/generic.h \
+
+ac.$(OBJ):	$(S)/ac.cc $D/ac.h $D/compdfa.h $(ad)/generic/generic.h \
 		$D/sparsdfa.h $D/dfatable.h
 acgen.$(OBJ):	acgen.cc $D/acgen.h $D/sparsdfa.h $D/compdfa.h \
 		$(ad)/tries/briandai.h $(ad)/contain/varstack.h \
@@ -77,7 +71,7 @@ bottomup.$(OBJ):	bottomup.cc $D/bottomup.h $D/treeauto.h \
 		$D/dfatable.h $(ad)/memory/mem.h \
 		$D/compdfa.h $D/sparsdfa.h
 item.$(OBJ):		item.cc $D/item.h $D/grammar.h $D/gentable.h \
-		$(ad)/generic/generic.h 
+		$(ad)/generic/generic.h
 lr0.$(OBJ):		lr0.cc $D/lr0.h $D/grammar.h $D/gentable.h \
 		$(ad)/hash/dchash.h $(ad)/contain/hashmap.h \
 		$(ad)/contain/dchmap.h $(ad)/generic/generic.h \
@@ -123,7 +117,7 @@ lookahd.$(OBJ):	lookahd.cc $D/lookahd.h $D/grammar.h $(ad)/generic/generic.h \
 		$D/firstset2.h
 lrgen.$(OBJ):	lrgen.cc $D/lrgen.h $(ad)/generic/generic.h \
 		$D/compdfa.h $D/sparsdfa.h $D/densedfa.h $D/grammar.h  \
-		$D/dfatable.h 
+		$D/dfatable.h
 lexer.$(OBJ):	lexer.cc $D/lexer.h $D/compdfa.h $(ad)/generic/generic.h \
 		$D/dfatable.h
 lexergen.$(OBJ):	lexergen.cc $D/lexergen.h $D/labtree.h $D/dfa.h \
@@ -179,10 +173,10 @@ topdown.$(OBJ):	topdown.cc $D/topdown.h $D/ac.h $D/sparsdfa.h $D/compdfa.h \
 		$(ad)/generic/generic.h $D/dfatable.h
 treeauto.$(OBJ):	treeauto.cc $D/treeauto.h $D/gentable.h \
 		$(ad)/generic/generic.h $D/dfatable.h $D/treetab.h \
-		$(ad)/contain/n_array.h 
+		$(ad)/contain/n_array.h
 #
 #  Compiler bug in g++ 2.5.8 under Linux makes it impossible to
-#  compile this file with symbols.  
+#  compile this file with symbols.
 #
 #	$(CC) -c -O6 $(CINCLUDE) $(@:.o=.cc)
 treegen.$(OBJ):	treegen.cc $D/treegen.h $D/treegram.h $D/treeauto.h \
@@ -208,18 +202,3 @@ iolexerstack.$(OBJ):	iolexerstack.cc $D/iolexerstack.h $D/iolexerbuf.h \
 		$D/dfatable.h $(ad)/generic/generic.h $(ad)/strings/charesc.h
 operprec.$(OBJ):	operprec.cc $D/operprec.h $D/grammar.h $D/dfatable.h \
 		$(ad)/generic/generic.h
-
-%.$(OBJ):	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
-
-%.$(OBJ):	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
-
-%.$(OBJ):	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
-
-%.$(OBJ):	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
-
-#%.cc:	%.pcc
-#	$(PROP) $(PROP_OPTS) $(@:.cc=.pcc)
