@@ -1,5 +1,0 @@
-M grammar.cc
-D /home/leunga/src/prop-2.3.6/lib-src/automata
-A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
-O __t6smanip1ZUlPFR3iosUl_R3iosUl
-O __t6smanip1ZiPFR3iosi_R3iosi

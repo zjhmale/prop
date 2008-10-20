@@ -21,7 +21,7 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 #RANLIB		= 	ranlib
 LIBRARY		= 	libprop.lib
 #MFILE		=	Makefile
-RM		= 	/bin/rm
+RM		= 	rm
 PROP		=	../../bin/prop
 PROP_OPTS	=	-strict -report -I../../include
 
@@ -40,7 +40,7 @@ AREAS	:= automata contain \
 		  rewrite strings symbolic \
 		  trees tries backend-tools visualize
 
-AREAS := contain
+AREAS := automata contain memory
 
 lib: $(LIBRARY)
 
@@ -75,6 +75,9 @@ OBJS := $(patsubst %.cc,%.$(OBJ),$(filter %.cc,$(SRC)))
 
 %.$(OBJ):	%.C
 	$(CC) -c $(COPTS) $(CINCLUDE) $<
+
+clean:
+	$(RM) $(OBJS)
 
 d:
 	@echo $(SRC)

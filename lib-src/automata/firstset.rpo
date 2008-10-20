@@ -1,4 +1,0 @@
-M firstset.cc
-D /home/leunga/src/prop-2.3.6/lib-src/automata
-A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
-O __nw__t9SLinkList1ZPiUiR3MemRCPiPt9SLinkList1ZPi

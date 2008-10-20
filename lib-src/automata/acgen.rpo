@@ -1,8 +1,0 @@
-M acgen.cc
-D /home/leunga/src/prop-2.3.6/lib-src/automata
-A '-c' '-O6' '-pedantic' '-Wall' '-frepo' '-I../../include'
-O remove_head__t5Queue1Zi
-O is_empty__Ct5Queue1Zi
-O insert_tail__t5Queue1ZiRCi
-O __t5Queue1Zii
-O _._t5Queue1Zi
