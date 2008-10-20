@@ -14,14 +14,14 @@ OBJS	=
 
 all:
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)

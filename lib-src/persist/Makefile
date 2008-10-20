@@ -10,34 +10,34 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/persist
 
-OBJS	= pstream.o pfactory.o pistream.o postream.o piostream.o pobject.o \
-	  ptype.o pmisc.o
+OBJS	= pstream.$(OBJ) pfactory.$(OBJ) pistream.$(OBJ) postream.$(OBJ) piostream.$(OBJ) pobject.$(OBJ) \
+	  ptype.$(OBJ) pmisc.$(OBJ)
 
 all:	$(OBJS)
 
-pobject.o:	pobject.cc $D/pstream.h $D/pobject.h $D/pconfig.h \
+pobject.$(OBJ):	pobject.cc $D/pstream.h $D/pobject.h $D/pconfig.h \
 		$D/pconvert.h $D/ptype.h $D/ptypeentry.h
-ptype.o:	ptype.cc $D/ptype.h $D/pstream.h $D/pobject.h \
+ptype.$(OBJ):	ptype.cc $D/ptype.h $D/pstream.h $D/pobject.h \
 		$D/pconfig.h $D/pconvert.h $D/ptypeentry.h \
 		$(ad)/contain/vararray.h $D/pi_impl.h $D/po_impl.h \
 		$(ad)/contain/variset.h $(ad)/contain/varptrarray.h
-pstream.o:	pstream.cc $D/pstream.h $D/pobject.h $D/pconfig.h \
+pstream.$(OBJ):	pstream.cc $D/pstream.h $D/pobject.h $D/pconfig.h \
 		$D/pconvert.h $D/ptype.h $D/ptypeentry.h 
-pistream.o:	pistream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
+pistream.$(OBJ):	pistream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
 		$(ad)/hash/lhash.h $(ad)/memory/mem.h $D/pi_impl.h \
 		$D/ptype.h $D/ptypeentry.h  $(ad)/contain/vararray.h  \
 		$(ad)/contain/varptrarray.h
-postream.o:	postream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
+postream.$(OBJ):	postream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
 		$(ad)/hash/lhash2.h \
 		$D/ptype.h $D/ptypeentry.h $(ad)/contain/variset.h \
 		$D/po_impl.h
-piostream.o:	piostream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
+piostream.$(OBJ):	piostream.cc $D/pstream.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
 		$(ad)/memory/mem.h \
 		$D/ptype.h $D/ptypeentry.h
-pfactory.o:	pfactory.cc $D/pfactory.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
+pfactory.$(OBJ):	pfactory.cc $D/pfactory.h $D/pobject.h $D/pconfig.h $D/pconvert.h \
 		$(ad)/hash/lhash.h \
 		$D/ptype.h $D/ptypeentry.h
-pmisc.o:	pmisc.cc $D/pobject.h $D/pconfig.h $D/pstream.h
+pmisc.$(OBJ):	pmisc.cc $D/pobject.h $D/pconfig.h $D/pstream.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)

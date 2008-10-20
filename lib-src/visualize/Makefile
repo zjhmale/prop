@@ -10,14 +10,14 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/visualize
 
-OBJS	 = vcg.o
+OBJS	 = vcg.$(OBJ)
 
 all:	$(OBJS) 
 
 qa:	qa.cc $(OBJS)
-	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.o -liostream
+	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.$(OBJ) -liostream
 
-vcg.o:		vcg.cc $(D)/vcg.h $(ad)/generic/generic.h \
+vcg.$(OBJ):		vcg.cc $(D)/vcg.h $(ad)/generic/generic.h \
 		$(ad)/hash/lhash.h \
 		$(ad)/visualize/vcg.h \
 		$(ad)/hash/lhash.h \
@@ -27,17 +27,17 @@ vcg.o:		vcg.cc $(D)/vcg.h $(ad)/generic/generic.h \
 		$(ad)/pretty/postream.h 
 
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
 
-%.o:	%.s
-	$(AS) $(@:.o=.s) -o $@
+%.$(OBJ):	%.s
+	$(AS) $(@:.$(OBJ)=.s) -o $@

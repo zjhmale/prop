@@ -10,36 +10,36 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/rete
 
-OBJS	= rete.o fact.o retenet.o gen_rete.o alphamem.o betamem.o token.o
+OBJS	= rete.$(OBJ) fact.$(OBJ) retenet.$(OBJ) gen_rete.$(OBJ) alphamem.$(OBJ) betamem.$(OBJ) token.$(OBJ)
 
 all:	$(OBJS)
 
-rete.o:		rete.cc $D/rete.h $D/fact.h $D/retenet.h \
+rete.$(OBJ):		rete.cc $D/rete.h $D/fact.h $D/retenet.h \
 		$(ad)/contain/varqueue.h $(ad)/generic/ordering.h \
 		$(ad)/generic/generic.h $(ad)/hash/chash.h \
 		$(ad)/memory/mem.h $(ad)/memory/arena.h
-fact.o:		fact.cc $D/fact.h
-retenet.o:	retenet.cc $D/fact.h $D/retenet.h \
+fact.$(OBJ):		fact.cc $D/fact.h
+retenet.$(OBJ):	retenet.cc $D/fact.h $D/retenet.h \
 		$(ad)/memory/mem.h $(ad)/memory/boundtag.h \
 		$(ad)/generic/generic.h
-gen_rete.o:	gen_rete.cc $D/fact.h $D/gen_rete.h $D/token.h \
+gen_rete.$(OBJ):	gen_rete.cc $D/fact.h $D/gen_rete.h $D/token.h \
 		$(ad)/memory/mem.h $(ad)/memory/boundtag.h \
 		$(ad)/generic/generic.h $D/alphamem.h $D/betamem.h
-alphamem.o:	alphamem.cc $D/alphamem.h $D/fact.h $D/token.h \
+alphamem.$(OBJ):	alphamem.cc $D/alphamem.h $D/fact.h $D/token.h \
 		$(ad)/memory/mem.h $(ad)/memory/boundtag.h \
 		$(ad)/memory/arena.h
-betamem.o:	betamem.cc $D/betamem.h $D/fact.h $D/token.h \
+betamem.$(OBJ):	betamem.cc $D/betamem.h $D/fact.h $D/token.h \
 		$(ad)/memory/mem.h $(ad)/memory/boundtag.h \
 		$(ad)/memory/arena.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
