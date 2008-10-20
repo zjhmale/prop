@@ -10,27 +10,26 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/hash
 
-OBJS	= bhash.o chash.o dchash.o dhash.o hashfn.o lhash.o ohash.o 
+OBJS	= bhash.$(OBJ) chash.$(OBJ) dchash.$(OBJ) dhash.$(OBJ) hashfn.$(OBJ) lhash.$(OBJ) ohash.$(OBJ)
 
 all:	$(OBJS)
 
-hashfn.o:	hashfn.cc $(D)/hashfn.h
-bhash.o:	bhash.cc  $(D)/bhash.h  $(ad)/generic/ordering.h
-chash.o:	chash.cc  $(D)/chash.h  $(ad)/generic/ordering.h
-dchash.o:	dchash.cc $(D)/dchash.h $(ad)/generic/ordering.h
-dhash.o:	dhash.cc  $(D)/dhash.h  $(ad)/generic/ordering.h
-lhash.o:	lhash.cc  $(D)/lhash.h  $(ad)/generic/ordering.h
-ohash.o:	ohash.cc  $(D)/ohash.h  $(ad)/generic/ordering.h
+hashfn.$(OBJ):	hashfn.cc $(D)/hashfn.h
+bhash.$(OBJ):	bhash.cc  $(D)/bhash.h  $(ad)/generic/ordering.h
+chash.$(OBJ):	chash.cc  $(D)/chash.h  $(ad)/generic/ordering.h
+dchash.$(OBJ):	dchash.cc $(D)/dchash.h $(ad)/generic/ordering.h
+dhash.$(OBJ):	dhash.cc  $(D)/dhash.h  $(ad)/generic/ordering.h
+lhash.$(OBJ):	lhash.cc  $(D)/lhash.h  $(ad)/generic/ordering.h
+ohash.$(OBJ):	ohash.cc  $(D)/ohash.h  $(ad)/generic/ordering.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
-
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)

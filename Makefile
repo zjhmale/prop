@@ -14,6 +14,7 @@ PROP_COPTS	= $(COPTS)
 #LIBRARY_COPTS   = -O6 -pedantic -Wall -fexternal-templates
 LIBRARY_COPTS   = -O6 -pedantic -Wall -g
 LDOPTS  = #-lg++ 
+OBJ = obj
 
 TARGET_BIN_DIR = /usr/local/bin
 TARGET_LIB_DIR = /usr/local/lib
@@ -43,8 +44,8 @@ TarFile= prop-$(VERSION).tar.gz
 #
 #############################################################################
 build:
-	cd lib-src; make CC="$(CC)" COPTS="$(LIBRARY_COPTS)" LDOPTS="$(LDOPTS)"
-	cd prop-src; make CC="$(CC)" COPTS="$(PROP_COPTS)" LDOPTS="$(LDOPTS)"
+	cd lib-src; make CC="$(CC)" COPTS="$(LIBRARY_COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
+	cd prop-src; make CC="$(CC)" COPTS="$(PROP_COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	cd docs; make
 	@echo Done
 
@@ -57,15 +58,15 @@ config:
 #
 #############################################################################
 test:
-	cd prop-src; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)"
+	cd prop-src; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	@echo Testing of the prop translator ran ok.
 
 testall:	
-	cd tests; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)"
+	cd tests; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	@echo All test programs ran ok.
 
 demo:
-	cd demos; make CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)"
+	cd demos; make CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	@echo All demo programs have been compiled.
 
 #############################################################################

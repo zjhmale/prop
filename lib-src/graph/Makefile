@@ -10,31 +10,31 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/graph
 
-OBJS	 = graph.o node.o edge.o \
-		graphaux.o
+OBJS	 = graph.$(OBJ) node.$(OBJ) edge.$(OBJ) \
+		graphaux.$(OBJ)
 
 all:	$(OBJS) 
 
-graph.o:	$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h \
+graph.$(OBJ):	$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h \
 		graphinline.h
-edge.o:		$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h
-node.o:		$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h
-graphaux.o:	$(D)/graph_base.h $(D)/graph.h $(D)/node.h $(D)/edge.h 
+edge.$(OBJ):		$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h
+node.$(OBJ):		$(D)/graph_base.h $(D)/graph.h $(ad)/pretty/postream.h
+graphaux.$(OBJ):	$(D)/graph_base.h $(D)/graph.h $(D)/node.h $(D)/edge.h
 
 qa:	qa.cc $(OBJS)
-	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.o -liostream
+	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.$(OBJ) -liostream
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
 
-%.o:	%.s
-	$(AS) $(@:.o=.s) -o $@
+%.$(OBJ):	%.s
+	$(AS) $(@:.$(OBJ)=.s) -o $@

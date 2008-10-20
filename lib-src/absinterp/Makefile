@@ -12,25 +12,25 @@ PROP_OPTS	= -s -v
 D		= $(ADLIB_PATH)/AD/absinterp
 ad		= $(ADLIB_PATH)/AD
 
-OBJS		= absdomain.o 
+OBJS		= absdomain.$(OBJ)
 
 all:	$(OBJS)
 
 src:	$(SRC)
 
-absdomain.o:	absdomain.cc $D/absdomain.h $(ad)/generic/generic.h
+absdomain.$(OBJ):	absdomain.cc $D/absdomain.h $(ad)/generic/generic.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.c++
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.c++)
+%.$(OBJ):	%.c++
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.c++)
 
-%.o:	%.c
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.c)
+%.$(OBJ):	%.c
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.c)
 
 %.cc:	%.pcc
 	$(PROP) $(PROP_OPTS) $(CINCLUDE) $(@:.cc=.pcc)

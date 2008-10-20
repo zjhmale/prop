@@ -10,24 +10,24 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/tries
 
-OBJS	= briandai.o comptrie.o hashtrie.o patricia.o trie.o
+OBJS	= briandai.$(OBJ) comptrie.$(OBJ) hashtrie.$(OBJ) patricia.$(OBJ) trie.$(OBJ)
 
 all:	$(OBJS)
 
-briandai.o:	briandai.cc $D/briandai.h $(ad)/generic/generic.h 
-comptrie.o:	comptrie.cc $D/comptrie.h $(ad)/generic/generic.h
-hashtrie.o:	hashtrie.cc $D/hashtrie.h $(ad)/generic/generic.h
-patricia.o:	patricia.cc $D/patricia.h $(ad)/generic/generic.h
-trie.o:		trie.cc $D/trie.h $(ad)/generic/generic.h
+briandai.$(OBJ):	briandai.cc $D/briandai.h $(ad)/generic/generic.h
+comptrie.$(OBJ):	comptrie.cc $D/comptrie.h $(ad)/generic/generic.h
+hashtrie.$(OBJ):	hashtrie.cc $D/hashtrie.h $(ad)/generic/generic.h
+patricia.$(OBJ):	patricia.cc $D/patricia.h $(ad)/generic/generic.h
+trie.$(OBJ):		trie.cc $D/trie.h $(ad)/generic/generic.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)

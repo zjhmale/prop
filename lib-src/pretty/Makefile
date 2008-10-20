@@ -10,28 +10,28 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 ad		=	$(ADLIB_PATH)/AD
 D		=	$(ADLIB_PATH)/AD/pretty
 
-OBJS	 = pristream.o prostream.o priostream.o
+OBJS	 = pristream.$(OBJ) prostream.$(OBJ) priostream.$(OBJ)
 
 all:	$(OBJS) 
 
 qa:	qa.cc $(OBJS)
-	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.o -liostream
+	$(CC) $(COPTS) $(CINCLUDE) -o qa qa.cc *.$(OBJ) -liostream
 
-pristream.o:	pristream.cc $(D)/pistream.h 
-prostream.o:	prostream.cc $(D)/postream.h 
-priostream.o:	priostream.cc $(D)/piostream.h $(D)/pistream.h $(D)/postream.h
+pristream.$(OBJ):	pristream.cc $(D)/pistream.h
+prostream.$(OBJ):	prostream.cc $(D)/postream.h
+priostream.$(OBJ):	priostream.cc $(D)/piostream.h $(D)/pistream.h $(D)/postream.h
 
-%.o:	%.cc
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cc)
+%.$(OBJ):	%.cc
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cc)
 
-%.o:	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cpp)
+%.$(OBJ):	%.cpp
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cpp)
 
-%.o:	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.cxx)
+%.$(OBJ):	%.cxx
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.cxx)
 
-%.o:	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.o=.C)
+%.$(OBJ):	%.C
+	$(CC) -c $(COPTS) $(CINCLUDE) $(@:.$(OBJ)=.C)
 
-%.o:	%.s
-	$(AS) $(@:.o=.s) -o $@
+%.$(OBJ):	%.s
+	$(AS) $(@:.$(OBJ)=.s) -o $@
