@@ -6,37 +6,19 @@
 
 VERSION	= 2.3.0
 
-RM	= rm -f	
+RM	= rm -f
 LIBRARY	= libprop.a
 CC	= g++-3.3
 COPTS   	= -O6 -pedantic -frepo -g
 PROP_COPTS	= $(COPTS)
 #LIBRARY_COPTS   = -O6 -pedantic -Wall -fexternal-templates
 LIBRARY_COPTS   = -O6 -pedantic -Wall -g
-LDOPTS  = #-lg++ 
+LDOPTS  = #-lg++
 OBJ = obj
 
 TARGET_BIN_DIR = /usr/local/bin
 TARGET_LIB_DIR = /usr/local/lib
 TARGET_INCLUDE_DIR = /usr/local/include
-
-#
-#  You may have to add this for g++ 2.6.x
-#
-#COPTS   = -g -O6 -fno-implicit-templates
-
-##############################################################################
-#   Files in the ADLib package:
-##############################################################################
-MiscFiles= INSTALL README NOTICE COPYRIGHT \
-	   Makefile lib-src/Makefile 
-Areas	= algebra automata contain csp dynparser gc generic \
-	  generic hash memory numeric object objc \
-	  prop rete rewrite persist prettypr \
-	  sort strings symbolic trees tries \
-	  scheduling absinterp machine dataflow parser-tools \
-	  backend_tools	
-TarFile= prop-$(VERSION).tar.gz
 
 #############################################################################
 #
@@ -44,9 +26,9 @@ TarFile= prop-$(VERSION).tar.gz
 #
 #############################################################################
 build:
-	cd lib-src; make CC="$(CC)" COPTS="$(LIBRARY_COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
-	cd prop-src; make CC="$(CC)" COPTS="$(PROP_COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
-	cd docs; make
+	make -C lib-src
+	make -C prop-src
+	make -C docs
 	@echo Done
 
 config:
@@ -61,7 +43,7 @@ test:
 	cd prop-src; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	@echo Testing of the prop translator ran ok.
 
-testall:	
+testall:
 	cd tests; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
 	@echo All test programs ran ok.
 
@@ -70,17 +52,17 @@ demo:
 	@echo All demo programs have been compiled.
 
 #############################################################################
-#  
+#
 #  Line count
-# 
+#
 #############################################################################
-wc:	
+wc:
 	wc include/AD/*/*.h lib-src/*/*.cc \
 	prop-src/[a-z]*.ph \
 	prop-src/[a-z]*.pcc
 
 #############################################################################
-#  
+#
 #  Clean up: remove all *.o files and .cc and .h files generated using
 #            Prop.  But don't remove the executable and the library.
 #
@@ -94,7 +76,7 @@ spotless:
 	cd tools/pretty; make spotless
 	#cd docs; make spotless
 
-cleanhouse:	
+cleanhouse:
 	cd lib-src; make spotless
 	cd prop-src; make clean
 	cd tools/test; make spotless
@@ -108,12 +90,12 @@ cleanhouse:
 #  Make tar.gz files for Unix distribution.
 #############################################################################
 dist:	tar
-tar:	
+tar:
 	bin/Distribute NO_DISTRIBUTE
 full-dist:
 	bin/Distribute NO_DISTRIBUTE2
 
-first-install: 
+first-install:
 	cp prop-src/prop $(TARGET_BIN_DIR)
 	chmod 755 $(TARGET_BIN_DIR)/prop
 	cp tools/scripts/* $(TARGET_BIN_DIR)

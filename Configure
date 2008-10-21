@@ -2,11 +2,9 @@
 
 export PATH 
 PATH="/bin:/usr/bin:/usr/local/bin"
-modules="lib-src prop-src tests"
 
 CC=$1
 
-iostream_lib=""
 if [ "none$CC" = "none" ]; then
    echo "No compiler specified, assuming g++";
    CC="g++";
@@ -16,7 +14,6 @@ case `uname -s` in
    HP-UX) ARCH=hpux 
           ;;
    Linux) ARCH=linux 
-	  iostream_lib="s/\\\$(gcc-iostream-lib)/-liostream/"
           ;;
    SunOS)
       case `uname -r` in
@@ -102,14 +99,4 @@ fi
 echo "#endif" >>include/AD/config/config.h
 echo "include/AD/config/config.h created"
 
-
-#replace="$iostream_lib"
-#echo "$replace"
-
 echo "Using the $ARCH configuration"
-#for module in $modules ;
-#do
-#   module_name=`echo $module | sed -e 's/\//:/g'`
-#   echo "sed -e $replace < configure-dir/Makefile.$module_name > $module/Makefile"
-#   sed -e "$replace" < configure-dir/Makefile.$module_name > $module/Makefile
-#done
