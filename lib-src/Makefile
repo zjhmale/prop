@@ -4,15 +4,9 @@
 #
 #############################################################################
 
-#############################################################################
-#  The following parameters must be altered for each platform and compiler.
-#  The default is for g++ on Unix and MSDOG.
-#############################################################################
 ADLIB_PATH	:=	../include
 ad := $(ADLIB_PATH)/ad
 CC :=	cl
-#COPTS		=	-O2
-#  g++ 2.6.x
 #COPTS		=	-O6 -fexternal-templates
 COPTS   = /EHsc /nologo
 #COPTS		=	-g -fexternal-templates
@@ -20,7 +14,6 @@ CINCLUDE	=	-I$(ADLIB_PATH)
 #AR		= 	ar rv
 #RANLIB		= 	ranlib
 LIBRARY		= 	libprop.lib
-#MFILE		=	Makefile
 RM		= 	rm
 PROP		=	../../bin/prop
 PROP_OPTS	=	-strict -report -I../../include
@@ -39,8 +32,6 @@ AREAS	:= automata contain \
 		  prop rete \
 		  rewrite strings symbolic \
 		  trees tries backend-tools visualize
-
-AREAS := automata contain memory
 
 lib: $(LIBRARY)
 
@@ -85,7 +76,7 @@ d:
 
 $(LIBRARY): $(OBJS)
 	$(RM) -f $(LIBRARY)
-	link /OUT:$(LIBRARY) $(OBJS)
+	link /LIB /OUT:$(LIBRARY) $(OBJS)
 	@echo "Done"
 
 #%.cc:	%.pcc

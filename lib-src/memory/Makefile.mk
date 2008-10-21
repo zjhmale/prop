@@ -2,7 +2,7 @@ D := $(ad)/memory
 S := memory
 
 SRC += $S/arena.cc $S/boundtag.cc $S/freelist.cc $S/mempool.cc $S/sysmem.cc $S/cleanmem.cc
-SRC += $S/ptr.cc $S/strpool.cc $S/ref.cc $S/variant.cc $S/mem.cc $S/variant.cc $S/buddysys.cc
+SRC += $S/ptr.cc $S/strpool.cc $S/ref.cc $S/variant.cc $S/mem.cc $S/buddysys.cc
 #blacklistmem.$(OBJ)
 
 $S/buddysys.$(OBJ):	$S/buddysys.cc $D/buddy.h $(ad)/generic/generic.h $(ad)/generic/tables.h $D/mem.h
