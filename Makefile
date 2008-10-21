@@ -40,15 +40,15 @@ config:
 #
 #############################################################################
 test:
-	cd prop-src; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
+	make test -C prop-src
 	@echo Testing of the prop translator ran ok.
 
 testall:
-	cd tests; make test CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
+	make test -C tests
 	@echo All test programs ran ok.
 
 demo:
-	cd demos; make CC="$(CC)" COPTS="$(COPTS)" LDOPTS="$(LDOPTS)" OBJ="$(OBJ)"
+	make -C demos
 	@echo All demo programs have been compiled.
 
 #############################################################################
@@ -68,13 +68,21 @@ wc:
 #
 #############################################################################
 spotless:
-	cd lib-src; make spotless
-	cd prop-src; make spotless
+	make spotless -C lib-src
+	make spotless -C prop-src
 	cd tools/test; make spotless
 	cd tests; make spotless
 	cd demos; make spotless
 	cd tools/pretty; make spotless
 	#cd docs; make spotless
+
+clean:
+	make clean -C lib-src
+	make clean -C prop-src
+
+cleanall:
+	make cleanall -C lib-src
+	make cleanall -C prop-src
 
 cleanhouse:
 	cd lib-src; make spotless

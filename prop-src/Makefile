@@ -3,19 +3,22 @@
 #  Makefile for compiling Prop 2.3.x
 #
 ###############################################################################
+
+include ../Makefile.config
+
 PROP		= ../bin/prop
-CC		= cl
+PROP_OPTS_BASIC	= -strict $(CC_INCLUDE) -save_space -report -v2
+PROP_OPTS	= $(PROP_OPTS_BASIC) -O14
+
 CC_INCLUDE	= -I../include
 #COPTS		= -O6 -pedantic
 COPTS = /EHsc /nologo
 #LDOPTS		= -lg++
-LDOPT =
 CFLAGS		= $(CC_INCLUDE) $(COPTS)
-#LDFLAGS		= -L../lib -lprop $(LDOPTS) -lm
-LDFLAGS = /LIBPATH:../lib-src libprop.lib
-PROP_OPTS_BASIC	= -strict $(CC_INCLUDE) -save_space -report -v2
-PROP_OPTS	= $(PROP_OPTS_BASIC) -O14
-OBJ = obj
+#LINKFLAGS		= -L../lib -lprop $(LDOPTS) -lm
+LINKFLAGS = /LIBPATH:../lib-src libprop.lib
+
+OUTPUT := prop$(DOTEXE)
 
 #
 #  These are the prop include files
@@ -99,26 +102,20 @@ OBJS =	$(patsubst %.cc,%.$(OBJ),$(C_SRC))
 #
 #  How to build prop
 #
-prop:	$(OBJS)
-	link /OUT:$@.exe $(OBJS) $(LDFLAGS)
+$(OUTPUT): $(OBJS)
+	$(call MKEXE,$@,$(OBJS) $(LINKFLAGS))
 #	strip $@
 
-#
-#  Relink prop
-#
-build-prop:
-	$(CC) $(OBJS) -o prop $(LDFLAGS)
-	strip $@
 #
 #  Regenerate source only
 #
 src:	$(SRC)
 
 debug:	$(SRC) $(OBJS)
-	$(CC) $(OBJS) -g -o prop $(LDFLAGS)
+	$(CC) $(OBJS) -g -o $(OUTPUT) $(LINKFLAGS)
 
 profile:	$(SRC) $(OBJS)
-	$(CC) $(OBJS) -pg -g -o prop $(LDFLAGS)
+	$(CC) $(OBJS) -pg -g -o $(OUTPUT) $(LINKFLAGS)
 
 tar:
 	tar -cvf - [a-z]*.h [a-z]*.cc [a-z]*.[ply]* *.tex \
@@ -129,13 +126,19 @@ tar:
 #  Remove object files only
 #
 clean:
-	rm -f *.$(OBJ)
+	$(RM) *.$(OBJ)
+
+#
+#  Remove object files and prop binary
+#
+cleanall: clean
+	$(RM) $(OUTPUT)
 
 #
 #  Remove all object files and generated code
 #
-spotless: clean
-	rm -f $(GEN_SRC)
+spotless: cleanall
+	$(RM) $(GEN_SRC)
 
 depends1:
 	touch depends1
@@ -177,7 +180,7 @@ T%.cc:	T%.pcc
 %.cc:	%.pcc
 	$(PROP) $(PROP_OPTS) $<
 %.$(OBJ):	%.cc
-	$(CC) -c $(CFLAGS) $<
+	$(call MKOBJ,$@,$(CFLAGS) $<)
 
 T%:	T%.cc
-	$(CC) $@.cc -o $@ -O6 $(CFLAGS) $(LDFLAGS)
+	$(CC) $@.cc -o $@ -O6 $(CFLAGS) $(LINKFLAGS)

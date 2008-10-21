@@ -9,6 +9,11 @@ include ../Makefile.config
 ADLIB_PATH	:=	../include
 ad := $(ADLIB_PATH)/ad
 
+COPTS := /EHsc /nologo
+CINCLUDE := -I$(ADLIB_PATH)
+CFLAGS := $(COPTS) $(CINCLUDE)
+LIBRARY := libprop.lib
+
 #############################################################################
 #  A list of all ADLib areas
 #############################################################################
@@ -22,44 +27,49 @@ AREAS	:= automata contain \
 		  rewrite strings symbolic \
 		  trees tries backend-tools visualize
 
+#PROP		=	../../bin/prop
+#PROP_OPTS	=	-strict -report -I../../include
+
 lib: $(LIBRARY)
 
-#look for include files in
-#each of the modules
-# CFLAGS += $(patsubst %,-I%,$(MODULES))
-#extra libraries if required
-LIBS :=
 #each module will add to this
 SRC :=
-#include the description for
-#each module
+GEN_SRC :=
+
+# include all modules
 include $(patsubst %, %/Makefile.mk,$(AREAS))
-#determine the object files
+
+# deduce object files
 OBJS := $(patsubst %.cc,%.$(OBJ),$(filter %.cc,$(SRC)))
 
 %.$(OBJ):	%.cc
-	$(CC) /Fo$@ -c $(COPTS) $(CINCLUDE) $<
+	$(call MKOBJ,$@, $(CFLAGS) $<)
 
 %.$(OBJ):	%.cpp
-	$(CC) -c $(COPTS) $(CINCLUDE) $<
+	$(call MKOBJ,$@, $(CFLAGS) $<)
 
 %.$(OBJ):	%.cxx
-	$(CC) -c $(COPTS) $(CINCLUDE) $<
+	$(call MKOBJ,$@, $(CFLAGS) $<)
 
 %.$(OBJ):	%.C
-	$(CC) -c $(COPTS) $(CINCLUDE) $<
+	$(call MKOBJ,$@, $(CFLAGS) $<)
 
 clean:
 	$(RM) $(OBJS)
 
-d:
+cleanall: clean
+	$(RM) $(LIBRARY)
+
+spotless: cleanall
+	$(RM) $(GEN_SRC)
+
+vars:
 	@echo $(SRC)
+	@echo $(GEN_SRC)
 	@echo $(OBJS)
 
 $(LIBRARY): $(OBJS)
-	link /LIB /OUT:$(LIBRARY) $(OBJS)
-	$(RM) $(LIBRARY)
-	$(LINK) /LIB /OUT:$(LIBRARY) $(OBJS)
+	$(call MKLIB,$(LIBRARY),$(OBJS))
 	@echo Done
 
 #%.cc:	%.pcc
@@ -67,9 +77,3 @@ $(LIBRARY): $(OBJS)
 
 #%.h:	%.ph
 #	$(PROP) $(PROP_OPTS) $(CINCLUDE) $<
-
-
-#spotless:
-#	for dir in $(AREAS); do \
-#	   if [ -d $$dir ]; then $(RM) -f $$dir/*.o; fi; \
-#	done
