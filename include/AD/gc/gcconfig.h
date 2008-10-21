@@ -79,7 +79,7 @@
 //  Should we try to keep track of garbage collection time?
 //  The default is yes.  This is generally a good idea since you may want
 //  to profile the programs during fine-tuning.   The timer code should
-//  work on both BSD and System V systems.  
+//  work on both BSD and System V systems.
 //////////////////////////////////////////////////////////////////////////////
 #if defined(PROP_HAS_GETRUSAGE) || defined(PROP_HAS_TIMES)
 #define GC_USE_TIMER
@@ -165,6 +165,22 @@ extern "C" void * sbrk(int);
 #  define GC_CONFIGURED
 #endif
 
+#if defined(_MSC_VER)
+// will not work for sure
+struct GC_ALIGNMENT_TYPE { int a; void * b; double c; };
+#define GC_ALIGNMENT sizeof(GC_ALIGNMENT_TYPE)
+extern int etext;
+extern int end;
+#  define GC_DATA_START  (void*)(((unsigned long)(&etext) + 0xfff) & ~0xfff)
+#  define GC_DATA_END    (void*)(&end)
+#include <stdlib.h>
+//#include <unistd.h>
+extern "C" void * sbrk(int);
+#  define GC_GET_HEAP_BOTTOM sbrk(0)
+#  define GC_GET_HEAP_TOP    sbrk(0)
+#define GC_CONFIGURED
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 //  Default configuration: assume vanilla Unixes.
 //  Caution: I don't know if it'll work!!!!
@@ -190,4 +206,3 @@ extern "C" void * sbrk(int);
 #endif
 
 #endif
-
