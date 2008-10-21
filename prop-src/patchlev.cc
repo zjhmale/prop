@@ -1,3 +1,3 @@
-const char * PATCH_LEVEL  = "6";
+const char * PATCH_LEVEL  = "7";
 //const char * LAST_UPDATED = "Jun 18, 1997";
-const char * LAST_UPDATED = "Nov 2, 1999";
+const char * LAST_UPDATED = "Oct 21, 2008";
