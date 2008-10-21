@@ -3,3 +3,5 @@
 *.rpo
 prop-src/prop
 *.obj
+*.lib
+*.exe
