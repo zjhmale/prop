@@ -126,7 +126,7 @@ tar:
 #  Remove object files only
 #
 clean:
-	$(RM) *.$(OBJ)
+	$(RM) $(OBJS)
 
 #
 #  Remove object files and prop binary
