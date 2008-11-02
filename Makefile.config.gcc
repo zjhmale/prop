@@ -1,9 +1,13 @@
 
-CC :=	cl
+CC :=	g++-3.3
 RM :=	rm -f
-OBJ := obj
-DOTEXE := .exe
+OBJ := o
+LIB := a
+DOTEXE := 
 
-MKLIB=link /nologo /LIB /OUT:$(1) $(2)
-MKEXE=link /nologo /Fe$(1) $(2)
-MKOBJ=$(CC) /c /Fo$(1) $(2)
+CPP_OPTS   	= -O6 -Wall -pedantic -frepo -g
+#PROP_COPTS	= $(COPTS)
+
+MKLIB=ar crv $(1) $(2); ranlib $(1)
+MKEXE=$(CC) -o $(1) $(2)
+MKOBJ=$(CC) -c -o $(1) $(2)

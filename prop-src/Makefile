@@ -12,11 +12,10 @@ PROP_OPTS	= $(PROP_OPTS_BASIC) -O14
 
 CC_INCLUDE	= -I../include
 #COPTS		= -O6 -pedantic
-COPTS = /EHsc /nologo
 #LDOPTS		= -lg++
-CFLAGS		= $(CC_INCLUDE) $(COPTS)
-#LINKFLAGS		= -L../lib -lprop $(LDOPTS) -lm
-LINKFLAGS = /LIBPATH:../lib-src libprop.lib
+CFLAGS		= $(CC_INCLUDE) $(CPP_OPTS)
+LINKFLAGS		= -L../lib -lprop $(LDOPTS) -lm
+#LINKFLAGS = /LIBPATH:../lib-src libprop.lib
 
 OUTPUT := prop$(DOTEXE)
 
