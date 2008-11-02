@@ -5,7 +5,7 @@ OBJ := o
 LIB := a
 DOTEXE := 
 
-CPP_OPTS   	= -O6 -Wall -pedantic -frepo -g
+CPP_OPTS   	= -O6 -Wall -pedantic -g
 #PROP_COPTS	= $(COPTS)
 
 MKLIB=ar crv $(1) $(2); ranlib $(1)
