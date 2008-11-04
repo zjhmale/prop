@@ -1,3 +1,6 @@
+#include <iostream>
+#include <memory>
+
 datatype Exp = INT int
 	     | ADD (Exp, Exp)
 	     | SUB (Exp, Exp)
@@ -5,4 +8,16 @@ datatype Exp = INT int
 	     | DIV (Exp, Exp)
 	     ;
 
-datatype Q = Some int | None ;
+datatype Q = Expr Exp | Str std::string ;
+
+int main()
+{
+  std::auto_ptr<a_Q> q(Expr(ADD(INT(2),INT(3))));
+
+  match (q.get())
+  { Expr x : { std::cout << "expr" << std::endl; }
+  | Str s : { std::cout << s << std::endl; }
+  }
+
+  return 0;
+}

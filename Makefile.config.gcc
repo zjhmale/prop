@@ -1,0 +1,13 @@
+
+CC :=	g++-3.3
+RM :=	rm -f
+OBJ := o
+LIB := a
+DOTEXE := 
+
+CPP_OPTS   	= -O6 -Wall -pedantic -g
+#PROP_COPTS	= $(COPTS)
+
+MKLIB=ar crv $(1) $(2); ranlib $(1)
+MKEXE=$(CC) -o $(1) $(2)
+MKOBJ=$(CC) -c -o $(1) $(2)

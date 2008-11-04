@@ -5,3 +5,5 @@ prop-src/prop
 *.obj
 *.lib
 *.exe
+*.swp
+Makefile.config

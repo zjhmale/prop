@@ -7,12 +7,11 @@
 include ../Makefile.config
 
 ADLIB_PATH	:=	../include
-ad := $(ADLIB_PATH)/ad
+ad := $(ADLIB_PATH)/AD
 
-COPTS := /EHsc /nologo
 CINCLUDE := -I$(ADLIB_PATH)
-CFLAGS := $(COPTS) $(CINCLUDE)
-LIBRARY := libprop.lib
+CFLAGS := $(CPP_OPTS) $(CINCLUDE)
+LIBRARY := libprop.$(LIB)
 
 #############################################################################
 #  A list of all ADLib areas

@@ -4,6 +4,8 @@ RM :=	rm -f
 OBJ := obj
 DOTEXE := .exe
 
+CPP_OPTS := /EHsc
+
 MKLIB=link /LIB /nologo /OUT:$(1) $(2)
 MKEXE=link /nologo /OUT:$(1) $(2)
-MKOBJ=$(CC) /c /Fo$(1) $(2)
+MKOBJ=$(CC) /nologo /c /Fo$(1) $(2)
